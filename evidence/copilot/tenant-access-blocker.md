@@ -8,6 +8,8 @@ Opened Microsoft 365 Copilot Chat at:
 
 `https://m365.cloud.microsoft/chat`
 
+Retried after Checkpoint G evidence completion and received the same sign-in state.
+
 ## Result
 
 Chrome reached Microsoft Entra sign-in instead of an authenticated Microsoft 365 Copilot Chat session.
