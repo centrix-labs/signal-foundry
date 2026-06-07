@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import type { ToolName } from "@signal-foundry/shared";
-import { resolveActor } from "./auth";
+import { actorIdFromBearer, resolveActor } from "./auth";
 import { RegistryStore } from "./store";
 import { executeTool, toolNames } from "./tools";
 
@@ -24,13 +24,15 @@ export function createServer(store = new RegistryStore()) {
       response.status(404).json({ ok: false, error: { message: "Unknown tool." } });
       return;
     }
-    const actor = resolveActor(store.read(), request.header("x-sf-actor-id"));
+    const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
+    const actor = resolveActor(store.read(), actorId);
     const result = executeTool(store, toolName, request.body, actor);
     response.status(result.status).json(result.body);
   });
 
   app.post("/admin/reset", (request, response) => {
-    const actor = resolveActor(store.read(), request.header("x-sf-actor-id"));
+    const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
+    const actor = resolveActor(store.read(), actorId);
     if (actor?.role !== "admin") {
       response.status(403).json({ ok: false, error: { message: "Admin role required." } });
       return;

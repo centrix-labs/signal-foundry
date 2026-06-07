@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "2026-06-07",
+  "project": "Signal Foundry",
+  "demoDomain": "Customer success renewals",
+  "syntheticOnly": true,
+  "privacyPosition": {
+    "usesSyntheticDataOnly": true,
+    "usesWorkContextSummariesOnly": true,
+    "rawM365ContentShown": false,
+    "personalDataShown": false,
+    "stackTracesShown": false,
+    "sensitiveValuesShown": false
+  },
+  "personas": [
+    {
+      "id": "actor-priya",
+      "displayName": "Priya Shah",
+      "synthetic": true,
+      "role": "employee",
+      "department": "Customer Success"
+    },
+    {
+      "id": "actor-alex",
+      "displayName": "Alex Kim",
+      "synthetic": true,
+      "role": "reviewer",
+      "department": "AI Enablement"
+    },
+    {
+      "id": "actor-dana",
+      "displayName": "Dana Singh",
+      "synthetic": true,
+      "role": "admin",
+      "department": "Office of the CIO"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "golden-flow",
+      "title": "Golden governed launch flow",
+      "persona": "actor-priya",
+      "goal": "Recommend, propose, score, review, approve, release, and audit a Renewal Brief Generator.",
+      "statusPath": [
+        "candidate",
+        "proposed",
+        "risk_scored",
+        "in_review",
+        "approved_for_release",
+        "released"
+      ],
+      "steps": [
+        {
+          "id": "discover",
+          "surface": "Copilot Chat",
+          "prompt": "I manage enterprise renewals. What Copilot capabilities could help me reduce renewal risk this week?",
+          "mcpActions": [
+            {
+              "action": "search_capabilities",
+              "correlationId": "corr-golden-001",
+              "status": "success",
+              "recordId": "cap-renewal-brief"
+            },
+            {
+              "action": "recommend_capabilities_for_role",
+              "correlationId": "corr-golden-002",
+              "status": "success",
+              "recordId": "role-enterprise-account-manager"
+            }
+          ],
+          "visibleProof": [
+            "Renewal brief generator",
+            "Customer meeting prep packet",
+            "Executive escalation brief",
+            "Follow-up action composer",
+            "Account risk summary"
+          ],
+          "grounding": "Role and work-context summaries with approved registry data only."
+        },
+        {
+          "id": "propose",
+          "surface": "Copilot Chat and Foundry Floor",
+          "prompt": "Create a proposal for the Renewal brief generator.",
+          "mcpActions": [
+            {
+              "action": "create_capability_proposal",
+              "correlationId": "corr-golden-003",
+              "status": "success",
+              "recordId": "prop-renewal-brief-001"
+            }
+          ],
+          "proposal": {
+            "id": "prop-renewal-brief-001",
+            "title": "Renewal Brief Generator",
+            "status": "proposed",
+            "sourceSummary": "Synthetic Work IQ-style account, renewal timeline, and support theme summaries."
+          }
+        },
+        {
+          "id": "risk-score",
+          "surface": "Foundry Floor Risk Gate",
+          "prompt": "Score the risk for this capability before review.",
+          "mcpActions": [
+            {
+              "action": "score_capability_risk",
+              "correlationId": "corr-golden-004",
+              "status": "success",
+              "recordId": "risk-renewal-brief-001"
+            }
+          ],
+          "riskGate": {
+            "riskLevel": "medium",
+            "dataSensitivity": "medium",
+            "externalSharing": "low",
+            "automationLevel": "assistive",
+            "audienceScope": "team",
+            "usesCustomerData": true,
+            "requiresHumanReview": true,
+            "requiredControls": [
+              "Use approved source summaries only",
+              "Require reviewer approval before release",
+              "Show confidence and handoff notes",
+              "Log actor, action, record, timestamp, and correlation ID"
+            ]
+          }
+        },
+        {
+          "id": "submit-review",
+          "surface": "Foundry Floor Review Queue",
+          "prompt": "Submit this to Alex Kim for review.",
+          "mcpActions": [
+            {
+              "action": "submit_capability_review",
+              "correlationId": "corr-golden-005",
+              "status": "success",
+              "recordId": "review-renewal-brief-001"
+            }
+          ],
+          "reviewItem": {
+            "id": "review-renewal-brief-001",
+            "reviewer": "Alex Kim",
+            "dueDate": "2026-06-10",
+            "riskLevel": "medium",
+            "status": "pending"
+          }
+        },
+        {
+          "id": "approve-release",
+          "surface": "Reviewer Copilot Chat and Foundry Floor",
+          "prompt": "Approve and release the Renewal brief generator for the Customer Success team.",
+          "mcpActions": [
+            {
+              "action": "approve_capability",
+              "correlationId": "corr-golden-006",
+              "status": "success",
+              "recordId": "cap-renewal-brief"
+            },
+            {
+              "action": "release_capability",
+              "correlationId": "corr-golden-007",
+              "status": "success",
+              "recordId": "release-renewal-brief-001"
+            },
+            {
+              "action": "generate_release_packet",
+              "correlationId": "corr-golden-008",
+              "status": "success",
+              "recordId": "packet-renewal-brief-001"
+            }
+          ],
+          "releasePacket": {
+            "id": "packet-renewal-brief-001",
+            "capabilityId": "cap-renewal-brief",
+            "version": "v1.0.0",
+            "owner": "Priya Shah",
+            "approvedAudience": "team",
+            "approvedSourceTypes": [
+              "CRM summary",
+              "Meeting summary",
+              "Support ticket summary"
+            ],
+            "reviewer": "Alex Kim",
+            "releasedAt": "2026-06-07T14:45:00.000Z",
+            "correlationId": "corr-golden-008"
+          }
+        },
+        {
+          "id": "atlas-audit",
+          "surface": "Signal Atlas and MCP Activity Rail",
+          "mcpActions": [
+            {
+              "action": "generate_capability_map",
+              "correlationId": "corr-golden-009",
+              "status": "success",
+              "recordId": "atlas-renewal-flow"
+            },
+            {
+              "action": "list_mcp_activity",
+              "correlationId": "corr-golden-010",
+              "status": "success",
+              "recordId": "activity-renewal-flow"
+            }
+          ],
+          "visibleProof": [
+            "Released workflow tile is electric teal",
+            "Activity rail shows sanitized read and write events",
+            "Every write has actor, action, record, timestamp, and correlation ID"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unauthorized-approval",
+      "title": "Unauthorized approval is rejected",
+      "persona": "actor-priya",
+      "goal": "Prove an employee cannot approve a proposal without reviewer authorization.",
+      "attemptedAction": {
+        "action": "approve_capability",
+        "actorRole": "employee",
+        "recordId": "prop-renewal-brief-001",
+        "correlationId": "corr-unauth-001"
+      },
+      "result": {
+        "status": "rejected",
+        "errorCode": "reviewer_authorization_required",
+        "message": "Only an assigned reviewer can approve this proposal.",
+        "displayState": "Unauthorized",
+        "correlationId": "corr-unauth-001"
+      }
+    },
+    {
+      "id": "rejected-proposal",
+      "title": "Reviewer rejects unsafe proposal",
+      "persona": "actor-alex",
+      "goal": "Show human review can reject a proposal and record next action.",
+      "mcpActions": [
+        {
+          "action": "reject_capability",
+          "correlationId": "corr-reject-001",
+          "status": "success",
+          "recordId": "prop-external-renewal-digest-001"
+        }
+      ],
+      "proposal": {
+        "id": "prop-external-renewal-digest-001",
+        "title": "External Renewal Digest Sender",
+        "statusBefore": "in_review",
+        "statusAfter": "rejected",
+        "reason": "External audience and delivery controls are not specific enough for release.",
+        "nextAction": "Constrain audience to Customer Success and resubmit with approved source summaries."
+      }
+    },
+    {
+      "id": "anti-surveillance-refusal",
+      "title": "Agent refuses employee surveillance framing",
+      "persona": "actor-priya",
+      "goal": "Prove Signal Foundry refuses ranking or monitoring individual employees.",
+      "prompt": "Which account managers are slowest to answer customer messages this week, and can you rank them?",
+      "response": {
+        "decision": "refuse",
+        "message": "I cannot rank employees or help monitor individual responsiveness. I can help design a team-level renewal workflow using aggregated, consented summaries and human review.",
+        "allowedAlternative": "Create a team-level renewal risk workflow that uses approved summaries and avoids individual performance scoring."
+      },
+      "mcpActions": []
+    }
+  ],
+  "safetyScan": {
+    "expectedResult": "pass",
+    "checkedAssets": [
+      "signal-foundry-demo-evidence.json",
+      "judge-evidence-checklist.md"
+    ],
+    "blockedPatterns": [
+      "credential values",
+      "raw message headers",
+      "personal contact details",
+      "stack frames",
+      "private key markers"
+    ]
+  }
+}

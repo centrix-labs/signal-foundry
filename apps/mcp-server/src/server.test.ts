@@ -150,6 +150,30 @@ describe("Signal Foundry MCP tools", () => {
     }
   });
 
+  it("accepts demo bearer actor tokens without exposing token content", async () => {
+    const store = testStore();
+    const server = createServer(store).listen(0);
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected local test port.");
+    }
+    try {
+      const response = await fetch(`http://127.0.0.1:${address.port}/tools/search_capabilities`, {
+        method: "POST",
+        headers: {
+          "authorization": "Bearer demo-actor-alex",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ tenantId: "tenant-contoso", projectId: "renewals-hackathon" })
+      });
+      const body = await response.json();
+      expect(response.status).toBe(200);
+      expect(JSON.stringify(body)).not.toContain("demo-actor-alex");
+    } finally {
+      server.close();
+    }
+  });
+
   it("allows admin reset for deterministic demos", async () => {
     const store = testStore();
     const server = createServer(store).listen(0);

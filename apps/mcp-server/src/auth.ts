@@ -36,6 +36,11 @@ export function resolveActor(registry: SignalFoundryRegistry, actorId?: string):
   return registry.actors.find((actor) => actor.id === actorId);
 }
 
+export function actorIdFromBearer(value?: string) {
+  const match = value?.match(/^Bearer\s+demo-(actor-[a-z-]+)$/i);
+  return match?.[1];
+}
+
 export function authorize(action: McpAction, actor: Actor | undefined) {
   if (!actor) {
     return { ok: false as const, status: 401, message: "Unauthorized request." };

@@ -130,17 +130,17 @@ Parallelization rules:
 - [ ] Create Microsoft Entra app registration implementation notes.
 - [ ] Create Entra app registration or automation when permissions allow.
 - [ ] Store secrets in Key Vault for deployed environments.
-- [ ] Add OAuth-compatible token validation path where supported.
-- [ ] Add local demo auth mode with synthetic users and roles.
-- [ ] Enforce reviewer role for score, review, approve, reject, and release tools.
-- [ ] Reject unauthorized MCP read and write attempts.
-- [ ] Redact tokens, secrets, raw content, PII, and stack traces from errors.
-- [ ] Add unauthorized demo evidence.
-- [ ] Add no-secret/no-raw-content scan over seed data, logs, screenshots, generated release packets, and docs.
+- [x] Add OAuth-compatible token validation path where supported.
+- [x] Add local demo auth mode with synthetic users and roles.
+- [x] Enforce reviewer role for score, review, approve, reject, and release tools.
+- [x] Reject unauthorized MCP read and write attempts.
+- [x] Redact tokens, secrets, raw content, PII, and stack traces from errors.
+- [x] Add unauthorized demo evidence.
+- [x] Add no-secret/no-raw-content scan over seed data, logs, screenshots, generated release packets, and docs.
 - [ ] Add Application Insights telemetry shape with actor, action, record ID, timestamp, and correlation ID only.
 - [ ] Add sanitized App Insights query or sample evidence.
-- [ ] Add cost-safe logging configuration with compact audit events only.
-- [ ] Complete Checkpoint C verification and commit.
+- [x] Add cost-safe logging configuration with compact audit events only.
+- [x] Complete Checkpoint C verification and commit.
 
 ## 8. Frontend: Foundry Floor
 
@@ -204,18 +204,18 @@ Parallelization rules:
 
 ## 11. Demo And Validation Harness
 
-- [ ] Add scripted golden flow: discover -> propose -> risk score -> submit -> approve -> release.
-- [ ] Add scripted unauthorized MCP scenario.
-- [ ] Add scripted rejected proposal scenario.
-- [ ] Add scripted released capability map scenario.
-- [ ] Add scripted anti-surveillance refusal scenario.
+- [x] Add scripted golden flow: discover -> propose -> risk score -> submit -> approve -> release.
+- [x] Add scripted unauthorized MCP scenario.
+- [x] Add scripted rejected proposal scenario.
+- [x] Add scripted released capability map scenario.
+- [x] Add scripted anti-surveillance refusal scenario.
 - [ ] Add reset command for repeatable demos.
-- [ ] Add validation command that runs schema tests, registry tests, risk tests, smoke tests, screenshot checks, and OpenSpec validation.
-- [ ] Verify no secrets, raw content, tokens, PII, or production data appear in UI, logs, screenshots, seed data, release packets, or final artifacts.
+- [x] Add validation command that runs schema tests, registry tests, risk tests, smoke tests, screenshot checks, and OpenSpec validation.
+- [x] Verify no secrets, raw content, tokens, PII, or production data appear in UI, logs, screenshots, seed data, release packets, or final artifacts.
 - [ ] Verify every P0 gate in `acceptance-rubric.md`.
 - [ ] Verify at least five P1 differentiators in `acceptance-rubric.md`.
 - [ ] Verify Foundry/OpenAI token and evaluation usage stays within budget assumption.
-- [ ] Verify repository evidence maps to required and bonus hackathon criteria.
+- [x] Verify repository evidence maps to required and bonus hackathon criteria.
 
 ## 12. Evidence Package
 
