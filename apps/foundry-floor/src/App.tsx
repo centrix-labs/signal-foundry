@@ -15,6 +15,7 @@ import {
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
+import { AccessGate } from "./AccessGate";
 
 const firstCapability = capabilities[0];
 
@@ -177,8 +178,13 @@ export function App() {
     saveForLater,
     approveRelease
   } = useDemoState();
+  const [hasAccess, setHasAccess] = useState(() => window.sessionStorage.getItem("signal-foundry-access") === "granted");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("light");
+
+  if (!hasAccess) {
+    return <AccessGate onUnlock={() => setHasAccess(true)} theme={theme} onThemeChange={setTheme} />;
+  }
 
   if (!isAuthenticated) {
     return <LoginScreen onEnter={() => setIsAuthenticated(true)} theme={theme} onThemeChange={setTheme} />;

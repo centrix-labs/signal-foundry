@@ -106,6 +106,58 @@
   z-index: 1;
 }
 
+.access-card {
+  min-height: auto;
+  padding-block: 46px 42px;
+}
+
+.access-card h1 {
+  font-family: Bahnschrift, "Aptos Display", Aptos, sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 8px 0 12px;
+  text-align: center;
+}
+
+.access-card .eyebrow {
+  text-align: center;
+}
+
+.access-emblem {
+  border: 1px solid color-mix(in oklch, var(--teal) 58%, transparent);
+  color: var(--teal);
+  display: grid;
+  height: 58px;
+  margin: 0 auto 18px;
+  place-items: center;
+  width: 58px;
+  clip-path: polygon(50% 0, 96% 24%, 96% 76%, 50% 100%, 4% 76%, 4% 24%);
+}
+
+.access-copy {
+  color: oklch(0.82 0.024 210);
+  line-height: 1.45;
+  margin: 0 auto 24px;
+  max-width: 34ch;
+  text-align: center;
+}
+
+.login-light .access-copy {
+  color: oklch(0.38 0.026 220);
+}
+
+.access-form {
+  margin: 0 auto;
+  max-width: 340px;
+}
+
+.access-error {
+  color: oklch(0.72 0.16 28);
+  font-size: 0.86rem;
+  margin: -2px 0 0;
+}
+
 .login-light .login-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 252, 252, 0.94)),
