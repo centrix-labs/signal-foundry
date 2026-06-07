@@ -79,51 +79,51 @@ Parallelization rules:
 
 ## 4. External MCP Server
 
-- [ ] Scaffold TypeScript / Node.js MCP server.
-- [ ] Implement health endpoint.
-- [ ] Implement tool-list endpoint.
-- [ ] Define Zod schemas for all tools.
-- [ ] Implement `search_capabilities`.
-- [ ] Implement `recommend_capabilities_for_role`.
-- [ ] Implement `create_capability_proposal`.
-- [ ] Implement `score_capability_risk`.
-- [ ] Implement `submit_capability_review`.
-- [ ] Implement `approve_capability`.
-- [ ] Implement `reject_capability`.
-- [ ] Implement `release_capability`.
-- [ ] Implement `generate_release_packet`.
-- [ ] Implement `generate_capability_map`.
-- [ ] Implement `list_mcp_activity`.
-- [ ] Add idempotency keys to all write operations.
-- [ ] Add correlation IDs across requests, writes, logs, and responses.
-- [ ] Add audit-safe logging.
-- [ ] Add sanitized success and error response contracts.
-- [ ] Add MCP schema/unit tests for every tool.
-- [ ] Add local MCP smoke tests for health, tool list, read, write, and unauthorized rejection.
-- [ ] Complete Checkpoint B verification and commit.
+- [x] Scaffold TypeScript / Node.js MCP server.
+- [x] Implement health endpoint.
+- [x] Implement tool-list endpoint.
+- [x] Define Zod schemas for all tools.
+- [x] Implement `search_capabilities`.
+- [x] Implement `recommend_capabilities_for_role`.
+- [x] Implement `create_capability_proposal`.
+- [x] Implement `score_capability_risk`.
+- [x] Implement `submit_capability_review`.
+- [x] Implement `approve_capability`.
+- [x] Implement `reject_capability`.
+- [x] Implement `release_capability`.
+- [x] Implement `generate_release_packet`.
+- [x] Implement `generate_capability_map`.
+- [x] Implement `list_mcp_activity`.
+- [x] Add idempotency keys to all write operations.
+- [x] Add correlation IDs across requests, writes, logs, and responses.
+- [x] Add audit-safe logging.
+- [x] Add sanitized success and error response contracts.
+- [x] Add MCP schema/unit tests for every tool.
+- [x] Add local MCP smoke tests for health, tool list, read, write, and unauthorized rejection.
+- [x] Complete Checkpoint B verification and commit.
 
 ## 5. Capability Registry Backend
 
-- [ ] Create local JSON or SQLite synthetic registry store.
-- [ ] Create Azure Table Storage registry adapter for deployment.
-- [ ] Seed roles, departments, capabilities, proposals, risk reviews, review items, release packets, MCP activity, and audit events.
-- [ ] Add repository layer for registry reads and writes.
-- [ ] Add tenant, project, actor, and role scoping.
-- [ ] Add migration or reset command for demo reliability.
-- [ ] Add deterministic demo state reset.
-- [ ] Add no-raw-content checks in seed data and generated records.
-- [ ] Add registry tests for create, update, release, audit trail, and reset.
+- [x] Create local JSON or SQLite synthetic registry store.
+- [x] Create Azure Table Storage registry adapter for deployment.
+- [x] Seed roles, departments, capabilities, proposals, risk reviews, review items, release packets, MCP activity, and audit events.
+- [x] Add repository layer for registry reads and writes.
+- [x] Add tenant, project, actor, and role scoping.
+- [x] Add migration or reset command for demo reliability.
+- [x] Add deterministic demo state reset.
+- [x] Add no-raw-content checks in seed data and generated records.
+- [x] Add registry tests for create, update, release, audit trail, and reset.
 
 ## 6. Risk Gate Backend
 
-- [ ] Implement deterministic risk scoring for data sensitivity, external sharing, automation, audience scope, customer data, and human review.
-- [ ] Add policy notes and explainable risk rationale.
-- [ ] Add prompt-injection and sensitive-output risk labels.
-- [ ] Add reviewer-required thresholds.
-- [ ] Add blocked-state logic for unacceptable risk.
-- [ ] Add test cases for low, medium, high, and blocked capability proposals.
+- [x] Implement deterministic risk scoring for data sensitivity, external sharing, automation, audience scope, customer data, and human review.
+- [x] Add policy notes and explainable risk rationale.
+- [x] Add prompt-injection and sensitive-output risk labels.
+- [x] Add reviewer-required thresholds.
+- [x] Add blocked-state logic for unacceptable risk.
+- [x] Add test cases for low, medium, high, and blocked capability proposals.
 - [ ] Optionally add Azure AI Foundry / Azure OpenAI rationale wording as advisory output only.
-- [ ] Verify optional LLM rationale cannot override deterministic risk level.
+- [x] Verify optional LLM rationale cannot override deterministic risk level.
 
 ## 7. Auth, Security, And Audit
 

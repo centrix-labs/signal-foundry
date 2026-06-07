@@ -1,13 +1,8 @@
-import { demoRegistry } from "@signal-foundry/shared";
+import "dotenv/config";
+import { createServer } from "./server";
 
-export function getScaffoldStatus() {
-  return {
-    service: "signal-foundry-mcp",
-    status: "scaffolded",
-    capabilities: demoRegistry.capabilities.length
-  };
-}
+const port = Number(process.env["PORT"] ?? 7071);
 
-if (process.env["SIGNAL_FOUNDRY_PRINT_STATUS"] === "1") {
-  console.log(JSON.stringify(getScaffoldStatus()));
-}
+createServer().listen(port, () => {
+  console.log(`Signal Foundry MCP server listening on ${port}`);
+});
