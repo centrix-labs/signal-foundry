@@ -1,9 +1,15 @@
 import { FormEvent, useState } from "react";
 import { LockKeyhole, ShieldCheck } from "lucide-react";
 
-const accessHash =
-  (import.meta.env["VITE_SITE_ACCESS_HASH"] as string | undefined) ??
-  "773097d41df91c845da1b80c6140bfd52d8f3eaf6ec37258dc07212d893fa251";
+const defaultAccessHashes = [
+  "53207404fc88e92779a36ef497ff4683959e8443b3ff35bb5dc2e2dc45f96af6",
+  "773097d41df91c845da1b80c6140bfd52d8f3eaf6ec37258dc07212d893fa251"
+];
+
+const accessHashes = ((import.meta.env["VITE_SITE_ACCESS_HASHES"] as string | undefined) ?? defaultAccessHashes.join(","))
+  .split(",")
+  .map((hash) => hash.trim())
+  .filter(Boolean);
 
 type AccessGateProps = {
   onUnlock: () => void;
@@ -26,10 +32,10 @@ export function AccessGate({ onUnlock, theme, onThemeChange }: AccessGateProps) 
     event.preventDefault();
     setIsChecking(true);
     setError("");
-    const hash = await sha256(code);
+    const candidateHashes = await Promise.all([sha256(code), sha256(code.toUpperCase())]);
     setIsChecking(false);
 
-    if (hash === accessHash) {
+    if (candidateHashes.some((hash) => accessHashes.includes(hash))) {
       window.sessionStorage.setItem("signal-foundry-access", "granted");
       onUnlock();
       return;
