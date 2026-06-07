@@ -27,13 +27,15 @@ Date: 2026-06-07
 - `56b54a4` Checkpoint G finalize evidence package
 - `90d1b2f` Document Copilot tenant access retry
 - Add branded Signal Foundry login page
+- Finish interactive review, risk, atlas, registry mirror, and Azure deployment hardening
 
 ## Deployment Checkpoints
 
 - Azure resource group: `rg-signal-foundry-hackathon`
-- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f-20260607-0727`
-- Container revision: `ca-signal-foundry-mcp--0000004`
+- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:finish-build-20260607-1139`
+- Container revision: `ca-signal-foundry-mcp--0000007`
 - Static Web Apps site: `swa-signal-foundry`
+- Azure Table registry mirror: `Actors`, `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`
 - Budget: `signal-foundry-hackathon-budget`
 - Key Vault: `kv-signal-foundry`
 
@@ -42,6 +44,7 @@ Date: 2026-06-07
 - Deployed smoke: `evidence/azure/deployed-smoke-results.md`
 - Deployed login smoke: `evidence/azure/deployed-login-smoke.md`
 - Resource list: `evidence/azure/resource-list.json`
+- Azure Table registry sample: `evidence/azure/table-registry-sample.json`
 - Sanitized telemetry: `evidence/azure/sanitized-log-analytics-sample.json`
 - Cost posture: `evidence/azure/budget.json`
 - Key Vault metadata: `evidence/azure/key-vault-secret-metadata.json`

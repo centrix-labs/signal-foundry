@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",
+    "@azure/identity": "^4.13.1",
     "@signal-foundry/shared": "0.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

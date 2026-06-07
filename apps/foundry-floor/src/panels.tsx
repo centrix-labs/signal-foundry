@@ -90,7 +90,15 @@ export function TopBar() {
   );
 }
 
-export function CapabilityList({ selectedId, onSelect }: { selectedId: string; onSelect: (id: string) => void }) {
+export function CapabilityList({
+  records = capabilities,
+  selectedId,
+  onSelect
+}: {
+  records?: readonly Capability[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
   return (
     <section className="panel capability-list" aria-label="Capability records">
       <div className="panel-heading">
@@ -99,7 +107,7 @@ export function CapabilityList({ selectedId, onSelect }: { selectedId: string; o
           <h2>Capability records</h2>
         </div>
       </div>
-      {capabilities.map((item) => (
+      {records.map((item) => (
         <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} onClick={() => onSelect(item.id)}>
           <span className={`dot ${item.riskLevel}`} />
           <strong>{item.title}</strong>
@@ -203,7 +211,25 @@ export function McpActivityRail({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export function ReviewQueue({ selectedId, onSelect }: { selectedId: string; onSelect: (id: string) => void }) {
+export function ReviewQueue({
+  records = capabilities,
+  selectedId,
+  decisionState,
+  onSelect,
+  onRequestChanges,
+  onSaveForLater,
+  onApproveRelease
+}: {
+  records?: readonly Capability[];
+  selectedId: string;
+  decisionState: "pending" | "saved" | "changes_requested" | "released";
+  onSelect: (id: string) => void;
+  onRequestChanges: () => void;
+  onSaveForLater: () => void;
+  onApproveRelease: () => void;
+}) {
+  const selected = records.find((item) => item.id === selectedId) ?? records[0] ?? capabilities[0];
+  const pendingCount = records.filter((item) => ["proposed", "risk_scored", "in_review"].includes(item.status)).length;
   return (
     <section className="review-queue-layout">
       <div className="review-list panel">
@@ -212,10 +238,10 @@ export function ReviewQueue({ selectedId, onSelect }: { selectedId: string; onSe
             <p className="eyebrow">Review Queue</p>
             <h2>Human approval required</h2>
           </div>
-          <span className="status-pill pending">3 pending</span>
+          <span className="status-pill pending">{pendingCount} pending</span>
         </div>
         {reviewItems.map((item) => {
-          const capability = capabilities.find((record) => record.id === item.proposalId) ?? capabilities[0];
+          const capability = records.find((record) => record.id === item.proposalId) ?? capabilities[0];
           if (!capability) {
             return null;
           }
@@ -231,17 +257,40 @@ export function ReviewQueue({ selectedId, onSelect }: { selectedId: string; onSe
           );
         })}
       </div>
-      <RiskGate selected={capabilities.find((item) => item.id === selectedId) ?? capabilities[0]} />
-      <ReleasePacketDrawer selected={capabilities.find((item) => item.id === selectedId) ?? capabilities[0]} />
+      <RiskGate selected={selected} />
+      <ReleasePacketDrawer selected={selected} />
       <McpActivityRail compact />
+      <div className={`decision-banner ${decisionState}`}>
+        <strong>{decisionCopy[decisionState].title}</strong>
+        <span>{decisionCopy[decisionState].body}</span>
+      </div>
       <div className="approval-bar">
-        <button type="button"><AlertTriangle size={17} /> Request Changes</button>
-        <button type="button"><ClipboardCheck size={17} /> Save for Later</button>
-        <button type="button" className="primary"><Check size={18} /> Approve & Release</button>
+        <button type="button" onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
+        <button type="button" onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
+        <button type="button" className="primary" onClick={onApproveRelease}><Check size={18} /> Approve & Release</button>
       </div>
     </section>
   );
 }
+
+const decisionCopy = {
+  pending: {
+    title: "Reviewer decision pending",
+    body: "Release remains blocked until a human reviewer approves the packet."
+  },
+  saved: {
+    title: "Saved for later",
+    body: "The packet stays in review with audit-safe context preserved for the next reviewer pass."
+  },
+  changes_requested: {
+    title: "Changes requested",
+    body: "The proposal is held before release and the next action is recorded in the review queue."
+  },
+  released: {
+    title: "Approved and released",
+    body: "The capability is now a released workflow with the packet, atlas node, and MCP trace aligned."
+  }
+} as const;
 
 export function CopilotMirror({ turns, selected }: { turns: CopilotTurn[]; selected: Capability }) {
   return (

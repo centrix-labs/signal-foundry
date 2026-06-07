@@ -33,7 +33,7 @@ export function scoreRisk(input: RiskInput) {
     ? "blocked"
     : score >= 10
       ? "high"
-      : score >= 5
+      : score >= 4
         ? "medium"
         : "low";
 

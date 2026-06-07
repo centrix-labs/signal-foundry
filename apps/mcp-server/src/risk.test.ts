@@ -28,6 +28,14 @@ describe("deterministic risk gate", () => {
     }).riskLevel).toBe("medium");
   });
 
+  it("treats medium sensitivity customer data as medium even when assistive", () => {
+    expect(scoreRisk({
+      ...baseRiskInput,
+      dataSensitivity: "medium",
+      usesCustomerData: true
+    }).riskLevel).toBe("medium");
+  });
+
   it("scores high-risk external autonomous proposals as high", () => {
     expect(scoreRisk({
       ...baseRiskInput,

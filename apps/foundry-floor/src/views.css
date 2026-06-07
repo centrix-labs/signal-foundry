@@ -101,6 +101,7 @@ summary em,
 }
 
 .review-queue-layout .mcp-rail,
+.decision-banner,
 .approval-bar {
   grid-column: 1 / -1;
 }
@@ -116,6 +117,32 @@ summary em,
   border-radius: 8px;
   gap: var(--sm, 8px);
   padding: var(--sm, 8px);
+}
+
+.decision-banner {
+  align-items: center;
+  background: color-mix(in oklch, var(--graphite-3) 56%, black);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: var(--md, 12px);
+  padding: var(--md, 12px);
+}
+
+.decision-banner strong {
+  color: oklch(0.92 0.03 210);
+}
+
+.decision-banner span {
+  color: var(--steel);
+}
+
+.decision-banner.released {
+  border-color: color-mix(in oklch, var(--teal) 48%, transparent);
+}
+
+.decision-banner.changes_requested {
+  border-color: color-mix(in oklch, var(--amber) 52%, transparent);
 }
 
 .approval-bar button {

@@ -11,6 +11,7 @@ import {
 } from "./data";
 
 type AtlasProps = {
+  records?: readonly Capability[];
   selectedId: string;
   onSelect: (id: string) => void;
   compact?: boolean;
@@ -29,7 +30,7 @@ function pathFor(source: PositionedNode, target: PositionedNode): string {
   return `M ${source.x} ${source.y} C ${mid} ${source.y}, ${mid} ${target.y}, ${target.x} ${target.y}`;
 }
 
-export function SignalAtlas({ selectedId, onSelect, compact = false }: AtlasProps) {
+export function SignalAtlas({ records = [], selectedId, onSelect, compact = false }: AtlasProps) {
   return (
     <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""}`} aria-label="Signal Atlas">
       <div className="panel-heading">
@@ -74,22 +75,26 @@ export function SignalAtlas({ selectedId, onSelect, compact = false }: AtlasProp
               />
             );
           })}
-          {atlasNodes.map((node) => (
-            <g key={node.id} className={`atlas-node ${node.kind} ${selectedId === node.id ? "selected" : ""}`}>
-              <foreignObject x={node.x - 2.8} y={node.y - 2.8} width="5.6" height="5.6">
-                <button type="button" className="node-hit" onClick={() => onSelect(node.id)} aria-label={`Select ${node.label}`}>
+          {atlasNodes.map((node) => {
+            const record = records.find((item) => item.id === node.id);
+            const currentNode = record ? { ...node, label: record.title, riskLevel: record.riskLevel, status: record.status } : node;
+            return (
+            <g key={currentNode.id} className={`atlas-node ${currentNode.kind} ${selectedId === currentNode.id ? "selected" : ""} ${currentNode.status ?? ""}`}>
+              <foreignObject x={currentNode.x - 2.8} y={currentNode.y - 2.8} width="5.6" height="5.6">
+                <button type="button" className="node-hit" onClick={() => onSelect(currentNode.id)} aria-label={`Select ${currentNode.label}`}>
                   <span className="node-dot" />
                 </button>
               </foreignObject>
-              <foreignObject x={node.x - 9} y={node.y + 3} width="18" height="13">
+              <foreignObject x={currentNode.x - 9} y={currentNode.y + 3} width="18" height="13">
                 <div className="node-label">
-                  <strong>{node.label}</strong>
-                  {node.volume ? <span>{node.volume}</span> : null}
-                  {node.status ? <span>{statusLabels[node.status]}</span> : null}
+                  <strong>{currentNode.label}</strong>
+                  {currentNode.volume ? <span>{currentNode.volume}</span> : null}
+                  {currentNode.status ? <span>{statusLabels[currentNode.status]}</span> : null}
                 </div>
               </foreignObject>
             </g>
-          ))}
+            );
+          })}
         </svg>
         <div className="atlas-legend">
           <span><i className="legend-teal" /> Signal flow</span>

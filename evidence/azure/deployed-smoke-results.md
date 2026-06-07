@@ -9,9 +9,9 @@ Date: 2026-06-07
 
 ## Runtime Image
 
-- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f-20260607-0727`
-- Digest: `sha256:d2e3cdbcd91704dd5e399880d924a6170fe4f0b71f91b5d5b30b2451ecd6bcd8`
-- Revision: `ca-signal-foundry-mcp--0000004`
+- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:finish-build-20260607-1139`
+- Digest: `sha256:dc9e0c2b5dcc854f9c148d213fc543ee391949f0e6b6fa7306a595a9c16f74fb`
+- Revision: `ca-signal-foundry-mcp--0000007`
 
 ## Smoke Checks
 
@@ -24,6 +24,8 @@ Date: 2026-06-07
 - Authorized synthetic write: passed for proposal creation.
 - Unauthorized approval rejection: passed with HTTP 403 and sanitized body.
 - Golden flow: passed through risk score, review submit, approve, release, and release packet.
+- Deterministic risk gate: passed; medium sensitivity plus customer data scored `medium`.
+- Azure Table registry mirror: passed for `Actors`, `Capabilities`, and `McpActivity` table rows.
 - Static Web Apps load: passed with HTTP 200.
 - Log Analytics sample: captured sanitized audit event with correlation ID only.
 - Budget: resource-group cost budget created with redacted evidence.
@@ -39,7 +41,10 @@ Date: 2026-06-07
 - `evidence/azure/budget.json`
 - `evidence/azure/key-vault-secret-metadata.json`
 - `evidence/azure/key-vault-role-assignment.json`
+- `evidence/azure/table-registry-sample.json`
 - `evidence/screenshots/azure-foundry-floor-desktop.png`
+- `evidence/screenshots/review-queue-interactive-release.png`
+- `evidence/screenshots/review-release-atlas-flow.png`
 - `evidence/screenshots/azure-signal-atlas.png`
 - `evidence/screenshots/azure-foundry-floor-mobile.png`
 - `evidence/videos/signal-foundry-live-demo.webm`

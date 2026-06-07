@@ -69,13 +69,40 @@
   background: var(--amber);
 }
 
+.atlas-node.workflow.released .node-hit {
+  border-color: color-mix(in oklch, var(--teal) 80%, white);
+  box-shadow: 0 0 18px rgba(0, 209, 194, 0.42);
+}
+
+.atlas-node.workflow.released .node-dot {
+  background: var(--teal);
+  box-shadow: 0 0 12px rgba(0, 209, 194, 0.72);
+}
+
+.atlas-node.workflow.rejected .node-hit,
+.atlas-node.workflow.blocked .node-hit {
+  border-color: color-mix(in oklch, var(--red) 72%, transparent);
+}
+
+.atlas-node.workflow.rejected .node-dot,
+.atlas-node.workflow.blocked .node-dot {
+  background: var(--red);
+}
+
 .node-label {
   color: oklch(0.91 0.02 210);
   display: grid;
-  font-size: 0.2rem;
+  font-size: 1.35px;
   gap: 1px;
   line-height: 1.15;
+  overflow: hidden;
   text-align: center;
+}
+
+.node-label strong,
+.node-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .node-label span {

@@ -17,6 +17,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Audit-safe observability | Ready | `evidence/azure/sanitized-log-analytics-sample.json` |
 | Responsible AI | Ready | `apps/copilot-agent/docs/safety-boundaries.md`, `evidence/signal-foundry-demo-evidence.json` |
 | Azure deployment | Ready | `evidence/azure/resource-list.json`, `evidence/azure/container-app-state.json`, `evidence/azure/static-web-app-state.json` |
+| Azure Table registry mirror | Ready | `evidence/azure/table-registry-sample.json` |
 | Cost posture | Ready | `evidence/azure/budget.json`, `openspec/changes/build-copilot-capability-launchpad/architecture-cost-plan.md` |
 | Key Vault secret storage | Ready | `evidence/azure/key-vault-secret-metadata.json` |
 | Branded login entry | Ready | `evidence/screenshots/login-page-desktop.png`, `evidence/screenshots/login-page-mobile.png`, `evidence/screenshots/azure-login-page-desktop.png`, `evidence/screenshots/azure-login-page-mobile.png` |
@@ -34,6 +35,8 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Foundry Floor mobile | `evidence/screenshots/azure-foundry-floor-mobile.png` |
 | Signal Atlas released workflow | `evidence/screenshots/azure-signal-atlas.png` |
 | Review Queue | `evidence/screenshots/review-queue.png` |
+| Interactive review release | `evidence/screenshots/review-queue-interactive-release.png` |
+| Review-to-atlas release state | `evidence/screenshots/review-release-atlas-flow.png` |
 | Copilot Mirror | `evidence/screenshots/copilot-mirror.png` |
 | Light Executive view | `evidence/screenshots/light-executive.png` |
 | Local tablet view | `evidence/screenshots/foundry-floor-tablet.png` |
@@ -55,6 +58,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Release packet | Golden flow in `evidence/azure/deployed-smoke-results.md` |
 | Signal Atlas | `evidence/screenshots/azure-signal-atlas.png` |
 | Review Queue | `evidence/screenshots/review-queue.png` |
+| Azure registry | `evidence/azure/table-registry-sample.json` |
 | Audit safety | `scripts/validate-evidence.mjs`, secret scan, Log Analytics sample |
 | Anti-surveillance | `evidence/signal-foundry-demo-evidence.json` |
 | Demo repeatability | `scripts/reset.ts`, `/admin/reset`, `scripts/local-smoke.sh` |

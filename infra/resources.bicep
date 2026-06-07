@@ -52,6 +52,7 @@ param staticWebAppSkuTier string
 param tags object
 
 var registryTables = [
+  'Actors'
   'Capabilities'
   'CapabilityProposals'
   'RiskReviews'

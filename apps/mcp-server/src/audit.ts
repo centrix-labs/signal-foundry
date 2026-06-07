@@ -50,3 +50,38 @@ export function addActivity(
     timestamp: nowIso()
   }));
 }
+
+export function addRejectedActivity(
+  registry: SignalFoundryRegistry,
+  action: McpAction,
+  correlationId: string,
+  summary: string
+) {
+  registry.mcpActivity.unshift({
+    id: makeId("act", `${action}-rejected-${correlationId}`),
+    action,
+    actor: "Unauthorized requester",
+    recordId: "auth-boundary",
+    status: "rejected",
+    timestamp: nowIso(),
+    correlationId,
+    summary
+  });
+  registry.auditEvents.unshift({
+    id: makeId("audit", `${action}-rejected-${correlationId}`),
+    actor: "OAuth boundary",
+    action: "mcp.rejected",
+    targetRecord: "auth-boundary",
+    timestamp: nowIso(),
+    correlationId
+  });
+  console.log(JSON.stringify({
+    event: "signal_foundry_audit",
+    action,
+    actorId: "unauthorized",
+    recordId: "auth-boundary",
+    status: "rejected",
+    correlationId,
+    timestamp: nowIso()
+  }));
+}

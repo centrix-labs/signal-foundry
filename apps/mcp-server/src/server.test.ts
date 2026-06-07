@@ -116,6 +116,24 @@ describe("Signal Foundry MCP tools", () => {
     expect(JSON.stringify(result.body)).not.toContain("stack");
   });
 
+  it("records unauthorized attempts without raw request content", () => {
+    const store = testStore();
+    const result = executeTool(store, "approve_capability", {
+      tenantId: "tenant-contoso",
+      projectId: "renewals-hackathon",
+      idempotencyKey: "idem-unauth-audit",
+      proposalId: "prop-missing",
+      reviewer: "Unknown",
+      approvalNotes: "Should not pass.",
+      confirmed: true,
+      correlationId: "corr-unauth-audit"
+    }, undefined);
+    const serialized = JSON.stringify(store.read());
+    expect(result.status).toBe(401);
+    expect(store.read().mcpActivity[0]?.status).toBe("rejected");
+    expect(serialized).not.toContain("Should not pass");
+  });
+
   it("keeps repeated proposal creation idempotent", () => {
     const store = testStore();
     const employee = store.read().actors[0];

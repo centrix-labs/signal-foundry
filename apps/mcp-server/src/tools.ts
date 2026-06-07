@@ -7,7 +7,7 @@ import {
   type ToolName,
   toolSchemas
 } from "@signal-foundry/shared";
-import { addActivity, makeId, nowIso } from "./audit";
+import { addActivity, addRejectedActivity, makeId, nowIso } from "./audit";
 import { authorize, isWriteAction } from "./auth";
 import { scoreRisk } from "./risk";
 import type { RegistryStore } from "./store";
@@ -20,6 +20,9 @@ export function executeTool(store: RegistryStore, action: ToolName, rawInput: un
   const correlationId = getCorrelationId(rawInput);
   const auth = authorize(action, actor);
   if (!auth.ok) {
+    store.write((registry) => {
+      addRejectedActivity(registry, action, correlationId, auth.message);
+    });
     return failure(auth.status, auth.message, correlationId);
   }
   if (isWriteAction(action) && !isConfirmed(rawInput)) {

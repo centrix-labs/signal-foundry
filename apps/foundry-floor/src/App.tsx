@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { Capability } from "@signal-foundry/shared";
+import type { Capability, CapabilityStatus } from "@signal-foundry/shared";
 import { ChevronRight, RotateCcw } from "lucide-react";
 import {
   CapabilityList,
@@ -30,7 +30,13 @@ function useDemoState() {
   const [activeView, setActiveView] = useState<ViewKey>("floor");
   const [selectedId, setSelectedId] = useState(firstCapability.id);
   const [demoStep, setDemoStep] = useState(3);
-  const selected = useMemo(() => findCapability(selectedId), [selectedId]);
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, CapabilityStatus>>({});
+  const [decisionState, setDecisionState] = useState<"pending" | "saved" | "changes_requested" | "released">("pending");
+  const records = useMemo(
+    () => capabilities.map((item) => ({ ...item, status: statusOverrides[item.id] ?? item.status })),
+    [statusOverrides]
+  );
+  const selected = useMemo(() => records.find((item) => item.id === selectedId) ?? findCapability(selectedId), [records, selectedId]);
 
   function advanceDemo() {
     setDemoStep((step) => {
@@ -45,26 +51,65 @@ function useDemoState() {
     setSelectedId(firstCapability.id);
     setDemoStep(0);
     setActiveView("floor");
+    setStatusOverrides({});
+    setDecisionState("pending");
   }
 
-  return { activeView, setActiveView, selectedId, setSelectedId, selected, demoStep, advanceDemo, resetDemo };
+  function setSelectedStatus(status: CapabilityStatus) {
+    setStatusOverrides((current) => ({ ...current, [selectedId]: status }));
+  }
+
+  function requestChanges() {
+    setSelectedStatus("rejected");
+    setDecisionState("changes_requested");
+  }
+
+  function saveForLater() {
+    setSelectedStatus("in_review");
+    setDecisionState("saved");
+  }
+
+  function approveRelease() {
+    setSelectedStatus("released");
+    setDecisionState("released");
+    setDemoStep(5);
+    setActiveView("atlas");
+  }
+
+  return {
+    activeView,
+    setActiveView,
+    selectedId,
+    setSelectedId,
+    selected,
+    records,
+    decisionState,
+    demoStep,
+    advanceDemo,
+    resetDemo,
+    requestChanges,
+    saveForLater,
+    approveRelease
+  };
 }
 
 function FoundryFloor({
+  records,
   selected,
   selectedId,
   onSelect
 }: {
+  records: readonly Capability[];
   selected: Capability;
   selectedId: string;
   onSelect: (id: string) => void;
 }) {
   return (
     <div className="floor-grid">
-      <CapabilityList selectedId={selectedId} onSelect={onSelect} />
+      <CapabilityList records={records} selectedId={selectedId} onSelect={onSelect} />
       <div className="floor-center">
         <ReleasePipeline selected={selected} detailed />
-        <SignalAtlas selectedId={selectedId} onSelect={onSelect} compact />
+        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} compact />
         <section className="panel copilot-proof">
           <div className="panel-heading">
             <div>
@@ -86,24 +131,24 @@ function FoundryFloor({
   );
 }
 
-function AtlasView({ selectedId, onSelect }: { selectedId: string; onSelect: (id: string) => void }) {
+function AtlasView({ records, selectedId, onSelect }: { records: readonly Capability[]; selectedId: string; onSelect: (id: string) => void }) {
   return (
     <div className="atlas-view">
-      <SignalAtlas selectedId={selectedId} onSelect={onSelect} />
+      <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} />
       <div className="atlas-support">
         <McpActivityRail compact />
-        <ReleasePipeline selected={findCapability(selectedId)} />
+        <ReleasePipeline selected={records.find((item) => item.id === selectedId) ?? findCapability(selectedId)} />
       </div>
     </div>
   );
 }
 
-function PipelineView({ selected }: { selected: Capability }) {
+function PipelineView({ records, selected }: { records: readonly Capability[]; selected: Capability }) {
   return (
     <div className="pipeline-view">
       <ReleasePipeline selected={selected} detailed />
       <div className="pipeline-columns">
-        {capabilities.map((item) => (
+        {records.map((item) => (
           <article key={item.id} className={`panel release-card ${item.riskLevel}`}>
             <p className="eyebrow">{statusLabels[item.status]}</p>
             <h2>{item.title}</h2>
@@ -117,7 +162,21 @@ function PipelineView({ selected }: { selected: Capability }) {
 }
 
 export function App() {
-  const { activeView, setActiveView, selectedId, setSelectedId, selected, demoStep, advanceDemo, resetDemo } = useDemoState();
+  const {
+    activeView,
+    setActiveView,
+    selectedId,
+    setSelectedId,
+    selected,
+    records,
+    decisionState,
+    demoStep,
+    advanceDemo,
+    resetDemo,
+    requestChanges,
+    saveForLater,
+    approveRelease
+  } = useDemoState();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   if (!isAuthenticated) {
@@ -135,11 +194,21 @@ export function App() {
           <button type="button" className="primary" onClick={advanceDemo}>Advance story <ChevronRight size={15} /></button>
         </div>
         {activeView === "floor" ? (
-          <FoundryFloor selected={selected} selectedId={selectedId} onSelect={setSelectedId} />
+          <FoundryFloor records={records} selected={selected} selectedId={selectedId} onSelect={setSelectedId} />
         ) : null}
-        {activeView === "atlas" ? <AtlasView selectedId={selectedId} onSelect={setSelectedId} /> : null}
-        {activeView === "pipeline" ? <PipelineView selected={selected} /> : null}
-        {activeView === "review" ? <ReviewQueue selectedId={selectedId} onSelect={setSelectedId} /> : null}
+        {activeView === "atlas" ? <AtlasView records={records} selectedId={selectedId} onSelect={setSelectedId} /> : null}
+        {activeView === "pipeline" ? <PipelineView records={records} selected={selected} /> : null}
+        {activeView === "review" ? (
+          <ReviewQueue
+            records={records}
+            selectedId={selectedId}
+            decisionState={decisionState}
+            onSelect={setSelectedId}
+            onRequestChanges={requestChanges}
+            onSaveForLater={saveForLater}
+            onApproveRelease={approveRelease}
+          />
+        ) : null}
         {activeView === "mirror" ? <CopilotMirror turns={copilotTurns} selected={selected} /> : null}
         {activeView === "executive" ? <ExecutiveView selected={selected} /> : null}
       </div>

@@ -1,0 +1,60 @@
+{
+  "capturedAt": "2026-06-07T15:41:00Z",
+  "account": "stsignalfoundry",
+  "tables": {
+    "Actors": [
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "actor-alex"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "actor-dana"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "actor-priya"
+      }
+    ],
+    "Capabilities": [
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "cap-escalation-brief"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "cap-prop-idem-deploy-finish-create"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "cap-prop-idem-deploy-finish-create-2"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "cap-renewal-brief"
+      }
+    ],
+    "McpActivity": [
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "act-approve-capability-corr-deploy-finish-approve"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "act-approve-capability-corr-deploy-finish-approve-2"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "act-approve-capability-rejected-corr-deploy-finish-u"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "act-create-capability-proposal-corr-deploy-finish-cr"
+      },
+      {
+        "PartitionKey": "tenant-contoso:renewals-hackathon",
+        "RowKey": "act-release-capability-corr-deploy-finish-release"
+      }
+    ]
+  }
+}
