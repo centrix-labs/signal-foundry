@@ -74,7 +74,7 @@ Parallelization rules:
 - [x] Capture screenshots proving Copilot Chat hosting or sideload-ready package evidence.
 - [ ] Capture role-based recommendation screenshot with Work IQ-style summary.
 - [ ] Capture anti-surveillance refusal screenshot.
-- [ ] Verify Copilot action domain and deployed MCP endpoint alignment.
+- [x] Verify Copilot action domain and deployed MCP endpoint alignment.
 - [x] Complete Checkpoint E verification and commit.
 
 ## 4. External MCP Server
@@ -183,24 +183,24 @@ Parallelization rules:
 - [x] Create Azure provisioning script or IaC for resource group, Log Analytics, Application Insights, ACR, Storage, Key Vault, Container Apps, and Static Web Apps.
 - [x] Add deployment rollback notes for each Azure resource group change.
 - [x] Add Azure cost guardrails from `architecture-cost-plan.md`.
-- [ ] Create Azure Budget or manual cost alert for the deployed demo environment.
-- [ ] Provision Azure resource group and required services in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.
-- [ ] Create registry tables: `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`.
-- [ ] Build MCP server container image.
-- [ ] Push MCP image to Azure Container Registry.
-- [ ] Deploy MCP server to Azure Container Apps.
-- [ ] Deploy Foundry Floor to Azure Static Web Apps.
-- [ ] Configure deployed frontend to use deployed MCP/API endpoint.
-- [ ] Configure allowed origins/CORS for deployed frontend, MCP/API endpoint, and Copilot action surface.
-- [ ] Run Azure health endpoint smoke test.
-- [ ] Run Azure tool-list smoke test.
-- [ ] Run Azure authorized synthetic read test.
-- [ ] Run Azure authorized synthetic write test.
-- [ ] Run Azure unauthorized rejection test.
-- [ ] Verify Application Insights receives sanitized correlation IDs.
-- [ ] Capture Azure resource list and current cost posture.
-- [ ] Add post-hackathon cleanup checklist.
-- [ ] Complete Checkpoint F verification and commit.
+- [x] Create Azure Budget or manual cost alert for the deployed demo environment.
+- [x] Provision Azure resource group and required services in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.
+- [x] Create registry tables: `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`.
+- [x] Build MCP server container image.
+- [x] Push MCP image to Azure Container Registry.
+- [x] Deploy MCP server to Azure Container Apps.
+- [x] Deploy Foundry Floor to Azure Static Web Apps.
+- [x] Configure deployed frontend to use deployed MCP/API endpoint.
+- [x] Configure allowed origins/CORS for deployed frontend, MCP/API endpoint, and Copilot action surface.
+- [x] Run Azure health endpoint smoke test.
+- [x] Run Azure tool-list smoke test.
+- [x] Run Azure authorized synthetic read test.
+- [x] Run Azure authorized synthetic write test.
+- [x] Run Azure unauthorized rejection test.
+- [x] Verify Application Insights receives sanitized correlation IDs.
+- [x] Capture Azure resource list and current cost posture.
+- [x] Add post-hackathon cleanup checklist.
+- [x] Complete Checkpoint F verification and commit.
 
 ## 11. Demo And Validation Harness
 
@@ -209,7 +209,7 @@ Parallelization rules:
 - [x] Add scripted rejected proposal scenario.
 - [x] Add scripted released capability map scenario.
 - [x] Add scripted anti-surveillance refusal scenario.
-- [ ] Add reset command for repeatable demos.
+- [x] Add reset command for repeatable demos.
 - [x] Add validation command that runs schema tests, registry tests, risk tests, smoke tests, screenshot checks, and OpenSpec validation.
 - [x] Verify no secrets, raw content, tokens, PII, or production data appear in UI, logs, screenshots, seed data, release packets, or final artifacts.
 - [ ] Verify every P0 gate in `acceptance-rubric.md`.
@@ -221,30 +221,30 @@ Parallelization rules:
 
 - [ ] Capture Copilot Chat agent invocation screenshot.
 - [ ] Capture role-based recommendations grounded in work context summaries.
-- [ ] Capture proposal created in Foundry Floor.
-- [ ] Capture Risk Gate with controls.
-- [ ] Capture Review Queue with pending item.
-- [ ] Capture approved and released capability.
-- [ ] Capture Signal Atlas with released workflow.
-- [ ] Capture MCP Activity Rail.
-- [ ] Capture unauthorized rejection.
+- [x] Capture proposal created in Foundry Floor.
+- [x] Capture Risk Gate with controls.
+- [x] Capture Review Queue with pending item.
+- [x] Capture approved and released capability.
+- [x] Capture Signal Atlas with released workflow.
+- [x] Capture MCP Activity Rail.
+- [x] Capture unauthorized rejection.
 - [ ] Capture anti-surveillance refusal.
-- [ ] Capture Azure deployment URLs.
-- [ ] Capture sanitized Application Insights evidence.
-- [ ] Capture cost posture evidence from `architecture-cost-plan.md`.
-- [ ] Capture desktop, tablet, and mobile frontend screenshots.
+- [x] Capture Azure deployment URLs.
+- [x] Capture sanitized Application Insights evidence.
+- [x] Capture cost posture evidence from `architecture-cost-plan.md`.
+- [x] Capture desktop, tablet, and mobile frontend screenshots.
 - [ ] Capture one end-to-end demo video when feasible.
 - [ ] Create final demo run notes.
 - [ ] Update judge evidence checklist with links to every artifact.
 
 ## 13. Final Readiness
 
-- [ ] Run final local validation.
-- [ ] Run final deployed validation.
-- [ ] Deploy judge-ready MCP server and frontend.
-- [ ] Confirm final Azure URLs work.
-- [ ] Confirm Copilot package points to the intended endpoint.
-- [ ] Confirm screenshots and logs contain no secrets or raw tenant content.
-- [ ] Confirm final build prompt, OpenSpec, demo script, and evidence package are aligned.
+- [x] Run final local validation.
+- [x] Run final deployed validation.
+- [x] Deploy judge-ready MCP server and frontend.
+- [x] Confirm final Azure URLs work.
+- [x] Confirm Copilot package points to the intended endpoint.
+- [x] Confirm screenshots and logs contain no secrets or raw tenant content.
+- [x] Confirm final build prompt, OpenSpec, demo script, and evidence package are aligned.
 - [ ] Complete Checkpoint G verification and commit.
 - [ ] Produce final summary with local commands, Azure URLs, commit checkpoints, deployment checkpoints, verification results, evidence locations, and remaining tenant-dependent manual steps.

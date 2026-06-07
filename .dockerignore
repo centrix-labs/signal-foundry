@@ -1,0 +1,14 @@
+.git
+.git/**
+.playwright-mcp
+.playwright-mcp/**
+node_modules
+**/node_modules
+**/.vite
+**/.vite-temp
+**/dist
+evidence/screenshots
+evidence/screenshots/**
+evidence/copilot/*.zip
+npm-debug.log
+.DS_Store

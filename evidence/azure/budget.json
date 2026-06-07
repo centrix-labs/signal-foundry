@@ -1,0 +1,50 @@
+{
+  "amount": 25.0,
+  "category": "Cost",
+  "currentSpend": {
+    "amount": 0.0,
+    "unit": "USD"
+  },
+  "eTag": "\"1dcf64ea7b9f6ab\"",
+  "id": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.Consumption/budgets/signal-foundry-hackathon-budget",
+  "name": "signal-foundry-hackathon-budget",
+  "notifications": {
+    "actual_100": {
+      "contactEmails": [
+        "hackathon-operator-redacted"
+      ],
+      "contactGroups": [],
+      "contactRoles": [],
+      "enabled": true,
+      "operator": "GreaterThan",
+      "threshold": 100.0
+    },
+    "actual_50": {
+      "contactEmails": [
+        "hackathon-operator-redacted"
+      ],
+      "contactGroups": [],
+      "contactRoles": [],
+      "enabled": true,
+      "operator": "GreaterThan",
+      "threshold": 50.0
+    },
+    "actual_80": {
+      "contactEmails": [
+        "hackathon-operator-redacted"
+      ],
+      "contactGroups": [],
+      "contactRoles": [],
+      "enabled": true,
+      "operator": "GreaterThan",
+      "threshold": 80.0
+    }
+  },
+  "resourceGroup": "rg-signal-foundry-hackathon",
+  "timeGrain": "Monthly",
+  "timePeriod": {
+    "endDate": "2026-07-01T00:00:00Z",
+    "startDate": "2026-06-01T00:00:00Z"
+  },
+  "type": "Microsoft.Consumption/budgets"
+}

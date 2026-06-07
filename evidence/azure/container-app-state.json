@@ -1,0 +1,15 @@
+{
+  "fqdn": "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
+  "image": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f-20260607-0727",
+  "latestReadyRevisionName": "ca-signal-foundry-mcp--0000004",
+  "latestRevisionName": "ca-signal-foundry-mcp--0000004",
+  "provisioningState": "Succeeded",
+  "runningStatus": "Running",
+  "scale": {
+    "cooldownPeriod": 300,
+    "maxReplicas": 1,
+    "minReplicas": 0,
+    "pollingInterval": 30,
+    "rules": null
+  }
+}

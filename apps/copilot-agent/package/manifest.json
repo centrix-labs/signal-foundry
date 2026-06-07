@@ -32,7 +32,7 @@
   },
   "validDomains": [
     "localhost",
-    "ca-signal-foundry-mcp.example.azurecontainerapps.io",
-    "signal-foundry.example.azurestaticapps.net"
+    "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
+    "red-coast-0b0c14e0f.7.azurestaticapps.net"
   ]
 }

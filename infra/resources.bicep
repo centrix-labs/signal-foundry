@@ -144,7 +144,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
-    enablePurgeProtection: false
     enableRbacAuthorization: true
     publicNetworkAccess: 'Enabled'
     sku: {

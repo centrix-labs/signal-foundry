@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://ca-signal-foundry-mcp.example.azurecontainerapps.io"
+      "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io"
     }
   ],
   "paths": {

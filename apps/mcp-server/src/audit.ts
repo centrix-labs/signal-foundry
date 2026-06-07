@@ -40,4 +40,13 @@ export function addActivity(
     timestamp: nowIso(),
     correlationId
   });
+  console.log(JSON.stringify({
+    event: "signal_foundry_audit",
+    action,
+    actorId: actor.id,
+    recordId,
+    status,
+    correlationId,
+    timestamp: nowIso()
+  }));
 }

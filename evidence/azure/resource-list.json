@@ -1,0 +1,120 @@
+[
+  {
+    "location": "eastus2",
+    "name": "stsignalfoundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.Storage/storageAccounts"
+  },
+  {
+    "location": "eastus2",
+    "name": "law-signal-foundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.OperationalInsights/workspaces"
+  },
+  {
+    "location": "eastus2",
+    "name": "acrsignalfoundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.ContainerRegistry/registries"
+  },
+  {
+    "location": "eastus2",
+    "name": "swa-signal-foundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.Web/staticSites"
+  },
+  {
+    "location": "eastus2",
+    "name": "kv-signal-foundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.KeyVault/vaults"
+  },
+  {
+    "location": "eastus2",
+    "name": "appi-signal-foundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.Insights/components"
+  },
+  {
+    "location": "eastus2",
+    "name": "cae-signal-foundry",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.App/managedEnvironments"
+  },
+  {
+    "location": "eastus2",
+    "name": "ca-signal-foundry-mcp",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "scale-to-zero",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker"
+    },
+    "type": "Microsoft.App/containerApps"
+  },
+  {
+    "location": "global",
+    "name": "Application Insights Smart Detection",
+    "tags": null,
+    "type": "microsoft.insights/actiongroups"
+  }
+]

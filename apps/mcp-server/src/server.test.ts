@@ -136,6 +136,7 @@ describe("Signal Foundry MCP tools", () => {
     try {
       const health = await fetch(`${baseUrl}/health`);
       const tools = await fetch(`${baseUrl}/tools`);
+      const openapi = await fetch(`${baseUrl}/openapi.json`);
       const rejected = await fetch(`${baseUrl}/tools/search_capabilities`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -143,6 +144,7 @@ describe("Signal Foundry MCP tools", () => {
       });
       expect(health.status).toBe(200);
       expect((await tools.json()).tools).toContain("create_capability_proposal");
+      expect((await openapi.json()).paths["/tools/search_capabilities"]).toBeDefined();
       expect(rejected.status).toBe(401);
       expect(JSON.stringify(await rejected.json())).not.toContain("token");
     } finally {
@@ -169,6 +171,42 @@ describe("Signal Foundry MCP tools", () => {
       const body = await response.json();
       expect(response.status).toBe(200);
       expect(JSON.stringify(body)).not.toContain("demo-actor-alex");
+    } finally {
+      server.close();
+    }
+  });
+
+  it("serves MCP JSON-RPC tool list and tool calls", async () => {
+    const store = testStore();
+    const server = createServer(store).listen(0);
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected local test port.");
+    }
+    try {
+      const baseUrl = `http://127.0.0.1:${address.port}`;
+      const listed = await fetch(`${baseUrl}/mcp`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: "mcp-list", method: "tools/list" })
+      });
+      const called = await fetch(`${baseUrl}/mcp`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-sf-actor-id": "actor-priya" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "mcp-call",
+          method: "tools/call",
+          params: {
+            name: "search_capabilities",
+            arguments: { tenantId: "tenant-contoso", projectId: "renewals-hackathon" }
+          }
+        })
+      });
+      expect(listed.status).toBe(200);
+      expect((await listed.json()).result.tools).toHaveLength(11);
+      expect(called.status).toBe(200);
+      expect((await called.json()).result.isError).toBe(false);
     } finally {
       server.close();
     }

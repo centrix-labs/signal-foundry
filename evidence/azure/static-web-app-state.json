@@ -1,0 +1,15 @@
+{
+  "defaultHostname": "red-coast-0b0c14e0f.7.azurestaticapps.net",
+  "location": "East US 2",
+  "repositoryUrl": null,
+  "sku": {
+    "capabilities": null,
+    "capacity": null,
+    "family": null,
+    "locations": null,
+    "name": "Free",
+    "size": null,
+    "skuCapacity": null,
+    "tier": "Free"
+  }
+}

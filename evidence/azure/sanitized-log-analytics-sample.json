@@ -1,0 +1,9 @@
+[
+  {
+    "ContainerAppName_s": "ca-signal-foundry-mcp",
+    "Log_s": "{\"event\":\"signal_foundry_audit\",\"action\":\"create_capability_proposal\",\"actorId\":\"actor-priya\",\"recordId\":\"prop-azure-telemetry-create-final\",\"status\":\"success\",\"correlationId\":\"azure-telemetry-correlation-final\",\"timestamp\":\"2026-06-07T07:28:14.453Z\"}",
+    "RevisionName_s": "ca-signal-foundry-mcp--0000004",
+    "TableName": "PrimaryResult",
+    "TimeGenerated": "2026-06-07T07:28:15.5568669Z"
+  }
+]

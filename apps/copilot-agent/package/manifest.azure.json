@@ -5,9 +5,9 @@
   "id": "8d7aa34c-f044-4ef9-8b84-5b665187c5d5",
   "developer": {
     "name": "Signal Foundry",
-    "websiteUrl": "https://signal-foundry.example.azurestaticapps.net",
-    "privacyUrl": "https://signal-foundry.example.azurestaticapps.net/privacy",
-    "termsOfUseUrl": "https://signal-foundry.example.azurestaticapps.net/terms"
+    "websiteUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net",
+    "privacyUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net/privacy",
+    "termsOfUseUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net/terms"
   },
   "name": {
     "short": "Signal Foundry",
@@ -31,7 +31,7 @@
     ]
   },
   "validDomains": [
-    "ca-signal-foundry-mcp.example.azurecontainerapps.io",
-    "signal-foundry.example.azurestaticapps.net"
+    "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
+    "red-coast-0b0c14e0f.7.azurestaticapps.net"
   ]
 }

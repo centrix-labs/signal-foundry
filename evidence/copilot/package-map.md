@@ -26,5 +26,5 @@
 ## Sideload-Ready Artifact
 
 - Local package zip: `evidence/copilot/signal-foundry-copilot-local.zip`
-- SHA-256: `971d3d6557eee2b4bd40f01ccbcd517015cc97301c5aaf59435b9874def83a29`
+- SHA-256: `96c7727d592abdab678c128adc10f4cb35d0f89850544582c32c94649e40c4d1`
 - Tenant-dependent follow-up: replace placeholder Azure domains, Entra app IDs, and `OAuthPluginVault` reference IDs before tenant sideload.

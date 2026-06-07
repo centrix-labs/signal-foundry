@@ -151,7 +151,7 @@
         "reference_id": "SIGNAL_FOUNDRY_ENTRA_OAUTH_REFERENCE_ID"
       },
       "spec": {
-        "url": "https://ca-signal-foundry-mcp.example.azurecontainerapps.io/openapi.json",
+        "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/openapi.json",
         "progress_style": "ShowUsageWithInput"
       }
     }
