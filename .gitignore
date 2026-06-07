@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+data/*.local.json
+data/runtime/
+playwright-report/
+test-results/
+.azure/
+.playwright-mcp/
+*.log

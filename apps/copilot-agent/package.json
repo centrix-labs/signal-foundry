@@ -1,0 +1,11 @@
+{
+  "name": "@signal-foundry/copilot-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../../scripts/validate-json.mjs .",
+    "typecheck": "node ../../scripts/validate-json.mjs .",
+    "test": "node ../../scripts/validate-json.mjs ."
+  }
+}

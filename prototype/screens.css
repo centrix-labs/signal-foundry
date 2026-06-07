@@ -1,0 +1,222 @@
+.command-frame,
+.widget-frame {
+  display: grid;
+  grid-template-columns: 180px minmax(390px, 1fr) 300px;
+}
+
+.console-nav {
+  padding: var(--space-md);
+  border-inline-end: 1px solid var(--line);
+  background: oklch(0.955 0.013 238);
+  display: grid;
+  align-content: start;
+  gap: var(--space-lg);
+}
+
+.nav-stack,
+.timeline,
+.evidence-stack {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.nav-item {
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+}
+
+.nav-item.active {
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.workspace {
+  min-width: 0;
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-lg);
+}
+
+.workspace-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: start;
+}
+
+.map-surface {
+  position: relative;
+  min-height: 460px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    oklch(0.988 0.006 238);
+  background-size: 42px 42px;
+  overflow: hidden;
+}
+
+.map-node {
+  position: absolute;
+  min-width: 116px;
+  max-width: 180px;
+  padding: var(--space-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  box-shadow: 0 10px 24px oklch(0.35 0.04 245 / 0.12);
+}
+
+.map-node strong {
+  display: block;
+  font-size: 0.88rem;
+}
+
+.map-node span {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.node-risk {
+  border-color: oklch(0.76 0.08 28);
+}
+
+.node-owner {
+  border-color: oklch(0.72 0.08 188);
+}
+
+.map-edge {
+  position: absolute;
+  height: 2px;
+  background: oklch(0.56 0.06 245);
+  transform-origin: left center;
+}
+
+.map-edge.risk {
+  background: var(--red);
+}
+
+.drawer {
+  padding: var(--space-md);
+  display: grid;
+  align-content: start;
+  gap: var(--space-md);
+  border-radius: 0;
+  border-block: 0;
+  border-inline-end: 0;
+}
+
+.evidence {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: oklch(0.985 0.006 240);
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: var(--space-lg);
+}
+
+.registry-panel,
+.brief-panel,
+.timeline-panel {
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-md);
+}
+
+.table {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.7fr 0.6fr 0.6fr;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: oklch(0.988 0.004 240);
+}
+
+.table-row.header {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: transparent;
+  border-color: transparent;
+}
+
+.timeline-event {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-sm);
+  align-items: start;
+}
+
+.event-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-quiet);
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.copilot-widget {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
+  border-inline-end: 1px solid var(--line);
+}
+
+.widget-chat {
+  padding: var(--space-lg);
+  display: grid;
+  align-content: start;
+  gap: var(--space-md);
+  background: oklch(0.986 0.004 245);
+}
+
+.widget-card {
+  margin: var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.widget-card-head {
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.mini-map {
+  height: 330px;
+  position: relative;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    var(--panel);
+  background-size: 36px 36px;
+}
+
+.mini-map .map-node {
+  transform: scale(0.84);
+  transform-origin: top left;
+}
