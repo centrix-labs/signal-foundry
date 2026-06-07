@@ -38,15 +38,35 @@
   animation: pulseFlow 3.2s ease-in-out infinite;
 }
 
+.atlas-link-backdrop {
+  fill: none;
+  opacity: 0.26;
+  stroke: var(--amber);
+  stroke-linecap: round;
+  stroke-width: 1.45;
+  vector-effect: non-scaling-stroke;
+}
+
+.atlas-link-backdrop.risk_gate {
+  opacity: 0.44;
+  stroke-width: 2.1;
+}
+
 .atlas-edge {
   pointer-events: none;
 }
 
 .atlas-link.approval_path,
 .atlas-link.risk_gate {
-  opacity: 0.9;
+  filter: url(#tealGlow);
+  opacity: 0.96;
   stroke: var(--amber);
-  stroke-width: 0.68;
+  stroke-width: 0.9;
+}
+
+.atlas-link.risk_gate {
+  opacity: 1;
+  stroke-width: 1.28;
 }
 
 #tealArrow path {

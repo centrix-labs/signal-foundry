@@ -75,6 +75,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             const isRisk = edge.kind === "risk_gate" || edge.kind === "approval_path";
             return (
               <g key={edge.id} className={`atlas-edge ${edge.kind}`} style={{ animationDelay: `${index * 120}ms` }}>
+                {isRisk ? <path className={`atlas-link-backdrop ${edge.kind}`} d={path} pathLength={1} /> : null}
                 <path
                   className={`atlas-link ${edge.kind}`}
                   d={path}
