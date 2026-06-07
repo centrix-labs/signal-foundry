@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.27/MicrosoftTeams.schema.json",
   "manifestVersion": "1.27",
   "version": "0.1.0",
-  "id": "5f7e9d6a-6a0a-4a1b-b8e2-7d9d2efc8f01",
+  "id": "8d7aa34c-f044-4ef9-8b84-5b665187c5d5",
   "developer": {
     "name": "Signal Foundry",
-    "websiteUrl": "https://contoso.example/signal-foundry",
-    "privacyUrl": "https://contoso.example/signal-foundry/privacy",
-    "termsOfUseUrl": "https://contoso.example/signal-foundry/terms"
+    "websiteUrl": "https://signal-foundry.example.azurestaticapps.net",
+    "privacyUrl": "https://signal-foundry.example.azurestaticapps.net/privacy",
+    "termsOfUseUrl": "https://signal-foundry.example.azurestaticapps.net/terms"
   },
   "name": {
     "short": "Signal Foundry",
@@ -15,7 +15,7 @@
   },
   "description": {
     "short": "Govern Copilot workflow ideas through review and release.",
-    "full": "Signal Foundry helps employees discover useful Copilot workflows, then routes selected ideas through MCP-backed proposal, risk review, human approval, release, and audit-safe evidence."
+    "full": "Azure sideload manifest for the Signal Foundry Microsoft 365 Copilot Chat declarative agent and authenticated MCP action path."
   },
   "icons": {
     "color": "color.png",
@@ -26,12 +26,11 @@
     "declarativeAgents": [
       {
         "id": "signalFoundryAgent",
-        "file": "declarative-agent.local.json"
+        "file": "declarative-agent.azure.json"
       }
     ]
   },
   "validDomains": [
-    "localhost",
     "ca-signal-foundry-mcp.example.azurecontainerapps.io",
     "signal-foundry.example.azurestaticapps.net"
   ]

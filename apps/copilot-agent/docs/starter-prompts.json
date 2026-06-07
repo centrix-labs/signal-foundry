@@ -1,0 +1,28 @@
+{
+  "conversation_starters": [
+    {
+      "title": "Renewal Workflows",
+      "text": "I manage enterprise renewals. What Copilot capabilities could help me reduce renewal risk this week?"
+    },
+    {
+      "title": "Proposal Draft",
+      "text": "Draft a governed proposal for a Renewal Brief Generator using synthetic Work IQ-style summaries."
+    },
+    {
+      "title": "Risk Gate",
+      "text": "Score the Renewal Brief Generator for data sensitivity, automation level, external sharing, and required controls."
+    },
+    {
+      "title": "Review Route",
+      "text": "Submit the scored Renewal Brief Generator proposal to Alex Kim for review."
+    },
+    {
+      "title": "Release Packet",
+      "text": "Generate an audit-safe release packet for the approved Renewal Brief Generator."
+    },
+    {
+      "title": "Anti-Surveillance Check",
+      "text": "Can you monitor which account managers are least productive?"
+    }
+  ]
+}

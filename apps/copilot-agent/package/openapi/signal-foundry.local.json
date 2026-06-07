@@ -1,0 +1,308 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Signal Foundry Capability Registry API",
+    "version": "0.1.0",
+    "description": "Audit-safe REST fallback for Signal Foundry Copilot actions. Stores summaries and metadata only."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7071"
+    }
+  ],
+  "paths": {
+    "/capabilities": {
+      "get": {
+        "operationId": "searchCapabilities",
+        "summary": "Search capabilities",
+        "description": "Read approved or proposed capabilities by role, department, status, risk, or keyword.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          { "name": "tenantId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "projectId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "query", "in": "query", "schema": { "type": "string" } },
+          { "name": "role", "in": "query", "schema": { "type": "string" } },
+          { "name": "department", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "riskLevel", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/capabilities/recommend": {
+      "post": {
+        "operationId": "recommendCapabilitiesForRole",
+        "summary": "Recommend capabilities for role",
+        "description": "Read role-relevant approved and candidate capabilities from synthetic or permission-aware summaries.",
+        "x-openai-isConsequential": false,
+        "requestBody": { "$ref": "#/components/requestBodies/RecommendationRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/proposals": {
+      "post": {
+        "operationId": "createCapabilityProposal",
+        "summary": "Create capability proposal",
+        "description": "Write a governed capability proposal. Requires explicit user confirmation and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/ProposalRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/risk-reviews": {
+      "post": {
+        "operationId": "scoreCapabilityRisk",
+        "summary": "Score capability risk",
+        "description": "Write a deterministic risk review. Requires explicit user confirmation and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/RiskReviewRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/review-items": {
+      "post": {
+        "operationId": "submitCapabilityReview",
+        "summary": "Submit capability review",
+        "description": "Write a review queue item for a scored proposal. Requires explicit user confirmation and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/SubmitReviewRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/approvals": {
+      "post": {
+        "operationId": "approveCapability",
+        "summary": "Approve capability",
+        "description": "Write reviewer approval for a proposal. Requires reviewer authorization, explicit user confirmation, and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/ApprovalRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/rejections": {
+      "post": {
+        "operationId": "rejectCapability",
+        "summary": "Reject capability",
+        "description": "Write reviewer rejection for a proposal. Requires reviewer authorization, explicit user confirmation, and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/RejectionRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/releases": {
+      "post": {
+        "operationId": "releaseCapability",
+        "summary": "Release capability",
+        "description": "Write release state for an approved capability. Requires reviewer approval, explicit user confirmation, and idempotencyKey.",
+        "x-openai-isConsequential": true,
+        "requestBody": { "$ref": "#/components/requestBodies/ReleaseRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/release-packets/{capabilityId}": {
+      "get": {
+        "operationId": "generateReleasePacket",
+        "summary": "Generate release packet",
+        "description": "Read an audit-safe release packet with summaries and metadata only.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          { "name": "tenantId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "projectId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "capabilityId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/capability-map": {
+      "post": {
+        "operationId": "generateCapabilityMap",
+        "summary": "Generate capability map",
+        "description": "Read Signal Atlas graph data for roles, signals, risk gates, reviews, and released workflows.",
+        "x-openai-isConsequential": false,
+        "requestBody": { "$ref": "#/components/requestBodies/MapRequest" },
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    },
+    "/mcp-activity": {
+      "get": {
+        "operationId": "listMcpActivity",
+        "summary": "List MCP activity",
+        "description": "Read sanitized MCP activity for the Foundry Floor rail.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          { "name": "tenantId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "projectId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/JsonWithCorrelation" } }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "JsonWithCorrelation": {
+        "description": "Structured JSON response with correlationId and sanitized payload.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "correlationId": { "type": "string" }
+              },
+              "required": ["correlationId"],
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "RecommendationRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RecommendationRequest" } } } },
+      "ProposalRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProposalRequest" } } } },
+      "RiskReviewRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RiskReviewRequest" } } } },
+      "SubmitReviewRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SubmitReviewRequest" } } } },
+      "ApprovalRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApprovalRequest" } } } },
+      "RejectionRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RejectionRequest" } } } },
+      "ReleaseRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReleaseRequest" } } } },
+      "MapRequest": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MapRequest" } } } }
+    },
+    "schemas": {
+      "ScopedRequest": {
+        "type": "object",
+        "properties": {
+          "tenantId": { "type": "string" },
+          "projectId": { "type": "string" }
+        },
+        "required": ["tenantId", "projectId"]
+      },
+      "RecommendationRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string" },
+              "department": { "type": "string" },
+              "workSignalSummary": { "type": "string" },
+              "maxResults": { "type": "integer", "minimum": 1, "maximum": 10 }
+            },
+            "required": ["role", "department"]
+          }
+        ]
+      },
+      "ProposalRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" },
+              "role": { "type": "string" },
+              "department": { "type": "string" },
+              "owner": { "type": "string" },
+              "intendedAudience": { "type": "string" },
+              "inputsRequired": { "type": "array", "items": { "type": "string" } },
+              "proposedOutputs": { "type": "array", "items": { "type": "string" } },
+              "sourceSummary": { "type": "string" }
+            },
+            "required": ["idempotencyKey", "title", "description", "role", "department", "owner", "intendedAudience", "inputsRequired", "proposedOutputs", "sourceSummary"]
+          }
+        ]
+      },
+      "RiskReviewRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "proposalId": { "type": "string" },
+              "dataSensitivity": { "type": "string" },
+              "externalSharing": { "type": "string" },
+              "automationLevel": { "type": "string" },
+              "audienceScope": { "type": "string" },
+              "usesCustomerData": { "type": "boolean" },
+              "requiresHumanReview": { "type": "boolean" }
+            },
+            "required": ["idempotencyKey", "proposalId", "dataSensitivity", "externalSharing", "automationLevel", "audienceScope", "usesCustomerData", "requiresHumanReview"]
+          }
+        ]
+      },
+      "SubmitReviewRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "proposalId": { "type": "string" },
+              "reviewer": { "type": "string" },
+              "dueDate": { "type": "string" }
+            },
+            "required": ["idempotencyKey", "proposalId", "reviewer", "dueDate"]
+          }
+        ]
+      },
+      "ApprovalRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "proposalId": { "type": "string" },
+              "reviewer": { "type": "string" },
+              "approvalNotes": { "type": "string" }
+            },
+            "required": ["idempotencyKey", "proposalId", "reviewer", "approvalNotes"]
+          }
+        ]
+      },
+      "RejectionRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "proposalId": { "type": "string" },
+              "reviewer": { "type": "string" },
+              "reason": { "type": "string" },
+              "nextAction": { "type": "string" }
+            },
+            "required": ["idempotencyKey", "proposalId", "reviewer", "reason", "nextAction"]
+          }
+        ]
+      },
+      "ReleaseRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "idempotencyKey": { "type": "string" },
+              "capabilityId": { "type": "string" },
+              "releasedBy": { "type": "string" },
+              "audience": { "type": "string" },
+              "version": { "type": "string" }
+            },
+            "required": ["idempotencyKey", "capabilityId", "releasedBy", "audience", "version"]
+          }
+        ]
+      },
+      "MapRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ScopedRequest" },
+          {
+            "type": "object",
+            "properties": {
+              "filters": { "type": "object", "additionalProperties": true }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

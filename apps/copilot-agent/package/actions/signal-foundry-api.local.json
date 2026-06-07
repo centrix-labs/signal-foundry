@@ -1,0 +1,156 @@
+{
+  "schema_version": "v2.4",
+  "name_for_human": "Signal Foundry API",
+  "namespace": "SignalFoundryApi",
+  "description_for_human": "REST fallback for Signal Foundry governed workflow actions.",
+  "description_for_model": "Use the Signal Foundry API fallback when the MCP action path is unavailable. It exposes the same governed capability registry, risk review, approval, release, release packet, map, and audit activity operations. Writes require explicit user confirmation, idempotencyKey, tenant/project scope, and authenticated actor context.",
+  "functions": [
+    {
+      "name": "searchCapabilities",
+      "description": "Search approved or proposed capabilities.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Search capabilities",
+          "body": "Search Signal Foundry capability records?",
+          "isNonConsequential": true
+        },
+        "security_info": { "data_handling": ["GetPrivateData"] }
+      }
+    },
+    {
+      "name": "recommendCapabilitiesForRole",
+      "description": "Recommend approved and candidate capabilities for a role.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Recommend capabilities",
+          "body": "Search role-relevant capability recommendations?",
+          "isNonConsequential": true
+        },
+        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+      }
+    },
+    {
+      "name": "createCapabilityProposal",
+      "description": "Create a governed proposal from a selected use case.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Create proposal",
+          "body": "Create a Signal Foundry capability proposal and audit event?"
+        },
+        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "scoreCapabilityRisk",
+      "description": "Create a deterministic risk review.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Score risk",
+          "body": "Create a risk review record for this proposal?"
+        },
+        "security_info": { "data_handling": ["DataTransform", "ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "submitCapabilityReview",
+      "description": "Route a proposal to reviewer queue.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Submit review",
+          "body": "Submit this proposal for human review?"
+        },
+        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "approveCapability",
+      "description": "Approve a proposal as a reviewer.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Approve capability",
+          "body": "Approve this proposal as the authenticated reviewer?"
+        },
+        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "rejectCapability",
+      "description": "Reject a proposal with reason and next action.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Reject capability",
+          "body": "Reject this proposal and record the reason?"
+        },
+        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "releaseCapability",
+      "description": "Release an approved capability.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Release capability",
+          "body": "Release this approved capability and create a release packet?"
+        },
+        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+      }
+    },
+    {
+      "name": "generateReleasePacket",
+      "description": "Generate an audit-safe release packet.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Generate release packet",
+          "body": "Generate an audit-safe release packet?",
+          "isNonConsequential": true
+        },
+        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+      }
+    },
+    {
+      "name": "generateCapabilityMap",
+      "description": "Generate Signal Atlas graph data.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Generate capability map",
+          "body": "Generate audit-safe Signal Atlas map data?",
+          "isNonConsequential": true
+        },
+        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+      }
+    },
+    {
+      "name": "listMcpActivity",
+      "description": "List sanitized MCP activity records.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "List MCP activity",
+          "body": "List sanitized MCP activity records?",
+          "isNonConsequential": true
+        },
+        "security_info": { "data_handling": ["GetPrivateData"] }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": { "type": "None" },
+      "spec": {
+        "url": "http://localhost:7071/openapi.json",
+        "progress_style": "ShowUsageWithInput"
+      }
+    }
+  ]
+}

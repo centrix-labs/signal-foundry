@@ -59,23 +59,23 @@ Parallelization rules:
 
 ## 3. Copilot Agent
 
-- [ ] Scaffold Microsoft 365 Copilot Chat Declarative Agent.
-- [ ] Add Signal Foundry agent identity, description, capabilities, and starter prompts.
-- [ ] Add agent instructions for role-based capability discovery.
-- [ ] Add agent instructions and evidence for Microsoft IQ / Work IQ grounding.
-- [ ] Add agent instructions for proposal drafting and release packet generation.
-- [ ] Add agent instructions for risk explanation, uncertainty, and human review.
-- [ ] Add explicit confirmation instructions before mutation tools.
-- [ ] Add explicit anti-surveillance and no-raw-content instructions.
-- [ ] Add MCP/API plugin action manifest.
-- [ ] Configure local and Azure endpoint variants for the action manifest.
-- [ ] Package the agent for sideload.
+- [x] Scaffold Microsoft 365 Copilot Chat Declarative Agent.
+- [x] Add Signal Foundry agent identity, description, capabilities, and starter prompts.
+- [x] Add agent instructions for role-based capability discovery.
+- [x] Add agent instructions and evidence for Microsoft IQ / Work IQ grounding.
+- [x] Add agent instructions for proposal drafting and release packet generation.
+- [x] Add agent instructions for risk explanation, uncertainty, and human review.
+- [x] Add explicit confirmation instructions before mutation tools.
+- [x] Add explicit anti-surveillance and no-raw-content instructions.
+- [x] Add MCP/API plugin action manifest.
+- [x] Configure local and Azure endpoint variants for the action manifest.
+- [x] Package the agent for sideload.
 - [ ] Sideload in developer tenant when tenant access allows.
-- [ ] Capture screenshots proving Copilot Chat hosting or sideload-ready package evidence.
+- [x] Capture screenshots proving Copilot Chat hosting or sideload-ready package evidence.
 - [ ] Capture role-based recommendation screenshot with Work IQ-style summary.
 - [ ] Capture anti-surveillance refusal screenshot.
 - [ ] Verify Copilot action domain and deployed MCP endpoint alignment.
-- [ ] Complete Checkpoint E verification and commit.
+- [x] Complete Checkpoint E verification and commit.
 
 ## 4. External MCP Server
 

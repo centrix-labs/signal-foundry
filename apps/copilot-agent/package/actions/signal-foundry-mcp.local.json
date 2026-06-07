@@ -1,0 +1,216 @@
+{
+  "schema_version": "v2.4",
+  "name_for_human": "Signal Foundry",
+  "namespace": "SignalFoundry",
+  "description_for_human": "Govern Copilot workflow proposals, risk review, approval, release, and audit evidence.",
+  "description_for_model": "Use Signal Foundry to search approved Copilot capabilities, recommend role-relevant workflow ideas, create proposals, score risk, submit review, approve or reject proposals, release approved capabilities, generate release packets, generate capability maps, and list audit-safe MCP activity. Do not use it for employee monitoring or productivity scoring.",
+  "capabilities": {
+    "conversation_starters": [
+      {
+        "title": "Renewal workflows",
+        "text": "Find governed Copilot workflows for enterprise renewal risk."
+      }
+    ]
+  },
+  "functions": [
+    {
+      "name": "search_capabilities",
+      "description": "Search approved or proposed capabilities by role, department, stage, risk, or keyword.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Search capabilities",
+          "body": "Search Signal Foundry capability records?",
+          "isNonConsequential": true
+        },
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData"
+          ]
+        }
+      }
+    },
+    {
+      "name": "recommend_capabilities_for_role",
+      "description": "Recommend approved and candidate capabilities for a role using synthetic or permission-aware work summaries.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Recommend capabilities",
+          "body": "Search role-relevant capability recommendations?",
+          "isNonConsequential": true
+        },
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        }
+      }
+    },
+    {
+      "name": "create_capability_proposal",
+      "description": "Create a governed proposal from a selected use case.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Create proposal",
+          "body": "Create a Signal Foundry capability proposal and write an audit event?"
+        },
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "score_capability_risk",
+      "description": "Write a deterministic risk review for a proposal.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Score capability risk",
+          "body": "Create a risk review record for this capability proposal?"
+        },
+        "security_info": {
+          "data_handling": [
+            "DataTransform",
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "submit_capability_review",
+      "description": "Route a scored proposal to a reviewer.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Submit review",
+          "body": "Submit this proposal to the named reviewer and write an audit event?"
+        },
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "approve_capability",
+      "description": "Approve a capability proposal for release.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Approve capability",
+          "body": "Approve this capability proposal as the authenticated reviewer?"
+        },
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "reject_capability",
+      "description": "Reject a capability proposal with a reason and next action.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Reject capability",
+          "body": "Reject this capability proposal and record the reason?"
+        },
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "release_capability",
+      "description": "Release an approved capability as a reusable playbook.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Release capability",
+          "body": "Release this approved capability and create a release packet?"
+        },
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "generate_release_packet",
+      "description": "Generate an audit-safe release packet for judges and reviewers.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Generate release packet",
+          "body": "Generate an audit-safe release packet?",
+          "isNonConsequential": true
+        },
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        }
+      }
+    },
+    {
+      "name": "generate_capability_map",
+      "description": "Return Signal Atlas graph data for roles, signals, risk gates, and workflows.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Generate capability map",
+          "body": "Generate audit-safe Signal Atlas map data?",
+          "isNonConsequential": true
+        },
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        }
+      }
+    },
+    {
+      "name": "list_mcp_activity",
+      "description": "Return audit-safe MCP activity for the Foundry Floor.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "List MCP activity",
+          "body": "List sanitized MCP activity records?",
+          "isNonConsequential": true
+        },
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData"
+          ]
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "RemoteMCPServer",
+      "auth": {
+        "type": "None"
+      },
+      "spec": {
+        "url": "http://localhost:7071/mcp",
+        "mcp_tool_description": {
+          "file": "mcp-tools.json"
+        }
+      }
+    }
+  ]
+}

@@ -15,7 +15,7 @@
   },
   "description": {
     "short": "Govern Copilot workflow ideas through review and release.",
-    "full": "Signal Foundry helps employees discover useful Copilot workflows, then routes selected ideas through MCP-backed proposal, risk review, human approval, release, and audit-safe evidence."
+    "full": "Local sideload manifest for the Signal Foundry Microsoft 365 Copilot Chat declarative agent and MCP action path."
   },
   "icons": {
     "color": "color.png",
@@ -31,8 +31,6 @@
     ]
   },
   "validDomains": [
-    "localhost",
-    "ca-signal-foundry-mcp.example.azurecontainerapps.io",
-    "signal-foundry.example.azurestaticapps.net"
+    "localhost"
   ]
 }
