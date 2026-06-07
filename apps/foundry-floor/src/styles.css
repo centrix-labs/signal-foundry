@@ -176,7 +176,7 @@ nav button.active,
   align-items: center;
   display: grid;
   gap: var(--lg, 16px);
-  grid-template-columns: minmax(220px, 1fr) minmax(300px, 580px) auto;
+  grid-template-columns: minmax(220px, 1fr) minmax(300px, 580px) auto auto;
 }
 
 .top-bar h1,
@@ -232,6 +232,28 @@ nav button.active,
   height: 34px;
   place-items: center;
   width: 34px;
+}
+
+.theme-switch {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+
+.theme-switch button {
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: var(--steel);
+  font-size: 0.76rem;
+  padding: 6px 10px;
+}
+
+.theme-switch button.active {
+  background: color-mix(in oklch, var(--teal) 16%, var(--graphite-3));
+  color: oklch(0.94 0.028 190);
 }
 
 .demo-controls {
@@ -292,7 +314,7 @@ nav button.active,
 }
 
 .capability-list {
-  gap: 10px;
+  gap: var(--md, 12px);
 }
 
 .capability-list button {
@@ -300,7 +322,12 @@ nav button.active,
   grid-template-columns: 10px minmax(0, 1fr);
   column-gap: 10px;
   row-gap: 3px;
+  min-height: 58px;
   text-align: left;
+}
+
+.capability-list button + button {
+  margin-top: 4px;
 }
 
 .capability-list strong {

@@ -197,20 +197,62 @@ summary em,
 }
 
 .light-mode {
-  background: oklch(0.96 0.012 210);
+  background:
+    linear-gradient(90deg, oklch(0.97 0.012 202), transparent 42%),
+    repeating-linear-gradient(0deg, rgba(70, 92, 100, 0.06) 0 1px, transparent 1px 44px),
+    oklch(0.955 0.012 205);
   color: oklch(0.21 0.024 220);
 }
 
 .light-mode .panel,
 .light-mode .search-box,
 .light-mode .demo-controls,
-.light-mode .context-card {
-  background: oklch(0.985 0.006 210);
-  border-color: oklch(0.82 0.022 220);
+.light-mode .context-card,
+.light-mode .chat-input {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
 }
 
 .light-mode .left-rail {
-  background: oklch(0.93 0.012 210);
+  background: oklch(0.93 0.016 205);
+  border-inline-end-color: oklch(0.82 0.026 210);
+}
+
+.light-mode nav button,
+.light-mode .filter-stack button {
+  color: oklch(0.36 0.026 220);
+}
+
+.light-mode nav button.active,
+.light-mode .capability-list button.selected,
+.light-mode .review-list button.selected {
+  background: oklch(0.88 0.052 190);
+  border-color: oklch(0.7 0.12 185);
+  color: oklch(0.24 0.04 210);
+}
+
+.light-mode .atlas-canvas,
+.light-mode .stage-card,
+.light-mode .mcp-rail article,
+.light-mode details,
+.light-mode .artifact-list div,
+.light-mode .packet-grid div,
+.light-mode .decision-banner,
+.light-mode .approval-bar {
+  background: oklch(0.97 0.008 205);
+  border-color: oklch(0.84 0.026 210);
+}
+
+.light-mode .risk-gate p,
+.light-mode .release-card p,
+.light-mode .copilot-proof p,
+.light-mode .mcp-rail p {
+  color: oklch(0.42 0.026 220);
+}
+
+.light-mode .theme-switch button.active {
+  background: oklch(0.86 0.072 185);
+  color: oklch(0.2 0.032 215);
 }
 
 .executive-view {
@@ -306,6 +348,10 @@ summary em,
     grid-template-columns: 1fr;
   }
 
+  .theme-switch {
+    justify-self: start;
+  }
+
   .demo-controls,
   .approval-bar,
   .segmented {
@@ -321,7 +367,7 @@ summary em,
   }
 
   .capability-list {
-    gap: var(--sm, 8px);
+    gap: 14px;
     padding: var(--md, 12px);
   }
 
@@ -331,6 +377,12 @@ summary em,
 
   .capability-list button {
     column-gap: var(--md, 12px);
-    padding: 12px;
+    margin-top: 0;
+    min-height: 72px;
+    padding: 14px;
+  }
+
+  .capability-list button + button {
+    margin-top: 8px;
   }
 }

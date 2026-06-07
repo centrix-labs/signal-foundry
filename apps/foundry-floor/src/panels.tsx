@@ -68,7 +68,13 @@ export function LeftRail({ activeView, onView }: { activeView: string; onView: (
   );
 }
 
-export function TopBar() {
+export function TopBar({
+  theme,
+  onThemeChange
+}: {
+  theme: "dark" | "light";
+  onThemeChange: (theme: "dark" | "light") => void;
+}) {
   return (
     <header className="top-bar">
       <div>
@@ -85,6 +91,10 @@ export function TopBar() {
           <strong>Avery M.</strong>
           <small>Release Manager</small>
         </div>
+      </div>
+      <div className="theme-switch" aria-label="Theme">
+        <button type="button" className={theme === "dark" ? "active" : ""} onClick={() => onThemeChange("dark")}>Dark</button>
+        <button type="button" className={theme === "light" ? "active" : ""} onClick={() => onThemeChange("light")}>Light</button>
       </div>
     </header>
   );

@@ -178,16 +178,17 @@ export function App() {
     approveRelease
   } = useDemoState();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   if (!isAuthenticated) {
-    return <LoginScreen onEnter={() => setIsAuthenticated(true)} />;
+    return <LoginScreen onEnter={() => setIsAuthenticated(true)} theme={theme} onThemeChange={setTheme} />;
   }
 
   return (
-    <main className={`app-shell ${activeView === "executive" ? "light-mode" : ""}`}>
+    <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
       <LeftRail activeView={activeView} onView={(view) => setActiveView(view as ViewKey)} />
       <div className="workspace">
-        <TopBar />
+        <TopBar theme={theme} onThemeChange={setTheme} />
         <div className="demo-controls">
           <span>Checkpoint D / Step {demoStep + 1}: {statusLabels[selected.status]}</span>
           <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>
