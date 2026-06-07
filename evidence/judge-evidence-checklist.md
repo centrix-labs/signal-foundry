@@ -19,12 +19,17 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Azure deployment | Ready | `evidence/azure/resource-list.json`, `evidence/azure/container-app-state.json`, `evidence/azure/static-web-app-state.json` |
 | Cost posture | Ready | `evidence/azure/budget.json`, `openspec/changes/build-copilot-capability-launchpad/architecture-cost-plan.md` |
 | Key Vault secret storage | Ready | `evidence/azure/key-vault-secret-metadata.json` |
+| Branded login entry | Ready | `evidence/screenshots/login-page-desktop.png`, `evidence/screenshots/login-page-mobile.png`, `evidence/screenshots/azure-login-page-desktop.png`, `evidence/screenshots/azure-login-page-mobile.png` |
 | Demo video | Ready | `evidence/videos/signal-foundry-live-demo.webm` |
 
 ## Screenshot Run List
 
 | Screenshot | Evidence |
 | --- | --- |
+| Login page desktop | `evidence/screenshots/login-page-desktop.png` |
+| Login page mobile | `evidence/screenshots/login-page-mobile.png` |
+| Azure login page desktop | `evidence/screenshots/azure-login-page-desktop.png` |
+| Azure login page mobile | `evidence/screenshots/azure-login-page-mobile.png` |
 | Foundry Floor desktop | `evidence/screenshots/azure-foundry-floor-desktop.png` |
 | Foundry Floor mobile | `evidence/screenshots/azure-foundry-floor-mobile.png` |
 | Signal Atlas released workflow | `evidence/screenshots/azure-signal-atlas.png` |

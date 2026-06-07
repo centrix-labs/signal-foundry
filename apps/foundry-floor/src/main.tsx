@@ -4,6 +4,7 @@ import { App } from "./App";
 import "./styles.css";
 import "./atlas.css";
 import "./views.css";
+import "./login.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

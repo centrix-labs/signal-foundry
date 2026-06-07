@@ -26,6 +26,7 @@ Date: 2026-06-07
 - `ae51824` Checkpoint G add readiness evidence
 - `56b54a4` Checkpoint G finalize evidence package
 - `90d1b2f` Document Copilot tenant access retry
+- Add branded Signal Foundry login page
 
 ## Deployment Checkpoints
 
@@ -39,11 +40,12 @@ Date: 2026-06-07
 ## Evidence Locations
 
 - Deployed smoke: `evidence/azure/deployed-smoke-results.md`
+- Deployed login smoke: `evidence/azure/deployed-login-smoke.md`
 - Resource list: `evidence/azure/resource-list.json`
 - Sanitized telemetry: `evidence/azure/sanitized-log-analytics-sample.json`
 - Cost posture: `evidence/azure/budget.json`
 - Key Vault metadata: `evidence/azure/key-vault-secret-metadata.json`
-- Screenshots: `evidence/screenshots`
+- Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
 - Copilot package: `evidence/copilot/signal-foundry-copilot-local.zip`
 

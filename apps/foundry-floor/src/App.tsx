@@ -14,6 +14,7 @@ import {
 } from "./panels";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
+import { LoginScreen } from "./LoginScreen";
 
 const firstCapability = capabilities[0];
 
@@ -117,6 +118,11 @@ function PipelineView({ selected }: { selected: Capability }) {
 
 export function App() {
   const { activeView, setActiveView, selectedId, setSelectedId, selected, demoStep, advanceDemo, resetDemo } = useDemoState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  if (!isAuthenticated) {
+    return <LoginScreen onEnter={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <main className={`app-shell ${activeView === "executive" ? "light-mode" : ""}`}>
