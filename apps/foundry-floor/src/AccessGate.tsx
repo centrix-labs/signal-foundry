@@ -3,7 +3,7 @@ import { LockKeyhole, ShieldCheck } from "lucide-react";
 
 const accessHash =
   (import.meta.env["VITE_SITE_ACCESS_HASH"] as string | undefined) ??
-  "705f14bb3db6965a91b5384a222f91c5f587ddcbc755dd5c2c6fa9e3f2f71a6d";
+  "773097d41df91c845da1b80c6140bfd52d8f3eaf6ec37258dc07212d893fa251";
 
 type AccessGateProps = {
   onUnlock: () => void;
@@ -74,9 +74,9 @@ export function AccessGate({ onUnlock, theme, onThemeChange }: AccessGateProps) 
             </span>
           </label>
           {error ? <p className="access-error" role="alert">{error}</p> : null}
-          <button type="submit" className="login-primary" disabled={isChecking || code.trim().length === 0}>
+          <button type="submit" className="login-primary access-unlock-button" disabled={isChecking || code.trim().length === 0}>
             <LockKeyhole size={17} />
-            {isChecking ? "Checking..." : "Unlock demo"}
+            <span>{isChecking ? "Checking..." : "Unlock demo"}</span>
           </button>
         </form>
       </section>

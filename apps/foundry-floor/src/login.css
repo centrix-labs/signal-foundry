@@ -158,6 +158,16 @@
   margin: -2px 0 0;
 }
 
+.access-unlock-button {
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.access-unlock-button span {
+  flex: 0 1 auto;
+}
+
 .login-light .login-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 252, 252, 0.94)),
@@ -399,6 +409,10 @@
 
 .login-primary svg:first-child {
   margin-left: auto;
+}
+
+.login-primary.access-unlock-button svg:first-child {
+  margin-left: 0;
 }
 
 .login-divider {
