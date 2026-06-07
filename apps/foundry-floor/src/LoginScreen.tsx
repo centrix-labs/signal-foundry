@@ -1,9 +1,10 @@
 import { ChevronRight, Lock, Mail, Rocket, ShieldCheck } from "lucide-react";
+import { microsoftSignInUrl } from "./auth";
 
 type LoginScreenProps = {
-  onEnter: () => void;
   theme: "dark" | "light";
   onThemeChange: (theme: "dark" | "light") => void;
+  isCheckingAuth?: boolean;
 };
 
 function MicrosoftMark() {
@@ -27,24 +28,9 @@ function SignalMark() {
   );
 }
 
-function microsoftLoginUrl() {
-  const clientId = import.meta.env["VITE_MICROSOFT_CLIENT_ID"] as string | undefined;
-  if (!clientId) {
-    return "https://login.microsoftonline.com/organizations/";
-  }
-  const redirectUri = import.meta.env["VITE_MICROSOFT_REDIRECT_URI"] as string | undefined;
-  const tenant = import.meta.env["VITE_MICROSOFT_TENANT_ID"] as string | undefined;
-  const url = new URL(`https://login.microsoftonline.com/${tenant || "organizations"}/oauth2/v2.0/authorize`);
-  url.searchParams.set("client_id", clientId);
-  url.searchParams.set("response_type", "code");
-  url.searchParams.set("redirect_uri", redirectUri || window.location.origin);
-  url.searchParams.set("scope", "openid profile email User.Read");
-  url.searchParams.set("prompt", "select_account");
-  url.searchParams.set("state", "signal-foundry-login");
-  return url.toString();
-}
+export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: LoginScreenProps) {
+  const signInUrl = microsoftSignInUrl();
 
-export function LoginScreen({ onEnter, theme, onThemeChange }: LoginScreenProps) {
   return (
     <main className={`login-page ${theme === "light" ? "login-light" : ""}`}>
       <div className="login-backplate" aria-hidden="true" />
@@ -66,7 +52,7 @@ export function LoginScreen({ onEnter, theme, onThemeChange }: LoginScreenProps)
           className="login-form"
           onSubmit={(event) => {
             event.preventDefault();
-            onEnter();
+            window.location.assign(signInUrl);
           }}
         >
           <label className="login-field">
@@ -98,7 +84,7 @@ export function LoginScreen({ onEnter, theme, onThemeChange }: LoginScreenProps)
 
           <button type="submit" className="login-primary">
             <Rocket size={17} />
-            Launch Console
+            {isCheckingAuth ? "Checking Microsoft session" : "Launch Console"}
             <ChevronRight size={18} />
           </button>
         </form>
@@ -106,14 +92,14 @@ export function LoginScreen({ onEnter, theme, onThemeChange }: LoginScreenProps)
         <div className="login-divider"><span>OR</span></div>
 
         <div className="login-provider-stack">
-          <a className="login-provider" href={microsoftLoginUrl()}>
+          <a className="login-provider" href={signInUrl}>
             <MicrosoftMark />
             Continue with Microsoft
           </a>
-          <button type="button" className="login-provider" onClick={onEnter}>
+          <a className="login-provider" href={signInUrl}>
             <ShieldCheck size={16} />
             Sign in with SSO
-          </button>
+          </a>
         </div>
 
         <p className="login-legal">

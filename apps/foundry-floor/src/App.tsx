@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Capability, CapabilityStatus } from "@signal-foundry/shared";
 import { ChevronRight, RotateCcw } from "lucide-react";
 import {
@@ -16,6 +16,7 @@ import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
 import { AccessGate } from "./AccessGate";
+import { getStaticWebAppUser, type StaticWebAppUser } from "./auth";
 
 const firstCapability = capabilities[0];
 
@@ -179,22 +180,41 @@ export function App() {
     approveRelease
   } = useDemoState();
   const [hasAccess, setHasAccess] = useState(() => window.sessionStorage.getItem("signal-foundry-access") === "granted");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authUser, setAuthUser] = useState<StaticWebAppUser | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [theme, setTheme] = useState<"dark" | "light">("light");
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    async function loadUser() {
+      setIsCheckingAuth(true);
+      const user = await getStaticWebAppUser();
+      if (isCurrent) {
+        setAuthUser(user);
+        setIsCheckingAuth(false);
+      }
+    }
+
+    void loadUser();
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
 
   if (!hasAccess) {
     return <AccessGate onUnlock={() => setHasAccess(true)} theme={theme} onThemeChange={setTheme} />;
   }
 
-  if (!isAuthenticated) {
-    return <LoginScreen onEnter={() => setIsAuthenticated(true)} theme={theme} onThemeChange={setTheme} />;
+  if (!authUser) {
+    return <LoginScreen theme={theme} onThemeChange={setTheme} isCheckingAuth={isCheckingAuth} />;
   }
 
   return (
     <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
       <LeftRail activeView={activeView} onView={(view) => setActiveView(view as ViewKey)} />
       <div className="workspace">
-        <TopBar theme={theme} onThemeChange={setTheme} />
+        <TopBar theme={theme} onThemeChange={setTheme} user={authUser} />
         <div className="demo-controls">
           <span>Checkpoint D / Step {demoStep + 1}: {statusLabels[selected.status]}</span>
           <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>

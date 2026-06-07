@@ -176,7 +176,7 @@ nav button.active,
   align-items: center;
   display: grid;
   gap: var(--lg, 16px);
-  grid-template-columns: minmax(220px, 1fr) minmax(300px, 580px) auto auto;
+  grid-template-columns: minmax(220px, 1fr) minmax(280px, 520px) auto auto auto;
 }
 
 .top-bar h1,
@@ -232,6 +232,17 @@ nav button.active,
   height: 34px;
   place-items: center;
   width: 34px;
+}
+
+.sign-out-link {
+  color: var(--steel);
+  font-size: 0.78rem;
+  justify-self: end;
+  text-decoration: none;
+}
+
+.sign-out-link:hover {
+  color: var(--teal);
 }
 
 .theme-switch {

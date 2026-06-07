@@ -24,6 +24,7 @@ import {
   statusLabels,
   type CopilotTurn
 } from "./data";
+import { signOutUrl, type StaticWebAppUser } from "./auth";
 
 export function LeftRail({ activeView, onView }: { activeView: string; onView: (view: string) => void }) {
   const items = [
@@ -70,11 +71,21 @@ export function LeftRail({ activeView, onView }: { activeView: string; onView: (
 
 export function TopBar({
   theme,
-  onThemeChange
+  onThemeChange,
+  user
 }: {
   theme: "dark" | "light";
   onThemeChange: (theme: "dark" | "light") => void;
+  user?: StaticWebAppUser;
 }) {
+  const displayName = user?.userDetails || "Avery M.";
+  const initials = displayName
+    .split(/[.@\s_-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "AM";
+
   return (
     <header className="top-bar">
       <div>
@@ -86,12 +97,13 @@ export function TopBar({
         <input value="renewals, risk gates, releases" readOnly aria-label="Search synthetic records" />
       </label>
       <div className="operator-badge">
-        <span>AM</span>
+        <span>{initials}</span>
         <div>
-          <strong>Avery M.</strong>
-          <small>Release Manager</small>
+          <strong>{displayName}</strong>
+          <small>{user ? "Microsoft authenticated" : "Release Manager"}</small>
         </div>
       </div>
+      <a className="sign-out-link" href={signOutUrl()}>Sign out</a>
       <div className="theme-switch" aria-label="Theme">
         <button type="button" className={theme === "dark" ? "active" : ""} onClick={() => onThemeChange("dark")}>Dark</button>
         <button type="button" className={theme === "light" ? "active" : ""} onClick={() => onThemeChange("light")}>Light</button>
