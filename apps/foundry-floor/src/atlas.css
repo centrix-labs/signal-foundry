@@ -143,14 +143,29 @@
   color: oklch(0.89 0.025 210);
   gap: var(--lg, 16px);
   left: 12px;
+  max-width: calc(100% - 24px);
+  overflow-x: auto;
   padding: 8px 10px;
   position: absolute;
+  scrollbar-width: none;
+}
+
+.atlas-legend::-webkit-scrollbar {
+  display: none;
+}
+
+.atlas-legend span {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  white-space: nowrap;
 }
 
 .atlas-legend i {
   display: inline-block;
+  flex: 0 0 22px;
   height: 2px;
-  margin-inline-end: 6px;
   vertical-align: middle;
   width: 22px;
 }
@@ -179,5 +194,22 @@
 @media (prefers-reduced-motion: reduce) {
   .atlas-flow-particle {
     display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .atlas-legend {
+    font-size: 0.68rem;
+    gap: 8px;
+    padding: 7px 8px;
+  }
+
+  .atlas-legend span {
+    gap: 4px;
+  }
+
+  .atlas-legend i {
+    flex-basis: 16px;
+    width: 16px;
   }
 }

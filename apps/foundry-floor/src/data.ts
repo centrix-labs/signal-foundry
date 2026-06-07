@@ -281,16 +281,16 @@ export const auditEvents: AuditEvent[] = [
 ];
 
 export const atlasNodes: PositionedNode[] = [
-  { id: "sig-crm", label: "CRM summary", kind: "signal", x: 9, y: 30, volume: "410K/day" },
-  { id: "sig-meetings", label: "Meeting summary", kind: "signal", x: 13, y: 51, volume: "1.2M/day" },
-  { id: "sig-support", label: "Support themes", kind: "signal", x: 10, y: 66, volume: "982K/day" },
-  { id: "role-ae", label: "Account Manager", kind: "role", x: 31, y: 34, volume: "4,921 signals" },
-  { id: "role-csm", label: "CS Manager", kind: "role", x: 34, y: 61, volume: "3,106 signals" },
-  { id: "forge", label: "Signal Foundry", kind: "department", x: 52, y: 50, volume: "Forge. Verify. Release." },
+  { id: "sig-crm", label: "CRM summary", kind: "signal", x: 12, y: 30, volume: "410K/day" },
+  { id: "sig-meetings", label: "Meeting summary", kind: "signal", x: 12, y: 49, volume: "1.2M/day" },
+  { id: "sig-support", label: "Support themes", kind: "signal", x: 12, y: 68, volume: "982K/day" },
+  { id: "role-ae", label: "Account Manager", kind: "role", x: 32, y: 34, volume: "4,921 signals" },
+  { id: "role-csm", label: "CS Manager", kind: "role", x: 32, y: 64, volume: "3,106 signals" },
+  { id: "forge", label: "Signal Foundry", kind: "department", x: 52, y: 49, volume: "Forge. Verify. Release." },
   { id: "gate-risk", label: "Risk Gate", kind: "risk_gate", x: 67, y: 49, riskLevel: "medium" },
-  { id: renewal.id, label: renewal.title, kind: "workflow", x: 78, y: 26, riskLevel: renewal.riskLevel, status: renewal.status },
-  { id: escalation.id, label: escalation.title, kind: "workflow", x: 80, y: 48, riskLevel: escalation.riskLevel, status: escalation.status },
-  { id: qbr.id, label: qbr.title, kind: "workflow", x: 78, y: 61, riskLevel: qbr.riskLevel, status: qbr.status }
+  { id: renewal.id, label: renewal.title, kind: "workflow", x: 82, y: 30, riskLevel: renewal.riskLevel, status: renewal.status },
+  { id: escalation.id, label: escalation.title, kind: "workflow", x: 82, y: 49, riskLevel: escalation.riskLevel, status: escalation.status },
+  { id: qbr.id, label: qbr.title, kind: "workflow", x: 82, y: 68, riskLevel: qbr.riskLevel, status: qbr.status }
 ];
 
 export const atlasEdges: AtlasEdge[] = [
