@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceGroupName": {
+      "value": "rg-signal-foundry-hackathon"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "containerAppEnvironmentName": {
+      "value": "cae-signal-foundry"
+    },
+    "containerAppName": {
+      "value": "ca-signal-foundry-mcp"
+    },
+    "containerRegistryName": {
+      "value": "acrsignalfoundry"
+    },
+    "staticWebAppName": {
+      "value": "swa-signal-foundry"
+    },
+    "storageAccountName": {
+      "value": "stsignalfoundry"
+    },
+    "keyVaultName": {
+      "value": "kv-signal-foundry"
+    },
+    "logAnalyticsName": {
+      "value": "law-signal-foundry"
+    },
+    "applicationInsightsName": {
+      "value": "appi-signal-foundry"
+    },
+    "containerImage": {
+      "value": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+    },
+    "containerPort": {
+      "value": 7071
+    },
+    "containerMaxReplicas": {
+      "value": 1
+    },
+    "logRetentionDays": {
+      "value": 30
+    },
+    "staticWebAppSkuName": {
+      "value": "Free"
+    },
+    "staticWebAppSkuTier": {
+      "value": "Free"
+    }
+  }
+}

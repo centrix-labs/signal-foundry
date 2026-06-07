@@ -169,20 +169,20 @@ Parallelization rules:
 
 ## 9. Containerization And Local Runtime
 
-- [ ] Add MCP server Dockerfile.
-- [ ] Add container build script.
+- [x] Add MCP server Dockerfile.
+- [x] Add container build script.
 - [ ] Add local container run script.
 - [ ] Add local container health/tool smoke test.
-- [ ] Add frontend production build script.
+- [x] Add frontend production build script.
 - [ ] Add local end-to-end run script for MCP server plus Foundry Floor.
-- [ ] Document local run commands.
-- [ ] Verify local run from clean install.
+- [x] Document local run commands.
+- [x] Verify local run from clean install.
 
 ## 10. Azure Infrastructure And Deployment
 
-- [ ] Create Azure provisioning script or IaC for resource group, Log Analytics, Application Insights, ACR, Storage, Key Vault, Container Apps, and Static Web Apps.
-- [ ] Add deployment rollback notes for each Azure resource group change.
-- [ ] Add Azure cost guardrails from `architecture-cost-plan.md`.
+- [x] Create Azure provisioning script or IaC for resource group, Log Analytics, Application Insights, ACR, Storage, Key Vault, Container Apps, and Static Web Apps.
+- [x] Add deployment rollback notes for each Azure resource group change.
+- [x] Add Azure cost guardrails from `architecture-cost-plan.md`.
 - [ ] Create Azure Budget or manual cost alert for the deployed demo environment.
 - [ ] Provision Azure resource group and required services in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.
 - [ ] Create registry tables: `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`.
