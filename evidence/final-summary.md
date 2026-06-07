@@ -24,6 +24,8 @@ Date: 2026-06-07
 - `f902d38` Prepare Azure deployment assets
 - `6aeed2b` Checkpoint F deploy Azure demo
 - `ae51824` Checkpoint G add readiness evidence
+- `56b54a4` Checkpoint G finalize evidence package
+- `90d1b2f` Document Copilot tenant access retry
 
 ## Deployment Checkpoints
 

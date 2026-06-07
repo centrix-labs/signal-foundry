@@ -10,6 +10,8 @@ Opened Microsoft 365 Copilot Chat at:
 
 Retried after Checkpoint G evidence completion and received the same sign-in state.
 
+Retried again after the final evidence package commit and received the same sign-in state.
+
 ## Result
 
 Chrome reached Microsoft Entra sign-in instead of an authenticated Microsoft 365 Copilot Chat session.
