@@ -38,11 +38,34 @@
   animation: pulseFlow 3.2s ease-in-out infinite;
 }
 
+.atlas-edge {
+  pointer-events: none;
+}
+
 .atlas-link.approval_path,
 .atlas-link.risk_gate {
   opacity: 0.9;
   stroke: var(--amber);
   stroke-width: 0.68;
+}
+
+#tealArrow path {
+  fill: var(--teal);
+}
+
+#amberArrow path {
+  fill: var(--amber);
+}
+
+.atlas-flow-particle {
+  fill: oklch(0.95 0.12 190);
+  filter: url(#tealGlow);
+  opacity: 0.94;
+}
+
+.atlas-flow-particle.approval_path,
+.atlas-flow-particle.risk_gate {
+  fill: oklch(0.9 0.14 78);
 }
 
 .node-hit {
@@ -117,6 +140,7 @@
   border: 1px solid var(--line);
   border-radius: 7px;
   bottom: 12px;
+  color: oklch(0.89 0.025 210);
   gap: var(--lg, 16px);
   left: 12px;
   padding: 8px 10px;
@@ -150,4 +174,10 @@
 
 @keyframes pulseFlow {
   50% { opacity: 1; stroke-width: 0.92; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-flow-particle {
+    display: none;
+  }
 }

@@ -54,6 +54,12 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            <marker id="tealArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+            <marker id="amberArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
           </defs>
           <g className="constellation">
             {Array.from({ length: 44 }, (_, index) => {
@@ -65,14 +71,20 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
           {atlasEdges.map((edge, index) => {
             const source = nodeById(edge.source);
             const target = nodeById(edge.target);
+            const path = pathFor(source, target);
+            const isRisk = edge.kind === "risk_gate" || edge.kind === "approval_path";
             return (
-              <path
-                key={edge.id}
-                className={`atlas-link ${edge.kind}`}
-                d={pathFor(source, target)}
-                pathLength={1}
-                style={{ animationDelay: `${index * 120}ms` }}
-              />
+              <g key={edge.id} className={`atlas-edge ${edge.kind}`} style={{ animationDelay: `${index * 120}ms` }}>
+                <path
+                  className={`atlas-link ${edge.kind}`}
+                  d={path}
+                  markerEnd={isRisk ? "url(#amberArrow)" : "url(#tealArrow)"}
+                  pathLength={1}
+                />
+                <circle className={`atlas-flow-particle ${edge.kind}`} r={isRisk ? 0.58 : 0.52}>
+                  <animateMotion dur={isRisk ? "3.4s" : "2.8s"} begin={`${index * 0.18}s`} repeatCount="indefinite" path={path} />
+                </circle>
+              </g>
             );
           })}
           {atlasNodes.map((node) => {
@@ -112,8 +124,9 @@ type PipelineProps = {
 };
 
 function StageCard({ stage, index }: { stage: Stage; index: number }) {
+  const activeClass = stage.key === "gate" || stage.key === "risk" ? "active" : "";
   return (
-    <div className={`stage-card ${stage.tone}`} style={{ animationDelay: `${index * 80}ms` }}>
+    <div className={`stage-card ${stage.tone} ${activeClass}`} style={{ animationDelay: `${index * 80}ms` }}>
       <span>{stage.label}</span>
       <strong>{stage.count}</strong>
       <small>{stage.sublabel}</small>
@@ -123,6 +136,7 @@ function StageCard({ stage, index }: { stage: Stage; index: number }) {
 
 export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
   const stages = detailed ? factoryStages : releaseStages;
+  const activeIndex = stages.findIndex((item) => item.key === "gate" || item.key === "risk");
   return (
     <section className={`panel release-pipeline ${detailed ? "factory" : ""}`} aria-label="Release Pipeline">
       <div className="panel-heading">
@@ -136,7 +150,11 @@ export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
         {stages.map((stage, index) => <StageCard key={stage.key} stage={stage} index={index} />)}
       </div>
       <div className="signal-trace" aria-hidden="true">
-        {stages.map((stage) => <span key={stage.key} className={stage.tone} />)}
+        {stages.map((stage, index) => {
+          const isActive = index === activeIndex;
+          const isComplete = activeIndex > -1 && index < activeIndex;
+          return <span key={stage.key} className={`${stage.tone} ${isActive ? "active" : ""} ${isComplete ? "complete" : ""}`} />;
+        })}
       </div>
     </section>
   );
