@@ -1,47 +1,394 @@
 :root {
-  color: #f7fbff;
-  background: #070a0e;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: oklch(0.93 0.018 205);
+  background: oklch(0.13 0.018 220);
+  font-family: Aptos, "Aptos Display", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  --graphite: oklch(0.16 0.018 220);
+  --graphite-2: oklch(0.2 0.018 220);
+  --graphite-3: oklch(0.25 0.018 220);
+  --steel: oklch(0.62 0.028 225);
+  --steel-dim: oklch(0.46 0.022 225);
+  --teal: oklch(0.78 0.16 185);
+  --amber: oklch(0.82 0.16 78);
+  --red: oklch(0.69 0.16 28);
+  --green: oklch(0.74 0.14 158);
+  --line: color-mix(in oklch, var(--steel) 28%, transparent);
+  --panel: color-mix(in oklch, var(--graphite-2) 88%, black);
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
 }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 .app-shell {
-  align-items: center;
   background:
-    radial-gradient(circle at 55% 35%, rgba(0, 209, 194, 0.12), transparent 34%),
-    linear-gradient(135deg, #10151d 0%, #070a0e 100%);
-  display: flex;
+    linear-gradient(90deg, oklch(0.11 0.018 220), transparent 36%),
+    repeating-linear-gradient(0deg, rgba(124, 132, 142, 0.055) 0 1px, transparent 1px 44px),
+    var(--graphite);
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
   min-height: 100vh;
-  padding: 48px;
 }
 
-section {
-  border: 1px solid rgba(124, 132, 142, 0.28);
-  max-width: 780px;
-  padding: 32px;
+.left-rail {
+  border-inline-end: 1px solid var(--line);
+  display: grid;
+  gap: var(--xl, 24px);
+  grid-template-rows: auto auto 1fr auto;
+  padding: var(--xl, 24px) var(--lg, 16px);
 }
 
-.eyebrow {
-  color: #00d1c2;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0;
+.brand-lockup,
+.operator-badge,
+.panel-heading,
+.demo-controls,
+.atlas-legend,
+.approval-bar,
+.artifact-list div,
+.audit-table div {
+  align-items: center;
+  display: flex;
+}
+
+.brand-lockup {
+  gap: var(--md, 12px);
   text-transform: uppercase;
 }
 
-h1 {
-  font-size: 42px;
+.brand-lockup strong,
+.top-bar h1,
+.panel h2,
+.executive-hero h2 {
+  font-family: Bahnschrift, "Aptos Display", Aptos, sans-serif;
   letter-spacing: 0;
-  line-height: 1.06;
-  margin: 0 0 18px;
 }
 
-p {
-  color: #c9d3dc;
-  font-size: 17px;
-  line-height: 1.6;
+.brand-lockup small,
+.operator-badge small,
+.context-card small,
+.filter-stack span,
+.panel small,
+.packet-grid dt {
+  color: var(--steel);
+}
+
+.forge-mark {
+  border: 1px solid color-mix(in oklch, var(--teal) 65%, transparent);
+  color: var(--teal);
+  display: grid;
+  font-weight: 800;
+  height: 38px;
+  place-items: center;
+  width: 38px;
+  clip-path: polygon(50% 0, 96% 24%, 96% 76%, 50% 100%, 4% 76%, 4% 24%);
+}
+
+nav,
+.filter-stack,
+.checklist,
+.artifact-list,
+.mcp-rail,
+.review-list,
+.copilot-chat,
+.foundry-mirror,
+.right-stack,
+.floor-center {
+  display: grid;
+  gap: var(--md, 12px);
+}
+
+nav button,
+.filter-stack button,
+.capability-list button,
+.review-list button,
+.demo-controls button,
+.approval-bar button,
+.text-link,
+.action-button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  display: flex;
+  gap: var(--sm, 8px);
+}
+
+nav button,
+.filter-stack button {
+  border-radius: 7px;
+  color: oklch(0.79 0.023 220);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+nav button.active,
+.capability-list button.selected,
+.review-list button.selected {
+  background: color-mix(in oklch, var(--teal) 12%, var(--graphite-3));
+  border-color: color-mix(in oklch, var(--teal) 50%, transparent);
+  color: oklch(0.96 0.024 195);
+}
+
+.context-card,
+.panel,
+.search-box,
+.demo-controls,
+.chat-input {
+  background: color-mix(in oklch, var(--panel) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.context-card {
+  align-self: end;
+  display: grid;
+  gap: var(--sm, 8px);
+  padding: var(--lg, 16px);
+}
+
+.workspace {
+  display: grid;
+  gap: var(--lg, 16px);
+  min-width: 0;
+  padding: var(--lg, 16px);
+}
+
+.top-bar {
+  align-items: center;
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(220px, 1fr) minmax(300px, 580px) auto;
+}
+
+.top-bar h1,
+.panel h2,
+.executive-hero h2 {
+  margin: 0;
+}
+
+.top-bar h1 {
+  font-size: 1.45rem;
+}
+
+.eyebrow {
+  color: var(--teal);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.search-box {
+  align-items: center;
+  display: flex;
+  gap: var(--md, 12px);
+  padding: 8px 12px;
+}
+
+.search-box span {
+  color: var(--steel);
+  font-size: 0.78rem;
+}
+
+.search-box input {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  min-width: 0;
+  outline: 0;
+  width: 100%;
+}
+
+.operator-badge {
+  gap: var(--sm, 8px);
+  justify-self: end;
+}
+
+.operator-badge > span {
+  background: var(--graphite-3);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  height: 34px;
+  place-items: center;
+  width: 34px;
+}
+
+.demo-controls {
+  justify-content: flex-end;
+  gap: var(--md, 12px);
+  padding: var(--sm, 8px);
+}
+
+.demo-controls span {
+  color: var(--steel);
+  margin-inline-end: auto;
+}
+
+.demo-controls button,
+.approval-bar button,
+.action-button {
+  border-color: var(--line);
+  border-radius: 7px;
+  padding: 10px 14px;
+}
+
+.primary {
+  background: var(--amber) !important;
+  border-color: color-mix(in oklch, var(--amber) 80%, black) !important;
+  color: oklch(0.16 0.018 80) !important;
+  font-weight: 800;
+}
+
+.floor-grid {
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(180px, 240px) minmax(460px, 1fr) minmax(280px, 360px) minmax(260px, 320px);
+}
+
+.panel {
+  min-width: 0;
+  padding: var(--lg, 16px);
+}
+
+.panel-heading {
+  gap: var(--lg, 16px);
+  justify-content: space-between;
+  margin-block-end: var(--lg, 16px);
+}
+
+.panel h2 {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.capability-list button,
+.review-list button {
+  border-color: var(--line);
+  border-radius: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: var(--md, 12px);
+  width: 100%;
+}
+
+.capability-list strong {
+  flex-basis: calc(100% - 24px);
+}
+
+.dot {
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+}
+
+.dot.low,
+.status-pill.low { background: color-mix(in oklch, var(--green) 18%, transparent); color: var(--green); }
+.dot.medium,
+.status-pill.medium,
+.status-pill.pending { background: color-mix(in oklch, var(--amber) 18%, transparent); color: var(--amber); }
+.dot.blocked,
+.status-pill.blocked { background: color-mix(in oklch, var(--red) 18%, transparent); color: var(--red); }
+.status-pill.approved { background: color-mix(in oklch, var(--teal) 16%, transparent); color: var(--teal); }
+
+.status-pill,
+.live-dot {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  padding: 4px 8px;
+}
+
+.release-pipeline.factory .pipeline-track {
+  grid-template-columns: repeat(7, minmax(112px, 1fr));
+}
+
+.pipeline-track {
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(6, minmax(112px, 1fr));
+  overflow-x: auto;
+}
+
+.stage-card {
+  animation: riseIn 520ms ease-out both;
+  background: color-mix(in oklch, var(--graphite-3) 72%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  display: grid;
+  gap: var(--xs, 4px);
+  min-height: 92px;
+  padding: var(--md, 12px);
+}
+
+.stage-card strong {
+  color: oklch(0.9 0.03 210);
+  font-size: 1.35rem;
+}
+
+.stage-card span {
+  color: oklch(0.82 0.035 210);
+}
+
+.stage-card small {
+  color: var(--steel);
+}
+
+.stage-card.pending {
+  border-color: color-mix(in oklch, var(--amber) 48%, transparent);
+}
+
+.stage-card.approved,
+.stage-card.live {
+  border-color: color-mix(in oklch, var(--teal) 34%, transparent);
+}
+
+.signal-trace {
+  align-items: center;
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(7, 1fr);
+  margin-block-start: var(--lg, 16px);
+}
+
+.signal-trace span {
+  background: var(--teal);
+  height: 2px;
+  position: relative;
+}
+
+.signal-trace span::after {
+  background: currentColor;
+  border: 2px solid var(--graphite);
+  border-radius: 50%;
+  content: "";
+  height: 9px;
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 9px;
+}
+
+.signal-trace .pending {
+  background: var(--amber);
 }

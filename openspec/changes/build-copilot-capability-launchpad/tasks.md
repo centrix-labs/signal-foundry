@@ -145,27 +145,27 @@ Parallelization rules:
 ## 8. Frontend: Foundry Floor
 
 - [x] Import visual reference set for pixel-target implementation.
-- [ ] Define frontend data contracts from MCP schemas.
-- [ ] Build API client for local mock, local MCP/API, and deployed MCP/API modes.
-- [ ] Build Foundry Floor command center from `visual-reference-2-foundry-floor.jpg`.
-- [ ] Build Signal Atlas view from `visual-reference-4-signal-atlas.jpg`.
-- [ ] Add animated Signal Atlas links between signals, roles, risk gates, and released workflows.
-- [ ] Build Review Queue view from `visual-reference-1-review-queue.jpg`.
-- [ ] Build Copilot Mirror view from `visual-reference-3-copilot-mirror.jpg`.
-- [ ] Build optional Light Executive view from `visual-reference-5-light-executive.jpg`.
-- [ ] Build Release Pipeline view.
-- [ ] Build Risk Gate Panel.
-- [ ] Build Release Packet Drawer.
-- [ ] Build MCP Activity Rail.
-- [ ] Add empty, loading, error, unauthorized, pending review, approved, rejected, blocked, and released states.
-- [ ] Add explicit request-changes, approve, reject, and release controls.
-- [ ] Add responsive desktop-first layout with tablet and mobile variants.
-- [ ] Verify UI avoids generic AI dashboard patterns.
-- [ ] Apply Signal Foundry logo, palette, and "Raw Signals | Forged with Intelligence | Approved Workflows" brand motif.
-- [ ] Run screenshot review against all five visual references.
-- [ ] Verify text fit, panel spacing, and action hierarchy at desktop, tablet, and mobile sizes.
-- [ ] Capture Playwright or Chrome screenshots for judging.
-- [ ] Complete Checkpoint D verification and commit.
+- [x] Define frontend data contracts from MCP schemas.
+- [x] Build API client for local mock, local MCP/API, and deployed MCP/API modes.
+- [x] Build Foundry Floor command center from `visual-reference-2-foundry-floor.jpg`.
+- [x] Build Signal Atlas view from `visual-reference-4-signal-atlas.jpg`.
+- [x] Add animated Signal Atlas links between signals, roles, risk gates, and released workflows.
+- [x] Build Review Queue view from `visual-reference-1-review-queue.jpg`.
+- [x] Build Copilot Mirror view from `visual-reference-3-copilot-mirror.jpg`.
+- [x] Build optional Light Executive view from `visual-reference-5-light-executive.jpg`.
+- [x] Build Release Pipeline view.
+- [x] Build Risk Gate Panel.
+- [x] Build Release Packet Drawer.
+- [x] Build MCP Activity Rail.
+- [x] Add empty, loading, error, unauthorized, pending review, approved, rejected, blocked, and released states.
+- [x] Add explicit request-changes, approve, reject, and release controls.
+- [x] Add responsive desktop-first layout with tablet and mobile variants.
+- [x] Verify UI avoids generic AI dashboard patterns.
+- [x] Apply Signal Foundry logo, palette, and "Raw Signals | Forged with Intelligence | Approved Workflows" brand motif.
+- [x] Run screenshot review against all five visual references.
+- [x] Verify text fit, panel spacing, and action hierarchy at desktop, tablet, and mobile sizes.
+- [x] Capture Playwright or Chrome screenshots for judging.
+- [x] Complete Checkpoint D verification and commit.
 
 ## 9. Containerization And Local Runtime
 
