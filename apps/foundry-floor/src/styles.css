@@ -286,20 +286,45 @@ nav button.active,
 .review-list button {
   border-color: var(--line);
   border-radius: 7px;
-  flex-wrap: wrap;
   justify-content: flex-start;
   padding: var(--md, 12px);
   width: 100%;
 }
 
+.capability-list {
+  gap: 10px;
+}
+
+.capability-list button {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 3px;
+  text-align: left;
+}
+
 .capability-list strong {
-  flex-basis: calc(100% - 24px);
+  grid-column: 2;
+  line-height: 1.25;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.capability-list small {
+  grid-column: 2;
+  line-height: 1.25;
 }
 
 .dot {
   border-radius: 50%;
   height: 10px;
   width: 10px;
+}
+
+.capability-list .dot {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  margin-top: 4px;
 }
 
 .dot.low,

@@ -319,4 +319,18 @@ summary em,
   .packet-grid {
     grid-template-columns: 1fr;
   }
+
+  .capability-list {
+    gap: var(--sm, 8px);
+    padding: var(--md, 12px);
+  }
+
+  .capability-list .panel-heading {
+    margin-block-end: var(--md, 12px);
+  }
+
+  .capability-list button {
+    column-gap: var(--md, 12px);
+    padding: 12px;
+  }
 }
