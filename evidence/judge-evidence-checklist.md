@@ -18,6 +18,8 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Responsible AI | Ready | `apps/copilot-agent/docs/safety-boundaries.md`, `evidence/signal-foundry-demo-evidence.json` |
 | Azure deployment | Ready | `evidence/azure/resource-list.json`, `evidence/azure/container-app-state.json`, `evidence/azure/static-web-app-state.json` |
 | Cost posture | Ready | `evidence/azure/budget.json`, `openspec/changes/build-copilot-capability-launchpad/architecture-cost-plan.md` |
+| Key Vault secret storage | Ready | `evidence/azure/key-vault-secret-metadata.json` |
+| Demo video | Ready | `evidence/videos/signal-foundry-live-demo.webm` |
 
 ## Screenshot Run List
 
@@ -32,6 +34,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Local tablet view | `evidence/screenshots/foundry-floor-tablet.png` |
 | Unauthorized rejection | `unauthorized-approval` in `evidence/signal-foundry-demo-evidence.json`; deployed 403 in `evidence/azure/deployed-smoke-results.md` |
 | Anti-surveillance refusal | `anti-surveillance-refusal` in `evidence/signal-foundry-demo-evidence.json` |
+| Live demo video | `evidence/videos/signal-foundry-live-demo.webm` |
 
 ## P0 Gate Mapping
 

@@ -1,0 +1,6 @@
+{
+  "id": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.KeyVault/vaults/kv-signal-foundry/providers/Microsoft.Authorization/roleAssignments/00000000-0000-0000-0000-000000000000",
+  "principalId": "00000000-0000-0000-0000-000000000000",
+  "roleDefinitionId": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+  "scope": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.KeyVault/vaults/kv-signal-foundry"
+}

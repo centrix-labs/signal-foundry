@@ -27,6 +27,8 @@ Date: 2026-06-07
 - Static Web Apps load: passed with HTTP 200.
 - Log Analytics sample: captured sanitized audit event with correlation ID only.
 - Budget: resource-group cost budget created with redacted evidence.
+- Key Vault: Static Web Apps deployment token stored; evidence contains metadata only.
+- Live demo video: captured deployed Foundry Floor flow.
 
 ## Evidence Files
 
@@ -35,6 +37,9 @@ Date: 2026-06-07
 - `evidence/azure/static-web-app-state.json`
 - `evidence/azure/sanitized-log-analytics-sample.json`
 - `evidence/azure/budget.json`
+- `evidence/azure/key-vault-secret-metadata.json`
+- `evidence/azure/key-vault-role-assignment.json`
 - `evidence/screenshots/azure-foundry-floor-desktop.png`
 - `evidence/screenshots/azure-signal-atlas.png`
 - `evidence/screenshots/azure-foundry-floor-mobile.png`
+- `evidence/videos/signal-foundry-live-demo.webm`

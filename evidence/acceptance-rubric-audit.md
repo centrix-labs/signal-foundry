@@ -31,6 +31,7 @@ Date: 2026-06-07
 - Unauthorized-state evidence: `evidence/azure/deployed-smoke-results.md`.
 - Azure deployment evidence: `evidence/azure/resource-list.json`.
 - Light executive view: `evidence/screenshots/light-executive.png`.
+- Live demo video: `evidence/videos/signal-foundry-live-demo.webm`.
 
 ## Budget And LLM Use
 
@@ -38,3 +39,4 @@ Date: 2026-06-07
 - Azure AI Foundry / Azure OpenAI advisory rationale remains optional and unused in the deployed smoke tests.
 - Deterministic risk scoring is the source of truth.
 - Azure Budget evidence: `evidence/azure/budget.json`.
+- Key Vault secret metadata: `evidence/azure/key-vault-secret-metadata.json`.

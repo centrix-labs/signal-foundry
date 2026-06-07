@@ -19,6 +19,7 @@ Date: 2026-06-07
 6. Attempt employee approval with `actor-priya`; show HTTP 403 sanitized rejection.
 7. Show anti-surveillance refusal text from `evidence/signal-foundry-demo-evidence.json`.
 8. Show Azure resource and telemetry evidence.
+9. Play the live demo video: `evidence/videos/signal-foundry-live-demo.webm`.
 
 ## Reset
 

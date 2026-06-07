@@ -129,7 +129,7 @@ Parallelization rules:
 
 - [x] Create Microsoft Entra app registration implementation notes.
 - [x] Create Entra app registration or automation when permissions allow.
-- [ ] Store secrets in Key Vault for deployed environments.
+- [x] Store secrets in Key Vault for deployed environments.
 - [x] Add OAuth-compatible token validation path where supported.
 - [x] Add local demo auth mode with synthetic users and roles.
 - [x] Enforce reviewer role for score, review, approve, reject, and release tools.
@@ -233,7 +233,7 @@ Parallelization rules:
 - [x] Capture sanitized Application Insights evidence.
 - [x] Capture cost posture evidence from `architecture-cost-plan.md`.
 - [x] Capture desktop, tablet, and mobile frontend screenshots.
-- [ ] Capture one end-to-end demo video when feasible.
+- [x] Capture one end-to-end demo video when feasible.
 - [x] Create final demo run notes.
 - [x] Update judge evidence checklist with links to every artifact.
 
@@ -246,5 +246,5 @@ Parallelization rules:
 - [x] Confirm Copilot package points to the intended endpoint.
 - [x] Confirm screenshots and logs contain no secrets or raw tenant content.
 - [x] Confirm final build prompt, OpenSpec, demo script, and evidence package are aligned.
-- [ ] Complete Checkpoint G verification and commit.
-- [ ] Produce final summary with local commands, Azure URLs, commit checkpoints, deployment checkpoints, verification results, evidence locations, and remaining tenant-dependent manual steps.
+- [x] Complete Checkpoint G verification and commit.
+- [x] Produce final summary with local commands, Azure URLs, commit checkpoints, deployment checkpoints, verification results, evidence locations, and remaining tenant-dependent manual steps.
