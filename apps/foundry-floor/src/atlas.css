@@ -29,17 +29,20 @@
 
 .atlas-link {
   fill: none;
+  filter: url(#tealGlow);
+  opacity: 0.82;
   stroke: var(--teal);
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
   stroke-linecap: round;
-  stroke-width: 0.42;
-  animation: drawFlow 2.8s ease-out forwards, pulseFlow 2.8s ease-in-out infinite;
+  stroke-width: 0.72;
+  vector-effect: non-scaling-stroke;
+  animation: pulseFlow 3.2s ease-in-out infinite;
 }
 
 .atlas-link.approval_path,
 .atlas-link.risk_gate {
+  opacity: 0.9;
   stroke: var(--amber);
+  stroke-width: 0.68;
 }
 
 .node-hit {
@@ -145,10 +148,6 @@
   padding: 5px 9px;
 }
 
-@keyframes drawFlow {
-  to { stroke-dashoffset: 0; }
-}
-
 @keyframes pulseFlow {
-  50% { stroke-width: 0.66; opacity: 0.74; }
+  50% { opacity: 1; stroke-width: 0.92; }
 }

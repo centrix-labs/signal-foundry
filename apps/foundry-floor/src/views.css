@@ -74,7 +74,27 @@ summary em,
   display: grid;
   gap: var(--sm, 8px);
   grid-template-columns: auto 1fr;
+  min-width: 0;
   padding: var(--md, 12px);
+  width: 100%;
+}
+
+.mcp-rail {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mcp-rail article > div {
+  min-width: 0;
+}
+
+.mcp-rail strong,
+.mcp-rail p,
+.mcp-rail small {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .mcp-rail p {
