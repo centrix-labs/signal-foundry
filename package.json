@@ -10,6 +10,8 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspace @signal-foundry/foundry-floor",
+    "dev:mcp": "npm run dev --workspace @signal-foundry/mcp-server",
+    "dev:all": "bash scripts/dev-local.sh",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run typecheck",
@@ -19,6 +21,9 @@
     "validate:sensitive": "node scripts/validate-evidence.mjs evidence",
     "screenshots": "playwright test --config tests/playwright.config.ts",
     "validate": "openspec validate build-copilot-capability-launchpad --strict && npm run typecheck && npm run test && npm run validate:evidence",
+    "container:build": "bash scripts/container-build.sh",
+    "container:run": "bash scripts/container-run.sh",
+    "smoke:local": "bash scripts/local-smoke.sh",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {

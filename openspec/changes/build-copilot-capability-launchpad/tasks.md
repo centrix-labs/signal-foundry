@@ -127,8 +127,8 @@ Parallelization rules:
 
 ## 7. Auth, Security, And Audit
 
-- [ ] Create Microsoft Entra app registration implementation notes.
-- [ ] Create Entra app registration or automation when permissions allow.
+- [x] Create Microsoft Entra app registration implementation notes.
+- [x] Create Entra app registration or automation when permissions allow.
 - [ ] Store secrets in Key Vault for deployed environments.
 - [x] Add OAuth-compatible token validation path where supported.
 - [x] Add local demo auth mode with synthetic users and roles.
@@ -137,8 +137,8 @@ Parallelization rules:
 - [x] Redact tokens, secrets, raw content, PII, and stack traces from errors.
 - [x] Add unauthorized demo evidence.
 - [x] Add no-secret/no-raw-content scan over seed data, logs, screenshots, generated release packets, and docs.
-- [ ] Add Application Insights telemetry shape with actor, action, record ID, timestamp, and correlation ID only.
-- [ ] Add sanitized App Insights query or sample evidence.
+- [x] Add Application Insights telemetry shape with actor, action, record ID, timestamp, and correlation ID only.
+- [x] Add sanitized App Insights query or sample evidence.
 - [x] Add cost-safe logging configuration with compact audit events only.
 - [x] Complete Checkpoint C verification and commit.
 
@@ -171,10 +171,10 @@ Parallelization rules:
 
 - [x] Add MCP server Dockerfile.
 - [x] Add container build script.
-- [ ] Add local container run script.
-- [ ] Add local container health/tool smoke test.
+- [x] Add local container run script.
+- [x] Add local container health/tool smoke test.
 - [x] Add frontend production build script.
-- [ ] Add local end-to-end run script for MCP server plus Foundry Floor.
+- [x] Add local end-to-end run script for MCP server plus Foundry Floor.
 - [x] Document local run commands.
 - [x] Verify local run from clean install.
 
@@ -212,9 +212,9 @@ Parallelization rules:
 - [x] Add reset command for repeatable demos.
 - [x] Add validation command that runs schema tests, registry tests, risk tests, smoke tests, screenshot checks, and OpenSpec validation.
 - [x] Verify no secrets, raw content, tokens, PII, or production data appear in UI, logs, screenshots, seed data, release packets, or final artifacts.
-- [ ] Verify every P0 gate in `acceptance-rubric.md`.
-- [ ] Verify at least five P1 differentiators in `acceptance-rubric.md`.
-- [ ] Verify Foundry/OpenAI token and evaluation usage stays within budget assumption.
+- [x] Verify every P0 gate in `acceptance-rubric.md`.
+- [x] Verify at least five P1 differentiators in `acceptance-rubric.md`.
+- [x] Verify Foundry/OpenAI token and evaluation usage stays within budget assumption.
 - [x] Verify repository evidence maps to required and bonus hackathon criteria.
 
 ## 12. Evidence Package
@@ -234,8 +234,8 @@ Parallelization rules:
 - [x] Capture cost posture evidence from `architecture-cost-plan.md`.
 - [x] Capture desktop, tablet, and mobile frontend screenshots.
 - [ ] Capture one end-to-end demo video when feasible.
-- [ ] Create final demo run notes.
-- [ ] Update judge evidence checklist with links to every artifact.
+- [x] Create final demo run notes.
+- [x] Update judge evidence checklist with links to every artifact.
 
 ## 13. Final Readiness
 
