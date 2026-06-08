@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-mcp-run-functions-20260608-1459.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-root-mcp-tools-20260608-1527.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "855ba100693556172455a93c12de91da5314f3e4c395e98371955949b70e6749";
+const expectedHash = "b714eb91b1f69a9bda828d443f03e4bc65ff0f0c177cb964871b8b73decfdcbc";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -14,7 +14,7 @@ const requiredEntries = [
   "declarative-agent.azure.json",
   "color.png",
   "outline.png",
-  "actions/mcp-tools.json",
+  "mcp-tools.json",
   "actions/signal-foundry-mcp.azure.json"
 ];
 
@@ -114,7 +114,7 @@ assertIncludesAll(actionManifest.description_for_model, [
   "Never claim a registry write"
 ], "Action model description");
 
-const toolDescription = readZipJson("actions/mcp-tools.json");
+const toolDescription = readZipJson("mcp-tools.json");
 const tools = toolDescription.tools ?? [];
 assertCondition(tools.length === 11, "MCP tool description must include 11 tools");
 assertCondition(JSON.stringify(actionManifest.runtimes[0].run_for_functions ?? []) === JSON.stringify(tools.map((tool) => tool.name)), "MCP runtime run_for_functions must list every static MCP tool in order");
