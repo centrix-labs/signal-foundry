@@ -29,6 +29,9 @@ Date: 2026-06-08
 - Add branded Signal Foundry login page
 - Finish interactive review, risk, atlas, registry mirror, and Azure deployment hardening
 - `e392865` Align demo defaults with Asteria Dynamics
+- `b1cc4fb` Record Asteria deployment evidence
+- `48919b0` Refresh Copilot evidence capture package
+- `13d4b12` Add Copilot package validation
 
 ## Deployment Checkpoints
 
@@ -53,10 +56,11 @@ Date: 2026-06-08
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
 - Copilot package: `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
+- Final readiness audit: `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run audit:final-readiness`
 
 ## Remaining Tenant-Dependent Manual Steps
 
 - Sign in to Microsoft 365 Copilot Chat with the tenant account.
-- Replace `SIGNAL_FOUNDRY_ENTRA_OAUTH_REFERENCE_ID` with the tenant-owned OAuth vault reference.
+- Confirm the tenant-owned OAuth vault reference in the sideload package.
 - Sideload the Copilot package.
 - Capture Copilot Chat invocation, role recommendation, and anti-surveillance refusal screenshots.

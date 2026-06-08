@@ -20,6 +20,7 @@
     "validate:evidence": "node scripts/validate-evidence.mjs evidence",
     "validate:copilot": "node scripts/validate-copilot-package.mjs",
     "validate:sensitive": "node scripts/validate-evidence.mjs evidence",
+    "audit:final-readiness": "node scripts/audit-final-readiness.mjs",
     "screenshots": "playwright test --config tests/playwright.config.ts",
     "validate": "openspec validate build-copilot-capability-launchpad --strict && npm run typecheck && npm run test && npm run validate:evidence && npm run validate:copilot",
     "container:build": "bash scripts/container-build.sh",
