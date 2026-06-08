@@ -278,6 +278,22 @@ nav button.active,
   margin-inline-end: auto;
 }
 
+.demo-controls .data-source {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  margin-inline-end: 0;
+  padding: 5px 9px;
+}
+
+.demo-controls .data-source.live {
+  color: var(--teal);
+}
+
+.demo-controls .data-source.fallback {
+  color: var(--amber);
+}
+
 .demo-controls button,
 .approval-bar button,
 .action-button {

@@ -32,6 +32,32 @@ export function createServer(store = new RegistryStore()) {
     response.json({ ok: true, tools: toolNames });
   });
 
+  app.get("/registry/snapshot", (request, response) => {
+    const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
+    const actor = resolveActor(store.read(), actorId);
+    if (!actor) {
+      response.status(401).json({ ok: false, error: { message: "Unauthorized request." } });
+      return;
+    }
+    if (!["reviewer", "admin"].includes(actor.role)) {
+      response.status(403).json({ ok: false, error: { message: "Reviewer role required." } });
+      return;
+    }
+    const registry = store.read();
+    response.json({
+      ok: true,
+      registry: {
+        capabilities: registry.capabilities,
+        proposals: registry.proposals,
+        riskReviews: registry.riskReviews,
+        reviewItems: registry.reviewItems,
+        releasePackets: registry.releasePackets,
+        mcpActivity: registry.mcpActivity,
+        auditEvents: registry.auditEvents
+      }
+    });
+  });
+
   app.get("/openapi.json", (request, response) => {
     const forwardedProto = request.get("x-forwarded-proto")?.split(",")[0]?.trim();
     const origin = `${forwardedProto || request.protocol}://${request.get("host")}`;

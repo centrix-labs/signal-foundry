@@ -17,6 +17,7 @@ import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
 import { AccessGate } from "./AccessGate";
 import { getStaticWebAppUser, type StaticWebAppUser } from "./auth";
+import { useDashboardData } from "./liveData";
 
 const firstCapability = capabilities[0];
 
@@ -24,33 +25,39 @@ if (!firstCapability) {
   throw new Error("Foundry Floor requires at least one synthetic capability.");
 }
 
-function findCapability(id: string): Capability {
-  return capabilities.find((item) => item.id === id) ?? firstCapability;
+function findCapability(id: string, records: readonly Capability[]): Capability {
+  return records.find((item) => item.id === id) ?? records[0] ?? firstCapability;
 }
 
-function useDemoState() {
+function useDemoState(baseRecords: readonly Capability[]) {
   const [activeView, setActiveView] = useState<ViewKey>("floor");
   const [selectedId, setSelectedId] = useState(firstCapability.id);
   const [demoStep, setDemoStep] = useState(3);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, CapabilityStatus>>({});
   const [decisionState, setDecisionState] = useState<"pending" | "saved" | "changes_requested" | "released">("pending");
   const records = useMemo(
-    () => capabilities.map((item) => ({ ...item, status: statusOverrides[item.id] ?? item.status })),
-    [statusOverrides]
+    () => baseRecords.map((item) => ({ ...item, status: statusOverrides[item.id] ?? item.status })),
+    [baseRecords, statusOverrides]
   );
-  const selected = useMemo(() => records.find((item) => item.id === selectedId) ?? findCapability(selectedId), [records, selectedId]);
+  const selected = useMemo(() => findCapability(selectedId, records), [records, selectedId]);
+
+  useEffect(() => {
+    if (!records.some((item) => item.id === selectedId)) {
+      setSelectedId(records[0]?.id ?? firstCapability.id);
+    }
+  }, [records, selectedId]);
 
   function advanceDemo() {
     setDemoStep((step) => {
       const next = step >= 5 ? 0 : step + 1;
-      const target = capabilities[next % capabilities.length] ?? firstCapability;
+      const target = records[next % records.length] ?? firstCapability;
       setSelectedId(target.id);
       return next;
     });
   }
 
   function resetDemo() {
-    setSelectedId(firstCapability.id);
+    setSelectedId(records[0]?.id ?? firstCapability.id);
     setDemoStep(0);
     setActiveView("floor");
     setStatusOverrides({});
@@ -99,12 +106,20 @@ function FoundryFloor({
   records,
   selected,
   selectedId,
-  onSelect
+  onSelect,
+  activity,
+  packets,
+  reviews,
+  riskReviews
 }: {
   records: readonly Capability[];
   selected: Capability;
   selectedId: string;
   onSelect: (id: string) => void;
+  activity: ReturnType<typeof useDashboardData>["mcpActivity"];
+  packets: ReturnType<typeof useDashboardData>["releasePackets"];
+  reviews: ReturnType<typeof useDashboardData>["reviewItems"];
+  riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
 }) {
   return (
     <div className="floor-grid">
@@ -125,21 +140,31 @@ function FoundryFloor({
         </section>
       </div>
       <div className="right-stack">
-        <RiskGate selected={selected} />
-        <ReleasePacketDrawer selected={selected} />
+        <RiskGate selected={selected} riskReviews={riskReviews} />
+        <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
       </div>
-      <McpActivityRail />
+      <McpActivityRail items={activity} />
     </div>
   );
 }
 
-function AtlasView({ records, selectedId, onSelect }: { records: readonly Capability[]; selectedId: string; onSelect: (id: string) => void }) {
+function AtlasView({
+  records,
+  selectedId,
+  onSelect,
+  activity
+}: {
+  records: readonly Capability[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+  activity: ReturnType<typeof useDashboardData>["mcpActivity"];
+}) {
   return (
     <div className="atlas-view">
       <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} />
       <div className="atlas-support">
-        <McpActivityRail compact />
-        <ReleasePipeline selected={records.find((item) => item.id === selectedId) ?? findCapability(selectedId)} />
+        <McpActivityRail compact items={activity} />
+        <ReleasePipeline selected={findCapability(selectedId, records)} />
       </div>
     </div>
   );
@@ -164,21 +189,6 @@ function PipelineView({ records, selected }: { records: readonly Capability[]; s
 }
 
 export function App() {
-  const {
-    activeView,
-    setActiveView,
-    selectedId,
-    setSelectedId,
-    selected,
-    records,
-    decisionState,
-    demoStep,
-    advanceDemo,
-    resetDemo,
-    requestChanges,
-    saveForLater,
-    approveRelease
-  } = useDemoState();
   const [hasAccess, setHasAccess] = useState(() => window.sessionStorage.getItem("signal-foundry-access") === "granted");
   const [authUser, setAuthUser] = useState<StaticWebAppUser | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -210,24 +220,69 @@ export function App() {
     return <LoginScreen theme={theme} onThemeChange={setTheme} isCheckingAuth={isCheckingAuth} />;
   }
 
+  return <AuthenticatedWorkspace authUser={authUser} theme={theme} onThemeChange={setTheme} />;
+}
+
+function AuthenticatedWorkspace({
+  authUser,
+  theme,
+  onThemeChange
+}: {
+  authUser: StaticWebAppUser;
+  theme: "dark" | "light";
+  onThemeChange: (theme: "dark" | "light") => void;
+}) {
+  const dashboardData = useDashboardData();
+  const {
+    activeView,
+    setActiveView,
+    selectedId,
+    setSelectedId,
+    selected,
+    records,
+    decisionState,
+    demoStep,
+    advanceDemo,
+    resetDemo,
+    requestChanges,
+    saveForLater,
+    approveRelease
+  } = useDemoState(dashboardData.records);
+
   return (
     <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
       <LeftRail activeView={activeView} onView={(view) => setActiveView(view as ViewKey)} />
       <div className="workspace">
-        <TopBar theme={theme} onThemeChange={setTheme} user={authUser} />
+        <TopBar theme={theme} onThemeChange={onThemeChange} user={authUser} />
         <div className="demo-controls">
           <span>Checkpoint D / Step {demoStep + 1}: {statusLabels[selected.status]}</span>
+          <span className={`data-source ${dashboardData.isLive ? "live" : "fallback"}`}>
+            {dashboardData.isLive ? "Live registry synced" : "Sample demo fallback"}
+          </span>
           <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>
           <button type="button" className="primary" onClick={advanceDemo}>Advance story <ChevronRight size={15} /></button>
         </div>
         {activeView === "floor" ? (
-          <FoundryFloor records={records} selected={selected} selectedId={selectedId} onSelect={setSelectedId} />
+          <FoundryFloor
+            records={records}
+            selected={selected}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            activity={dashboardData.mcpActivity}
+            packets={dashboardData.releasePackets}
+            reviews={dashboardData.reviewItems}
+            riskReviews={dashboardData.riskReviews}
+          />
         ) : null}
-        {activeView === "atlas" ? <AtlasView records={records} selectedId={selectedId} onSelect={setSelectedId} /> : null}
+        {activeView === "atlas" ? <AtlasView records={records} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}
         {activeView === "pipeline" ? <PipelineView records={records} selected={selected} /> : null}
         {activeView === "review" ? (
           <ReviewQueue
             records={records}
+            reviews={dashboardData.reviewItems}
+            packets={dashboardData.releasePackets}
+            riskReviews={dashboardData.riskReviews}
+            activity={dashboardData.mcpActivity}
             selectedId={selectedId}
             decisionState={decisionState}
             onSelect={setSelectedId}
@@ -237,7 +292,7 @@ export function App() {
           />
         ) : null}
         {activeView === "mirror" ? <CopilotMirror turns={copilotTurns} selected={selected} /> : null}
-        {activeView === "executive" ? <ExecutiveView selected={selected} /> : null}
+        {activeView === "executive" ? <ExecutiveView selected={selected} reviews={dashboardData.reviewItems} events={dashboardData.auditEvents} /> : null}
       </div>
     </main>
   );

@@ -170,6 +170,45 @@ describe("Signal Foundry MCP tools", () => {
     }
   });
 
+  it("serves authorized registry snapshots without actor records", async () => {
+    const store = testStore();
+    const reviewer = store.read().actors[1];
+    executeTool(store, "create_capability_proposal", proposalBody("idem-snapshot-create"), store.read().actors[0]);
+    const proposalId = store.read().proposals[0]?.id;
+    if (!proposalId || !reviewer) {
+      throw new Error("Expected proposal and reviewer fixtures.");
+    }
+    executeTool(store, "submit_capability_review", {
+      tenantId: "tenant-contoso",
+      projectId: "renewals-hackathon",
+      idempotencyKey: "idem-snapshot-review",
+      proposalId,
+      reviewer: reviewer.name,
+      dueDate: "2026-06-08",
+      confirmed: true
+    }, reviewer);
+    const server = createServer(store).listen(0);
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected local test port.");
+    }
+    const baseUrl = `http://127.0.0.1:${address.port}`;
+    try {
+      const rejected = await fetch(`${baseUrl}/registry/snapshot`);
+      const employeeRejected = await fetch(`${baseUrl}/registry/snapshot`, { headers: { "x-sf-actor-id": "actor-priya" } });
+      const accepted = await fetch(`${baseUrl}/registry/snapshot`, { headers: { "x-sf-actor-id": "actor-alex" } });
+      const body = await accepted.json();
+      expect(rejected.status).toBe(401);
+      expect(employeeRejected.status).toBe(403);
+      expect(accepted.status).toBe(200);
+      expect(body.registry.reviewItems).toHaveLength(1);
+      expect(body.registry.proposals[0].id).toBe(proposalId);
+      expect(body.registry.actors).toBeUndefined();
+    } finally {
+      server.close();
+    }
+  });
+
   it("accepts demo bearer actor tokens without exposing token content", async () => {
     const store = testStore();
     const server = createServer(store).listen(0);

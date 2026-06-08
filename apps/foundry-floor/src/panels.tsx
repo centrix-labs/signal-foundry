@@ -11,7 +11,7 @@ import {
   Sparkles,
   X
 } from "lucide-react";
-import type { Capability, McpActivity, ReleasePacket, ReviewItem } from "@signal-foundry/shared";
+import type { AuditEvent, Capability, McpActivity, ReleasePacket, ReviewItem, RiskReview } from "@signal-foundry/shared";
 import {
   auditEvents,
   capabilities,
@@ -140,8 +140,9 @@ export function CapabilityList({
   );
 }
 
-export function RiskGate({ selected }: { selected: Capability }) {
+export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: Capability; riskReviews?: readonly RiskReview[] }) {
   const isBlocked = selected.status === "blocked";
+  const selectedRisk = riskReviews.find((item) => item.proposalId === selected.id) ?? riskReview;
   return (
     <section className="panel risk-gate" aria-label="Risk Gate">
       <div className="panel-heading">
@@ -155,7 +156,7 @@ export function RiskGate({ selected }: { selected: Capability }) {
         <strong>{isBlocked ? "0" : "18"}</strong>
         <span>{isBlocked ? "blocked checks" : "checks evaluated"}</span>
       </div>
-      <p>{isBlocked ? "Monitoring-style requests are refused. Convert the ask into a workflow-level capability before review." : riskReview.rationale}</p>
+      <p>{isBlocked ? "Monitoring-style requests are refused. Convert the ask into a workflow-level capability before review." : selectedRisk.rationale}</p>
       <div className="checklist">
         {controlChecks.map((check) => (
           <details key={check.label} open={check.status !== "passed"}>
@@ -172,11 +173,16 @@ export function RiskGate({ selected }: { selected: Capability }) {
   );
 }
 
-export function ReleasePacketDrawer({ selected }: { selected: Capability }) {
-  const packet = releasePackets.find((item) => item.capabilityId === selected.id) ?? releasePackets[0];
-  if (!packet) {
-    return null;
-  }
+export function ReleasePacketDrawer({
+  selected,
+  packets = releasePackets,
+  reviews = reviewItems
+}: {
+  selected: Capability;
+  packets?: readonly ReleasePacket[];
+  reviews?: readonly ReviewItem[];
+}) {
+  const packet = packets.find((item) => item.capabilityId === selected.id) ?? makePendingPacket(selected, reviews);
   return (
     <section className="panel release-packet" aria-label="Release Packet">
       <div className="panel-heading">
@@ -208,8 +214,8 @@ export function ReleasePacketDrawer({ selected }: { selected: Capability }) {
   );
 }
 
-export function McpActivityRail({ compact = false }: { compact?: boolean }) {
-  const items: McpActivity[] = compact ? mcpActivity.slice(-4) : mcpActivity.slice().reverse();
+export function McpActivityRail({ compact = false, items = mcpActivity }: { compact?: boolean; items?: readonly McpActivity[] }) {
+  const visibleItems = compact ? items.slice(0, 4) : items;
   return (
     <aside className={`panel mcp-rail ${compact ? "compact" : ""}`} aria-label="MCP Activity">
       <div className="panel-heading">
@@ -219,7 +225,7 @@ export function McpActivityRail({ compact = false }: { compact?: boolean }) {
         </div>
         <span className="live-dot">Live</span>
       </div>
-      {items.map((item) => (
+      {visibleItems.map((item) => (
         <article key={item.id} className={item.status}>
           <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
           <div>
@@ -235,6 +241,10 @@ export function McpActivityRail({ compact = false }: { compact?: boolean }) {
 
 export function ReviewQueue({
   records = capabilities,
+  reviews = reviewItems,
+  packets = releasePackets,
+  riskReviews = [riskReview],
+  activity = mcpActivity,
   selectedId,
   decisionState,
   onSelect,
@@ -243,6 +253,10 @@ export function ReviewQueue({
   onApproveRelease
 }: {
   records?: readonly Capability[];
+  reviews?: readonly ReviewItem[];
+  packets?: readonly ReleasePacket[];
+  riskReviews?: readonly RiskReview[];
+  activity?: readonly McpActivity[];
   selectedId: string;
   decisionState: "pending" | "saved" | "changes_requested" | "released";
   onSelect: (id: string) => void;
@@ -262,7 +276,7 @@ export function ReviewQueue({
           </div>
           <span className="status-pill pending">{pendingCount} pending</span>
         </div>
-        {reviewItems.map((item) => {
+        {reviews.map((item) => {
           const capability = records.find((record) => record.id === item.proposalId) ?? capabilities[0];
           if (!capability) {
             return null;
@@ -279,9 +293,9 @@ export function ReviewQueue({
           );
         })}
       </div>
-      <RiskGate selected={selected} />
-      <ReleasePacketDrawer selected={selected} />
-      <McpActivityRail compact />
+      <RiskGate selected={selected} riskReviews={riskReviews} />
+      <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
+      <McpActivityRail compact items={activity} />
       <div className={`decision-banner ${decisionState}`}>
         <strong>{decisionCopy[decisionState].title}</strong>
         <span>{decisionCopy[decisionState].body}</span>
@@ -342,7 +356,15 @@ export function CopilotMirror({ turns, selected }: { turns: CopilotTurn[]; selec
   );
 }
 
-export function ExecutiveView({ selected }: { selected: Capability }) {
+export function ExecutiveView({
+  selected,
+  reviews = reviewItems,
+  events = auditEvents
+}: {
+  selected: Capability;
+  reviews?: readonly ReviewItem[];
+  events?: readonly AuditEvent[];
+}) {
   return (
     <section className="executive-view">
       <div className="executive-hero">
@@ -354,7 +376,7 @@ export function ExecutiveView({ selected }: { selected: Capability }) {
         <div className="panel">
           <ShieldCheck size={24} />
           <strong>Human review blocks release</strong>
-          <span>{reviewItems.filter((item: ReviewItem) => item.status === "pending").length} pending decisions</span>
+          <span>{reviews.filter((item: ReviewItem) => item.status === "pending").length} pending decisions</span>
         </div>
         <div className="panel">
           <Sparkles size={24} />
@@ -374,7 +396,7 @@ export function ExecutiveView({ selected }: { selected: Capability }) {
             <h2>Sanitized evidence</h2>
           </div>
         </div>
-        {auditEvents.map((event) => (
+        {events.map((event) => (
           <div key={event.id}>
             <span>{event.actor}</span>
             <strong>{event.action}</strong>
@@ -386,4 +408,21 @@ export function ExecutiveView({ selected }: { selected: Capability }) {
       <button type="button" className="primary action-button">Open release packet <ChevronRight size={16} /></button>
     </section>
   );
+}
+
+function makePendingPacket(selected: Capability, reviews: readonly ReviewItem[]): ReleasePacket {
+  const review = reviews.find((item) => item.proposalId === selected.id);
+  return {
+    id: `packet-${selected.id}`,
+    capabilityId: selected.id,
+    version: selected.version,
+    owner: selected.owner,
+    approvedAudience: selected.intendedAudience,
+    approvedSourceTypes: selected.approvedSourceTypes,
+    requiredHumanReview: true,
+    usageGuidance: ["Hold release until reviewer approval", "Use approved summaries only", "Keep correlation IDs sanitized"],
+    reviewer: review?.reviewer ?? "Pending reviewer assignment",
+    releasedAt: "Pending reviewer approval",
+    correlationId: review?.correlationId ?? `corr-${selected.id}`
+  };
 }

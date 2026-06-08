@@ -196,7 +196,7 @@
       "type": "RemoteMCPServer",
       "auth": {
         "type": "OAuthPluginVault",
-        "reference_id": "SIGNAL_FOUNDRY_ENTRA_OAUTH_REFERENCE_ID"
+        "reference_id": "N2FmZGRiZDMtZjM0ZS00N2YzLThmNTQtNWMwOTBkZjY2NjNhIyM5OTUyODk0ZS02OGFlLTQwOTItYTE3ZC0xYzBmNDFjYTZlYjk="
       },
       "spec": {
         "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp",
