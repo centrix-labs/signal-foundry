@@ -3,11 +3,11 @@
   "name_for_human": "Signal Foundry",
   "namespace": "SignalFoundry",
   "description_for_human": "Govern Copilot workflow proposals, risk review, approval, release, and audit evidence.",
-  "description_for_model": "Use Signal Foundry to search approved Copilot capabilities, recommend role-relevant workflow ideas, create proposals, score risk, submit review, approve or reject proposals, release approved capabilities, generate release packets, generate capability maps, and list audit-safe MCP activity. Do not use it for employee monitoring or productivity scoring.",
+  "description_for_model": "Use Signal Foundry to search approved Copilot capabilities, recommend role-relevant workflow ideas from permission-aware Work IQ summaries, create proposals, score risk, submit review, approve or reject proposals, release approved capabilities, generate release packets, generate capability maps, and list audit-safe MCP activity. Work IQ inputs must be sanitized summaries only, never raw Microsoft 365 content or personal data. Do not use it for employee monitoring or productivity scoring. Never claim a registry write, audit event, or correlation ID exists unless a tool returned ok:true for that operation.",
   "functions": [
     {
       "name": "search_capabilities",
-      "description": "Search approved or proposed capabilities by role, department, stage, risk, or keyword.",
+      "description": "Search approved or proposed capabilities by role, department, stage, risk, or keyword. Return only sanitized summaries and the actual tool correlationId.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -24,7 +24,7 @@
     },
     {
       "name": "recommend_capabilities_for_role",
-      "description": "Recommend approved and candidate capabilities for a role using synthetic or permission-aware work summaries.",
+      "description": "Recommend approved and candidate capabilities for a role using synthetic or permission-aware Work IQ summaries only. Do not include raw emails, chats, documents, transcripts, customer records, PII, or productivity scoring.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -42,7 +42,7 @@
     },
     {
       "name": "create_capability_proposal",
-      "description": "Create a governed proposal from a selected use case.",
+      "description": "Create a governed proposal from a selected use case. Requires explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -58,7 +58,7 @@
     },
     {
       "name": "score_capability_risk",
-      "description": "Write a deterministic risk review for a proposal.",
+      "description": "Write a deterministic risk review for a proposal. Requires explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -75,7 +75,7 @@
     },
     {
       "name": "submit_capability_review",
-      "description": "Route a scored proposal to a reviewer.",
+      "description": "Route a scored proposal to a reviewer. Requires explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -91,7 +91,7 @@
     },
     {
       "name": "approve_capability",
-      "description": "Approve a capability proposal for release.",
+      "description": "Approve a capability proposal for release. Requires reviewer authorization, explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -107,7 +107,7 @@
     },
     {
       "name": "reject_capability",
-      "description": "Reject a capability proposal with a reason and next action.",
+      "description": "Reject a capability proposal with a reason and next action. Requires reviewer authorization, explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -123,7 +123,7 @@
     },
     {
       "name": "release_capability",
-      "description": "Release an approved capability as a reusable playbook.",
+      "description": "Release an approved capability as a reusable playbook. Requires prior approval, explicit user confirmation, confirmed:true, idempotencyKey, and correlationId. Only report success from an ok:true tool result.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",
@@ -175,7 +175,7 @@
     },
     {
       "name": "list_mcp_activity",
-      "description": "Return audit-safe MCP activity for the Foundry Floor.",
+      "description": "Return audit-safe MCP activity for the Foundry Floor. Use this to verify writes before claiming an audit trail changed.",
       "capabilities": {
         "confirmation": {
           "type": "AdaptiveCard",

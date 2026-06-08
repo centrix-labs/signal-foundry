@@ -1,23 +1,11 @@
 import cors from "cors";
 import express from "express";
-import type { ToolName } from "@signal-foundry/shared";
+import { mcpToolMetadata, type ToolName } from "@signal-foundry/shared";
 import { actorIdFromBearer, resolveActor } from "./auth";
 import { RegistryStore } from "./store";
 import { executeTool, toolNames } from "./tools";
 
-const mcpToolDescriptions: Record<ToolName, string> = {
-  search_capabilities: "Search approved or proposed Signal Foundry capabilities.",
-  recommend_capabilities_for_role: "Recommend governed Copilot capabilities for a role.",
-  create_capability_proposal: "Create a governed capability proposal.",
-  score_capability_risk: "Score deterministic capability risk.",
-  submit_capability_review: "Submit a proposal for human review.",
-  approve_capability: "Approve a reviewed capability.",
-  reject_capability: "Reject a proposal with a reason.",
-  release_capability: "Release an approved capability.",
-  generate_release_packet: "Generate an audit-safe release packet.",
-  generate_capability_map: "Generate Signal Atlas graph data.",
-  list_mcp_activity: "List audit-safe MCP activity."
-};
+const readToolNames: ToolName[] = ["search_capabilities", "recommend_capabilities_for_role", "generate_release_packet", "generate_capability_map", "list_mcp_activity"];
 
 export function createServer(store = new RegistryStore()) {
   const app = express();
@@ -75,13 +63,13 @@ export function createServer(store = new RegistryStore()) {
           {
             post: {
               operationId: name,
-              summary: mcpToolDescriptions[name],
-              "x-openai-isConsequential": !["search_capabilities", "recommend_capabilities_for_role", "generate_release_packet", "generate_capability_map", "list_mcp_activity"].includes(name),
+              summary: mcpToolMetadata.find((tool) => tool.name === name)?.description ?? name,
+              "x-openai-isConsequential": !readToolNames.includes(name),
               requestBody: {
                 required: true,
                 content: {
                   "application/json": {
-                    schema: { type: "object", additionalProperties: true }
+                    schema: mcpToolMetadata.find((tool) => tool.name === name)?.inputSchema ?? { type: "object", additionalProperties: true }
                   }
                 }
               },
@@ -125,11 +113,7 @@ export function createServer(store = new RegistryStore()) {
         jsonrpc: "2.0",
         id,
         result: {
-          tools: toolNames.map((name) => ({
-            name,
-            description: mcpToolDescriptions[name],
-            inputSchema: { type: "object", additionalProperties: true }
-          }))
+          tools: mcpToolMetadata
         }
       });
       return;

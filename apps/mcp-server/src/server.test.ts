@@ -261,7 +261,11 @@ describe("Signal Foundry MCP tools", () => {
         })
       });
       expect(listed.status).toBe(200);
-      expect((await listed.json()).result.tools).toHaveLength(11);
+      const toolList = await listed.json();
+      expect(toolList.result.tools).toHaveLength(11);
+      const submitTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "submit_capability_review");
+      expect(submitTool.inputSchema.required).toContain("correlationId");
+      expect(submitTool.inputSchema.required).toContain("confirmed");
       expect(called.status).toBe(200);
       expect((await called.json()).result.isError).toBe(false);
     } finally {
