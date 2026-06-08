@@ -1,6 +1,6 @@
 # Deployed Smoke Results
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 ## Live URLs
 
@@ -9,14 +9,15 @@ Date: 2026-06-07
 
 ## Runtime Image
 
-- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:finish-build-20260607-1139`
-- Digest: `sha256:dc9e0c2b5dcc854f9c148d213fc543ee391949f0e6b6fa7306a595a9c16f74fb`
-- Revision: `ca-signal-foundry-mcp--0000007`
+- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:asteria-defaults-20260608-1132`
+- Digest: `sha256:1157db018146f0d011e111515c6b9dde7c2343fa9501e5249c103276e24b5cab`
+- Revision: `ca-signal-foundry-mcp--0000014`
 
 ## Smoke Checks
 
 - Health endpoint: passed.
 - Tool-list endpoint: passed with 11 tools.
+- MCP tool metadata: passed with `Asteria Dynamics`, `tenant-asteria-dynamics`, and `revenue-ops-launchpad` defaults.
 - OpenAPI endpoint: passed with HTTPS server URL and 11 tool paths.
 - MCP JSON-RPC `tools/list`: passed with 11 tools.
 - MCP JSON-RPC `tools/call`: passed for `search_capabilities`.
@@ -27,6 +28,7 @@ Date: 2026-06-07
 - Deterministic risk gate: passed; medium sensitivity plus customer data scored `medium`.
 - Azure Table registry mirror: passed for `Actors`, `Capabilities`, and `McpActivity` table rows.
 - Static Web Apps load: passed with HTTP 200.
+- Static Web Apps asset check: passed with the synthetic Asteria login placeholder and Asteria defaults.
 - Log Analytics sample: captured sanitized audit event with correlation ID only.
 - Budget: resource-group cost budget created with redacted evidence.
 - Key Vault: Static Web Apps deployment token stored; evidence contains metadata only.

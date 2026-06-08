@@ -1,6 +1,6 @@
 # Final Summary
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 ## Local Commands
 
@@ -28,12 +28,13 @@ Date: 2026-06-07
 - `90d1b2f` Document Copilot tenant access retry
 - Add branded Signal Foundry login page
 - Finish interactive review, risk, atlas, registry mirror, and Azure deployment hardening
+- `e392865` Align demo defaults with Asteria Dynamics
 
 ## Deployment Checkpoints
 
 - Azure resource group: `rg-signal-foundry-hackathon`
-- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:finish-build-20260607-1139`
-- Container revision: `ca-signal-foundry-mcp--0000007`
+- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:asteria-defaults-20260608-1132`
+- Container revision: `ca-signal-foundry-mcp--0000014`
 - Static Web Apps site: `swa-signal-foundry`
 - Azure Table registry mirror: `Actors`, `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`
 - Budget: `signal-foundry-hackathon-budget`
