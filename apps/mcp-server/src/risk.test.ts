@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { demoScope } from "@signal-foundry/shared";
 import { scoreRisk } from "./risk";
 
 const baseRiskInput = {
-  tenantId: "tenant-contoso",
-  projectId: "renewals-hackathon",
+  tenantId: demoScope.tenantId,
+  projectId: demoScope.projectId,
   idempotencyKey: "idem-risk-test",
   proposalId: "prop-risk-test",
   dataSensitivity: "low",

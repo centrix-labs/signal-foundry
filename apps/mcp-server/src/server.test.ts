@@ -1,6 +1,7 @@
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { demoScope } from "@signal-foundry/shared";
 import { describe, expect, it } from "vitest";
 import { createServer } from "./server";
 import { RegistryStore } from "./store";
@@ -15,8 +16,8 @@ describe("Signal Foundry MCP tools", () => {
     const store = testStore();
     const actor = store.read().actors[0];
     const result = executeTool(store, "recommend_capabilities_for_role", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       role: "Enterprise Account Manager",
       department: "Customer Success",
       workSignalSummary: "Synthetic renewal, meeting, and support summaries.",
@@ -31,8 +32,8 @@ describe("Signal Foundry MCP tools", () => {
     const store = testStore();
     const actor = store.read().actors[0];
     const result = executeTool(store, "create_capability_proposal", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-test-no-confirm",
       title: "Renewal Brief Generator",
       description: "Create a governed renewal brief from approved summaries.",
@@ -54,8 +55,8 @@ describe("Signal Foundry MCP tools", () => {
     const created = executeTool(store, "create_capability_proposal", proposalBody("idem-flow-create"), employee);
     const proposalId = created.body.proposalId as string;
     const risk = executeTool(store, "score_capability_risk", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-risk",
       proposalId,
       dataSensitivity: "medium",
@@ -67,8 +68,8 @@ describe("Signal Foundry MCP tools", () => {
       confirmed: true
     }, reviewer);
     const review = executeTool(store, "submit_capability_review", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-review",
       proposalId,
       reviewer: "Alex Kim",
@@ -76,8 +77,8 @@ describe("Signal Foundry MCP tools", () => {
       confirmed: true
     }, reviewer);
     const approved = executeTool(store, "approve_capability", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-approve",
       proposalId,
       reviewer: "Alex Kim",
@@ -85,8 +86,8 @@ describe("Signal Foundry MCP tools", () => {
       confirmed: true
     }, reviewer);
     const released = executeTool(store, "release_capability", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-release",
       capabilityId: approved.body.capabilityId,
       releasedBy: "Alex Kim",
@@ -104,8 +105,8 @@ describe("Signal Foundry MCP tools", () => {
     const store = testStore();
     const employee = store.read().actors[0];
     const result = executeTool(store, "approve_capability", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-bad-approve",
       proposalId: "prop-missing",
       reviewer: "Priya Shah",
@@ -119,8 +120,8 @@ describe("Signal Foundry MCP tools", () => {
   it("records unauthorized attempts without raw request content", () => {
     const store = testStore();
     const result = executeTool(store, "approve_capability", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-unauth-audit",
       proposalId: "prop-missing",
       reviewer: "Unknown",
@@ -158,7 +159,7 @@ describe("Signal Foundry MCP tools", () => {
       const rejected = await fetch(`${baseUrl}/tools/search_capabilities`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tenantId: "tenant-contoso", projectId: "renewals-hackathon" })
+        body: JSON.stringify({ tenantId: demoScope.tenantId, projectId: demoScope.projectId })
       });
       expect(health.status).toBe(200);
       expect((await tools.json()).tools).toContain("create_capability_proposal");
@@ -179,8 +180,8 @@ describe("Signal Foundry MCP tools", () => {
       throw new Error("Expected proposal and reviewer fixtures.");
     }
     executeTool(store, "submit_capability_review", {
-      tenantId: "tenant-contoso",
-      projectId: "renewals-hackathon",
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
       idempotencyKey: "idem-snapshot-review",
       proposalId,
       reviewer: reviewer.name,
@@ -223,7 +224,7 @@ describe("Signal Foundry MCP tools", () => {
           "authorization": "Bearer demo-actor-alex",
           "content-type": "application/json"
         },
-        body: JSON.stringify({ tenantId: "tenant-contoso", projectId: "renewals-hackathon" })
+        body: JSON.stringify({ tenantId: demoScope.tenantId, projectId: demoScope.projectId })
       });
       const body = await response.json();
       expect(response.status).toBe(200);
@@ -256,7 +257,7 @@ describe("Signal Foundry MCP tools", () => {
           method: "tools/call",
           params: {
             name: "search_capabilities",
-            arguments: { tenantId: "tenant-contoso", projectId: "renewals-hackathon" }
+            arguments: { tenantId: demoScope.tenantId, projectId: demoScope.projectId }
           }
         })
       });
@@ -295,8 +296,8 @@ describe("Signal Foundry MCP tools", () => {
 
 function proposalBody(idempotencyKey: string) {
   return {
-    tenantId: "tenant-contoso",
-    projectId: "renewals-hackathon",
+    tenantId: demoScope.tenantId,
+    projectId: demoScope.projectId,
     idempotencyKey,
     title: "Renewal Brief Generator",
     description: "Create a governed renewal brief from approved account and workflow summaries.",

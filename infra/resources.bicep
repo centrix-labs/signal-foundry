@@ -209,6 +209,18 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               value: 'demo'
             }
             {
+              name: 'SIGNAL_FOUNDRY_COMPANY_NAME'
+              value: 'Asteria Dynamics'
+            }
+            {
+              name: 'SIGNAL_FOUNDRY_TENANT_ID'
+              value: 'tenant-asteria-dynamics'
+            }
+            {
+              name: 'SIGNAL_FOUNDRY_PROJECT_ID'
+              value: 'revenue-ops-launchpad'
+            }
+            {
               name: 'SIGNAL_FOUNDRY_REGISTRY_MODE'
               value: 'azure-table'
             }

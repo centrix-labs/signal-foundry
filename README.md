@@ -4,6 +4,8 @@ Signal Foundry turns raw work signals and employee AI ideas into governed, risk-
 
 Brand promise: `Raw Signals | Forged with Intelligence | Approved Workflows`
 
+Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynamics`, project `revenue-ops-launchpad`.
+
 ## Live Demo
 
 - Foundry Floor: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`

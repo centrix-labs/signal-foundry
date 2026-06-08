@@ -23,7 +23,7 @@
     {
       "id": "cap-renewal-brief",
       "title": "Renewal Brief Generator",
-      "description": "Creates an audit-safe renewal prep brief from approved account, meeting, and opportunity summaries.",
+      "description": "Creates an audit-safe renewal prep brief for Asteria Dynamics from approved account, meeting, and opportunity summaries.",
       "role": "Enterprise Account Manager",
       "department": "Customer Success",
       "owner": "Priya Shah",
@@ -38,7 +38,7 @@
         "Risk summary",
         "Next-best actions"
       ],
-      "sourceSummary": "Uses approved summaries from CRM, meetings, and support systems. No raw message bodies.",
+      "sourceSummary": "Uses approved Asteria Dynamics summaries from CRM, meetings, and support systems. No raw message bodies.",
       "approvedSourceTypes": [
         "CRM summary",
         "Meeting summary",
@@ -52,7 +52,7 @@
     {
       "id": "cap-escalation-brief",
       "title": "Executive Escalation Brief",
-      "description": "Assembles concise executive context for high-risk customer renewals.",
+      "description": "Assembles concise executive context for high-risk Asteria Dynamics customer renewals.",
       "role": "Enterprise Account Manager",
       "department": "Customer Success",
       "owner": "Alex Kim",
@@ -65,7 +65,7 @@
         "Escalation brief",
         "Decision asks"
       ],
-      "sourceSummary": "Uses summarized account and risk signals only.",
+      "sourceSummary": "Uses summarized Asteria Dynamics account and risk signals only.",
       "approvedSourceTypes": [
         "CRM summary",
         "Risk review summary"
@@ -89,7 +89,7 @@
       "status": "success",
       "timestamp": "2026-06-07T09:00:00.000Z",
       "correlationId": "corr-seed-001",
-      "summary": "Capability registry searched for Customer Success renewal workflows."
+      "summary": "Asteria Dynamics capability registry searched for Customer Success renewal workflows."
     }
   ],
   "auditEvents": []

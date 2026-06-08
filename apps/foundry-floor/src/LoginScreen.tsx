@@ -59,7 +59,7 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
             <span>Email</span>
             <span className="login-input">
               <Mail size={16} />
-              <input type="email" autoComplete="email" placeholder="you@company.com" aria-label="Email" />
+              <input type="email" autoComplete="email" placeholder="you@asteria.example" aria-label="Email" />
             </span>
           </label>
 

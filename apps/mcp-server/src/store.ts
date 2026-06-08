@@ -1,11 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { demoRegistry, type SignalFoundryRegistry } from "@signal-foundry/shared";
+import { demoRegistry, demoScope, type SignalFoundryRegistry } from "@signal-foundry/shared";
 import { createTableStorageAdapterFromEnv, type TableStorageRegistryAdapter } from "./tableStorageAdapter";
 
 const defaultPath = "/Users/mattgraves/Documents/hackathon-enterprise/data/signal-foundry-seed.json";
-const defaultTenantId = "tenant-contoso";
-const defaultProjectId = "renewals-hackathon";
 
 export class RegistryStore {
   private registry: SignalFoundryRegistry;
@@ -58,8 +56,8 @@ export class RegistryStore {
       return;
     }
     const snapshot = structuredClone(this.registry);
-    const tenantId = process.env["SIGNAL_FOUNDRY_TENANT_ID"] ?? defaultTenantId;
-    const projectId = process.env["SIGNAL_FOUNDRY_PROJECT_ID"] ?? defaultProjectId;
+    const tenantId = process.env["SIGNAL_FOUNDRY_TENANT_ID"] ?? demoScope.tenantId;
+    const projectId = process.env["SIGNAL_FOUNDRY_PROJECT_ID"] ?? demoScope.projectId;
     this.pendingMirror = this.pendingMirror
       .then(async () => {
         await this.tableAdapter?.ensureTables();

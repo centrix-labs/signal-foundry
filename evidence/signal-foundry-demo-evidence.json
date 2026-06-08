@@ -1,6 +1,9 @@
 {
   "schemaVersion": "2026-06-07",
   "project": "Signal Foundry",
+  "demoCompany": "Asteria Dynamics",
+  "demoTenantId": "tenant-asteria-dynamics",
+  "demoProjectId": "revenue-ops-launchpad",
   "demoDomain": "Customer success renewals",
   "syntheticOnly": true,
   "privacyPosition": {
@@ -52,7 +55,7 @@
         {
           "id": "discover",
           "surface": "Copilot Chat",
-          "prompt": "I manage enterprise renewals. What Copilot capabilities could help me reduce renewal risk this week?",
+          "prompt": "Using Asteria Dynamics demo defaults, I manage enterprise renewals. What Copilot capabilities could help me reduce renewal risk this week?",
           "mcpActions": [
             {
               "action": "search_capabilities",
@@ -74,12 +77,12 @@
             "Follow-up action composer",
             "Account risk summary"
           ],
-          "grounding": "Role and work-context summaries with approved registry data only."
+          "grounding": "Asteria Dynamics role and work-context summaries with approved registry data only."
         },
         {
           "id": "propose",
           "surface": "Copilot Chat and Foundry Floor",
-          "prompt": "Create a proposal for the Renewal brief generator.",
+          "prompt": "Create a proposal for the Asteria Dynamics Renewal Brief Generator.",
           "mcpActions": [
             {
               "action": "create_capability_proposal",
@@ -92,7 +95,7 @@
             "id": "prop-renewal-brief-001",
             "title": "Renewal Brief Generator",
             "status": "proposed",
-            "sourceSummary": "Synthetic Work IQ-style account, renewal timeline, and support theme summaries."
+            "sourceSummary": "Synthetic Asteria Dynamics Work IQ-style account, renewal timeline, and support theme summaries."
           }
         },
         {

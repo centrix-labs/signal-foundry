@@ -3,8 +3,10 @@ import type { SignalFoundryRegistry } from "./types";
 const now = "2026-06-07T09:00:00.000Z";
 
 export const demoScope = {
-  tenantId: "tenant-contoso",
-  projectId: "renewals-hackathon"
+  companyName: "Asteria Dynamics",
+  tenantId: "tenant-asteria-dynamics",
+  projectId: "revenue-ops-launchpad",
+  businessDomain: "Customer Success / Revenue Operations"
 };
 
 export const demoRegistry: SignalFoundryRegistry = {
@@ -17,14 +19,14 @@ export const demoRegistry: SignalFoundryRegistry = {
     {
       id: "cap-renewal-brief",
       title: "Renewal Brief Generator",
-      description: "Creates an audit-safe renewal prep brief from approved account, meeting, and opportunity summaries.",
+      description: "Creates an audit-safe renewal prep brief for Asteria Dynamics from approved account, meeting, and opportunity summaries.",
       role: "Enterprise Account Manager",
       department: "Customer Success",
       owner: "Priya Shah",
       intendedAudience: "team",
       inputsRequired: ["Account summary", "Renewal timeline", "Open support themes"],
       proposedOutputs: ["Renewal brief", "Risk summary", "Next-best actions"],
-      sourceSummary: "Uses approved summaries from CRM, meetings, and support systems. No raw message bodies.",
+      sourceSummary: "Uses approved Asteria Dynamics summaries from CRM, meetings, and support systems. No raw message bodies.",
       approvedSourceTypes: ["CRM summary", "Meeting summary", "Support ticket summary"],
       status: "approved",
       riskLevel: "medium",
@@ -34,14 +36,14 @@ export const demoRegistry: SignalFoundryRegistry = {
     {
       id: "cap-escalation-brief",
       title: "Executive Escalation Brief",
-      description: "Assembles concise executive context for high-risk customer renewals.",
+      description: "Assembles concise executive context for high-risk Asteria Dynamics customer renewals.",
       role: "Enterprise Account Manager",
       department: "Customer Success",
       owner: "Alex Kim",
       intendedAudience: "department",
       inputsRequired: ["Account health summary", "Approved risk notes"],
       proposedOutputs: ["Escalation brief", "Decision asks"],
-      sourceSummary: "Uses summarized account and risk signals only.",
+      sourceSummary: "Uses summarized Asteria Dynamics account and risk signals only.",
       approvedSourceTypes: ["CRM summary", "Risk review summary"],
       status: "released",
       riskLevel: "medium",
@@ -62,7 +64,7 @@ export const demoRegistry: SignalFoundryRegistry = {
       status: "success",
       timestamp: now,
       correlationId: "corr-seed-001",
-      summary: "Capability registry searched for Customer Success renewal workflows."
+      summary: "Asteria Dynamics capability registry searched for Customer Success renewal workflows."
     }
   ],
   auditEvents: []
@@ -80,5 +82,5 @@ export const validProposalFixture = {
   intendedAudience: "team",
   inputsRequired: ["Account summary", "Renewal timeline", "Risk themes"],
   proposedOutputs: ["Renewal brief", "Action plan"],
-  sourceSummary: "Synthetic Work IQ-style summaries from CRM, meetings, and support sources."
+  sourceSummary: "Synthetic Asteria Dynamics Work IQ-style summaries from CRM, meetings, and support sources."
 } as const;
