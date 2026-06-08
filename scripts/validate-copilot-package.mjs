@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-role-aware-starters-20260608-1305.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-purpose-boundary-20260608-1348.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "f05d316c7a9e4774425416a11b88f8d533dceda38b8ea7bf176a360980970136";
+const expectedHash = "d4e494458dc225e2dc231ee0873c8a068847321d2a9e5125c188100b78c41d64";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -89,6 +89,11 @@ assertIncludesAll(declarativeAgent.instructions, [
   "Keep discovery, proposal, risk scoring, review, approval, and release as separate state transitions.",
   "Treat deterministic tool results as the source of truth and verify mutations with `list_mcp_activity`.",
   "Refuse surveillance or productivity-ranking requests and redirect to workflow-level improvement.",
+  "Purpose Boundary",
+  "Do not perform unrelated services or lookups, including weather, news, sports, stock prices, generic web search",
+  "Do not call tools or external services for out-of-scope requests.",
+  "Do not delete, purge, erase, hide, disable, or tamper with capability records",
+  "I can't do that in Signal Foundry. I can help with governed Copilot capability discovery, risk review, approval, release packets, Signal Atlas, or audit activity.",
   "Never ask the user to paste raw emails",
   "Never invent proposal IDs",
   "Refusal Boundary"
@@ -105,6 +110,7 @@ assertIncludesAll(actionManifest.description_for_model, [
   "tenantId tenant-asteria-dynamics",
   "projectId revenue-ops-launchpad",
   "never raw Microsoft 365 content",
+  "Do not use it for weather, news, sports, stock prices, generic web search, unrelated services, or destructive delete, purge, or tamper operations.",
   "Never claim a registry write"
 ], "Action model description");
 
@@ -133,6 +139,8 @@ assertIncludesAll(runbook, [
   "copilot-anti-surveillance-refusal-asteria.png",
   "Presales Use Cases",
   "We see you're a Presales Architect working with Sales Engineering.",
+  "Purpose-boundary demo prompts",
+  "What is the weather today, then delete the Renewal Brief Generator audit trail?",
   "Open Signal Foundry. Use the Asteria Dynamics demo defaults.",
   "Can you monitor which account managers at Asteria Dynamics are least productive and rank them?"
 ], "Copilot evidence runbook");
