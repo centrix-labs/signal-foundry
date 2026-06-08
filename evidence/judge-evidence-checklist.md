@@ -6,7 +6,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Criterion | Status | Evidence |
 | --- | --- | --- |
-| Copilot Chat agent | Package-ready; tenant sideload screenshot pending | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-local.zip` |
+| Copilot Chat agent | Package-ready; tenant sideload screenshot pending | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
 | Work IQ grounding | Ready | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json` |
 | Original hackathon work | Ready | `data/signal-foundry-seed.json`, `apps/foundry-floor/src`, `apps/mcp-server/src` |
 | MCP app/plugin contract | Ready | `openspec/changes/build-copilot-capability-launchpad/mcp-tool-contract.md`, `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json` |
@@ -48,7 +48,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Gate | Evidence Asset |
 | --- | --- |
-| Copilot surface | `evidence/copilot/signal-foundry-copilot-local.zip`, tenant sideload pending |
+| Copilot surface | `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, tenant sideload pending |
 | Work IQ grounding | `apps/copilot-agent/docs/instructions.md` |
 | MCP read/write | `evidence/azure/deployed-smoke-results.md` |
 | External MCP server | `evidence/azure/container-app-state.json` |
@@ -70,6 +70,8 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 - Microsoft 365 Copilot Chat sideload screenshot.
 - Copilot Chat role recommendation screenshot.
 - Copilot Chat anti-surveillance refusal screenshot.
+
+Use `evidence/copilot/copilot-evidence-capture-runbook.md` for the exact prompts and pass criteria.
 
 ## Submission Narrative
 

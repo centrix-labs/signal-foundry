@@ -1,12 +1,12 @@
 # Acceptance Rubric Audit
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 ## P0 Gates
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Copilot surface | Passed for package readiness; tenant screenshot pending | `apps/copilot-agent/package/manifest.json`, `evidence/copilot/signal-foundry-copilot-local.zip`, `evidence/copilot/package-map.md` |
+| Copilot surface | Passed for package readiness; tenant screenshot pending | `apps/copilot-agent/package/manifest.json`, `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, `evidence/copilot/package-map.md`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
 | Work IQ grounding | Passed | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json` |
 | MCP read/write | Passed | `evidence/azure/deployed-smoke-results.md` |
 | External MCP server | Passed | `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health` |

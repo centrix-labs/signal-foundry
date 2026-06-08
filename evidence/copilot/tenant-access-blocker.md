@@ -1,6 +1,6 @@
 # Copilot Tenant Access Blocker
 
-Date: 2026-06-07
+Date: 2026-06-08
 
 ## Attempt
 
@@ -34,4 +34,4 @@ The repo contains a sideload-ready Copilot declarative agent package and live Az
 
 ## Next Manual Step
 
-Sign in to Microsoft 365 Copilot Chat with the tenant account, replace the OAuthPluginVault placeholder with the tenant-owned reference, sideload `evidence/copilot/signal-foundry-copilot-local.zip`, and capture the three pending screenshots.
+Sign in to Microsoft 365 Copilot Chat with the tenant account, confirm the tenant-owned OAuth reference, sideload `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, and follow `evidence/copilot/copilot-evidence-capture-runbook.md` to capture the three pending screenshots.

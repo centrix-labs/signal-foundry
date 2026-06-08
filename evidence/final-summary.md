@@ -51,7 +51,8 @@ Date: 2026-06-08
 - Key Vault metadata: `evidence/azure/key-vault-secret-metadata.json`
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
-- Copilot package: `evidence/copilot/signal-foundry-copilot-local.zip`
+- Copilot package: `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`
+- Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 
 ## Remaining Tenant-Dependent Manual Steps
 
