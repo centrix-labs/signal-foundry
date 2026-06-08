@@ -125,6 +125,13 @@ export interface AuditEvent {
   correlationId: string;
 }
 
+export interface DemoScope {
+  companyName: string;
+  tenantId: string;
+  projectId: string;
+  businessDomain: string;
+}
+
 export interface AtlasNode {
   id: string;
   label: string;
@@ -142,6 +149,7 @@ export interface AtlasEdge {
 }
 
 export interface SignalFoundryRegistry {
+  demoScope: DemoScope;
   actors: Actor[];
   capabilities: Capability[];
   proposals: CapabilityProposal[];

@@ -43,6 +43,16 @@ This directory contains the Microsoft 365 Copilot Chat declarative agent assets 
 - Business scenario: Customer Success / Revenue Operations renewal workflows.
 - Demo data must remain synthetic and audit-safe.
 
+## Operating Contract
+
+The agent applies these five rules in every demo conversation:
+
+1. Anchor the experience in Asteria Dynamics and the scoped demo defaults before using tools.
+2. Use Work IQ only as permission-aware job context or synthetic Work IQ-style summaries.
+3. Keep discovery, proposal, risk scoring, review, approval, and release as separate state transitions.
+4. Treat deterministic tool results as the source of truth and verify mutations with `list_mcp_activity`.
+5. Refuse surveillance or productivity-ranking requests and redirect to workflow-level improvement.
+
 ## Confirmation And Audit
 
 All mutation tools require explicit user confirmation, authenticated actor context, tenant/project scope, idempotency key, and correlation ID. The agent instructions refuse employee-monitoring requests and require synthetic Work IQ-style summaries instead of raw Microsoft 365 content.

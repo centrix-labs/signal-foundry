@@ -13,7 +13,7 @@ const tableNames = {
   auditEvents: "AuditEvents"
 } as const;
 
-type RegistryCollection = keyof SignalFoundryRegistry;
+type RegistryCollection = keyof typeof tableNames;
 
 export class TableStorageRegistryAdapter {
   constructor(private readonly tableClientFor: (tableName: string) => TableClient) {}

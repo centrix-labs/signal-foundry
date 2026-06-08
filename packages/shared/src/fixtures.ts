@@ -1,15 +1,24 @@
-import type { SignalFoundryRegistry } from "./types";
+import type { DemoScope, SignalFoundryRegistry } from "./types";
 
 const now = "2026-06-07T09:00:00.000Z";
 
-export const demoScope = {
+export const demoScope: DemoScope = {
   companyName: "Asteria Dynamics",
   tenantId: "tenant-asteria-dynamics",
   projectId: "revenue-ops-launchpad",
   businessDomain: "Customer Success / Revenue Operations"
 };
 
+export const demoOperatingContract = [
+  "Anchor the experience in Asteria Dynamics and the scoped demo defaults before using tools.",
+  "Use Work IQ only as permission-aware job context or synthetic Work IQ-style summaries.",
+  "Keep discovery, proposal, risk scoring, review, approval, and release as separate state transitions.",
+  "Treat deterministic tool results as the source of truth and verify mutations with list_mcp_activity.",
+  "Refuse surveillance or productivity-ranking requests and redirect to workflow-level improvement."
+] as const;
+
 export const demoRegistry: SignalFoundryRegistry = {
+  demoScope,
   actors: [
     { id: "actor-priya", name: "Priya Shah", role: "employee", department: "Customer Success" },
     { id: "actor-alex", name: "Alex Kim", role: "reviewer", department: "AI Enablement" },

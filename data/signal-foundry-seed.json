@@ -1,4 +1,10 @@
 {
+  "demoScope": {
+    "companyName": "Asteria Dynamics",
+    "tenantId": "tenant-asteria-dynamics",
+    "projectId": "revenue-ops-launchpad",
+    "businessDomain": "Customer Success / Revenue Operations"
+  },
   "actors": [
     {
       "id": "actor-priya",

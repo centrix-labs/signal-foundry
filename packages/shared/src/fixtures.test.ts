@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createCapabilityProposalInputSchema } from "./schemas";
-import { demoRegistry, validProposalFixture } from "./fixtures";
+import { demoOperatingContract, demoRegistry, demoScope, validProposalFixture } from "./fixtures";
 
 describe("Signal Foundry shared fixtures", () => {
   it("keeps seed data synthetic and audit safe", () => {
@@ -15,5 +15,14 @@ describe("Signal Foundry shared fixtures", () => {
     expect(createCapabilityProposalInputSchema.parse(validProposalFixture).title).toBe(
       "Renewal Brief Generator"
     );
+  });
+
+  it("keeps demo defaults and all five operating rules explicit", () => {
+    expect(demoScope.companyName).toBe("Asteria Dynamics");
+    expect(demoRegistry.demoScope).toEqual(demoScope);
+    expect(demoOperatingContract).toHaveLength(5);
+    expect(demoOperatingContract.join(" ")).toContain("Work IQ");
+    expect(demoOperatingContract.join(" ")).toContain("deterministic tool results");
+    expect(demoOperatingContract.join(" ")).toContain("Refuse surveillance");
   });
 });
