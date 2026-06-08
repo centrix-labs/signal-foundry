@@ -54,7 +54,7 @@ Date: 2026-06-08
 - Key Vault metadata: `evidence/azure/key-vault-secret-metadata.json`
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
-- Copilot package: `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`
+- Copilot package: `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 - Final readiness audit: `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run audit:final-readiness`
 

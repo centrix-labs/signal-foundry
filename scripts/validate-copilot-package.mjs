@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "9f43212ce0a84a3b95695bdf789e1fc9b3da9bfcd28b0c16ca17b020c605ca51";
+const expectedHash = "dd1c726762da530ced2f8d7d021a68ddedc300054fef0bb3b65165a4ed413993";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -75,6 +75,10 @@ assertIncludesAll(declarativeAgent.instructions, [
   "Asteria Dynamics",
   "tenant-asteria-dynamics",
   "revenue-ops-launchpad",
+  "Operating Contract",
+  "Anchor the experience in Asteria Dynamics",
+  "separate state transitions",
+  "deterministic tool results as the source of truth",
   "Work IQ",
   "Never ask the user to paste raw emails",
   "Never invent proposal IDs",

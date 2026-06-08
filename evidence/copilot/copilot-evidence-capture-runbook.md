@@ -4,12 +4,13 @@ Date: 2026-06-08
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`
-- SHA-256: `9f43212ce0a84a3b95695bdf789e1fc9b3da9bfcd28b0c16ca17b020c605ca51`
+- Package: `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`
+- SHA-256: `dd1c726762da530ced2f8d7d021a68ddedc300054fef0bb3b65165a4ed413993`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
 - Project scope: `revenue-ops-launchpad`
+- Operating contract: all five demo rules are packaged in the agent instructions.
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 - Portal: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
 

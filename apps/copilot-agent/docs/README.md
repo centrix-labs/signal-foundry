@@ -35,6 +35,14 @@ This directory contains the Microsoft 365 Copilot Chat declarative agent assets 
 - Local development can use the local MCP/API endpoint, but production and judging should use tenant-owned Microsoft/Azure hosting.
 - No personal non-Microsoft LLM account is required or allowed for the runtime path.
 
+## Demo Defaults
+
+- Fictional company: `Asteria Dynamics`.
+- Tenant scope: `tenant-asteria-dynamics`.
+- Project scope: `revenue-ops-launchpad`.
+- Business scenario: Customer Success / Revenue Operations renewal workflows.
+- Demo data must remain synthetic and audit-safe.
+
 ## Confirmation And Audit
 
 All mutation tools require explicit user confirmation, authenticated actor context, tenant/project scope, idempotency key, and correlation ID. The agent instructions refuse employee-monitoring requests and require synthetic Work IQ-style summaries instead of raw Microsoft 365 content.
