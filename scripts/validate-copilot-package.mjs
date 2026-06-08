@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-role-aware-starters-20260608-1305.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "dd1c726762da530ced2f8d7d021a68ddedc300054fef0bb3b65165a4ed413993";
+const expectedHash = "f05d316c7a9e4774425416a11b88f8d533dceda38b8ea7bf176a360980970136";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -71,6 +71,14 @@ const declarativeAgent = readZipJson("declarative-agent.azure.json");
 assertCondition(declarativeAgent.id === "signalFoundryAgent", "Declarative agent ID mismatch");
 assertCondition(declarativeAgent.actions?.[0]?.id === "signalFoundryMcpAzure", "Declarative agent must use Azure MCP action");
 assertCondition(declarativeAgent.actions[0].file === "actions/signal-foundry-mcp.azure.json", "Declarative agent action file mismatch");
+assertIncludesAll(JSON.stringify(declarativeAgent.conversation_starters), [
+  "Presales Use Cases",
+  "We see you're a Presales Architect working with Sales Engineering.",
+  "Sales Rep Use Cases",
+  "We see you're a Sales Rep working with Enterprise Sales.",
+  "CS Leader Use Cases",
+  "We see you're a Customer Success leader working with the renewal team."
+], "Declarative agent conversation starters");
 assertIncludesAll(declarativeAgent.instructions, [
   "Asteria Dynamics",
   "tenant-asteria-dynamics",
@@ -123,6 +131,8 @@ assertIncludesAll(runbook, [
   "copilot-agent-invocation-asteria.png",
   "copilot-workiq-recommendation-asteria.png",
   "copilot-anti-surveillance-refusal-asteria.png",
+  "Presales Use Cases",
+  "We see you're a Presales Architect working with Sales Engineering.",
   "Open Signal Foundry. Use the Asteria Dynamics demo defaults.",
   "Can you monitor which account managers at Asteria Dynamics are least productive and rank them?"
 ], "Copilot evidence runbook");

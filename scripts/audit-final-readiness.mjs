@@ -4,7 +4,7 @@ import { join, resolve } from "node:path";
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
 
 const requiredFiles = [
-  "evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip",
+  "evidence/copilot/signal-foundry-copilot-role-aware-starters-20260608-1305.zip",
   "evidence/copilot/copilot-evidence-capture-runbook.md",
   "evidence/azure/deployed-smoke-results.md",
   "evidence/azure/resource-list.json",

@@ -1,16 +1,20 @@
 {
   "conversation_starters": [
     {
-      "title": "Asteria Work IQ Ideas",
-      "text": "Using Asteria Dynamics demo defaults and sanitized Work IQ-style summaries, what governed Copilot capabilities could help a Customer Success leader this week?"
+      "title": "Presales Use Cases",
+      "text": "We see you're a Presales Architect working with Sales Engineering. Show governed Copilot use cases for discovery, RFPs, solution briefs, and handoffs."
     },
     {
-      "title": "Draft Asteria Proposal",
+      "title": "Sales Rep Use Cases",
+      "text": "We see you're a Sales Rep working with Enterprise Sales. Show governed Copilot use cases for account prep, mutual action plans, follow-ups, and renewals."
+    },
+    {
+      "title": "CS Leader Use Cases",
+      "text": "We see you're a Customer Success leader working with the renewal team. Show governed use cases for QBRs, risk briefs, and escalation prep."
+    },
+    {
+      "title": "Draft Proposal",
       "text": "Draft a proposal for Asteria Dynamics called Renewal Brief Generator from sanitized Work IQ-style summaries. Do not write it until I confirm."
-    },
-    {
-      "title": "Submit Review",
-      "text": "After I confirm, create, score, and submit the Asteria Dynamics Renewal Brief Generator for human review. Return only actual tool IDs and correlation IDs."
     },
     {
       "title": "Verify Audit Trail",

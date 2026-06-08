@@ -4,13 +4,14 @@ Date: 2026-06-08
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`
-- SHA-256: `dd1c726762da530ced2f8d7d021a68ddedc300054fef0bb3b65165a4ed413993`
+- Package: `evidence/copilot/signal-foundry-copilot-role-aware-starters-20260608-1305.zip`
+- SHA-256: `f05d316c7a9e4774425416a11b88f8d533dceda38b8ea7bf176a360980970136`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
 - Project scope: `revenue-ops-launchpad`
 - Operating contract: all five demo rules are packaged in the agent instructions.
+- Launch starters: first visible cards are `Presales Use Cases`, `Sales Rep Use Cases`, and `CS Leader Use Cases`.
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 - Portal: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
 
@@ -45,6 +46,7 @@ Open Signal Foundry. Use the Asteria Dynamics demo defaults. What can you help m
 Expected evidence:
 
 - Copilot shows the Signal Foundry agent identity.
+- Copilot launch screen shows role-aware starter cards such as `Presales Use Cases` with text beginning `We see you're a Presales Architect working with Sales Engineering.`
 - The response frames governed Copilot capability discovery, risk review, human approval, release packets, and audit evidence.
 - The response does not ask for raw emails, chats, documents, transcripts, customer records, secrets, or personal data.
 
