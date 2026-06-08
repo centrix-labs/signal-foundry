@@ -9,14 +9,16 @@ Date: 2026-06-08
 
 ## Runtime Image
 
-- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:asteria-defaults-20260608-1132`
-- Digest: `sha256:1157db018146f0d011e111515c6b9dde7c2343fa9501e5249c103276e24b5cab`
-- Revision: `ca-signal-foundry-mcp--0000014`
+- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
+- Digest: `sha256:b4476a02af78cdf0608b51982acb70b3166bb6a28e49badb3f8b7a9a0fcd7dea`
+- Revision: `ca-signal-foundry-mcp--0000016`
+- Deployment note: Bicep was reapplied on 2026-06-08 and the MCP image was rebuilt from a sanitized source context to avoid `.git` socket files in Azure CLI packaging.
 
 ## Smoke Checks
 
 - Health endpoint: passed.
 - Tool-list endpoint: passed with 11 tools.
+- Active Container Apps revision: passed with 100% traffic on `ca-signal-foundry-mcp--0000016`.
 - MCP tool metadata: passed with `Asteria Dynamics`, `tenant-asteria-dynamics`, and `revenue-ops-launchpad` defaults.
 - OpenAPI endpoint: passed with HTTPS server URL and 11 tool paths.
 - MCP JSON-RPC `tools/list`: passed with 11 tools.

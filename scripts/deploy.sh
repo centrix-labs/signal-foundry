@@ -23,6 +23,7 @@ MCP_DOCKERFILE_RELATIVE="apps/mcp-server/Dockerfile"
 MCP_IMAGE_REF="$MCP_IMAGE_NAME:$MCP_IMAGE_TAG"
 REMOTE_IMAGE="$ACR_NAME.azurecr.io/$MCP_IMAGE_REF"
 FRONTEND_DIST="$REPO_ROOT/apps/foundry-floor/dist"
+BUILD_CONTEXT_ROOT=""
 
 MODE="plan"
 BUILD_IMAGE="0"
@@ -105,7 +106,8 @@ Azure commands prepared:
 az account set --subscription "$SUBSCRIPTION_ID"
 az deployment sub what-if --name "$DEPLOYMENT_NAME" --location "$LOCATION" --template-file "$BICEP_FILE" --parameters "@$PARAMETERS_FILE"
 az deployment sub create --name "$DEPLOYMENT_NAME" --location "$LOCATION" --template-file "$BICEP_FILE" --parameters "@$PARAMETERS_FILE"
-az acr build --registry "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --image "$MCP_IMAGE_REF" --file "$MCP_DOCKERFILE_RELATIVE" "$REPO_ROOT"
+rsync sanitized source to a temporary context, then:
+az acr build --registry "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --image "$MCP_IMAGE_REF" --file "$MCP_DOCKERFILE_RELATIVE" "<temporary-context>"
 COMMANDS
 }
 
@@ -146,12 +148,25 @@ az deployment sub create \
   --parameters "@$PARAMETERS_FILE"
 
 if [[ "$BUILD_IMAGE" == "1" ]]; then
+  BUILD_CONTEXT_ROOT="$(mktemp -d /tmp/signal-foundry-acr-context.XXXXXX)"
+  rsync -a \
+    --exclude ".git" \
+    --exclude "node_modules" \
+    --exclude "**/node_modules" \
+    --exclude "**/dist" \
+    --exclude ".playwright-mcp" \
+    --exclude "evidence/copilot/*.zip" \
+    --exclude "evidence/copilot/signal-foundry-*/" \
+    --exclude "evidence/screenshots" \
+    "$REPO_ROOT/" \
+    "$BUILD_CONTEXT_ROOT/"
+
   az acr build \
     --registry "$ACR_NAME" \
     --resource-group "$RESOURCE_GROUP" \
     --image "$MCP_IMAGE_REF" \
     --file "$MCP_DOCKERFILE_RELATIVE" \
-    "$REPO_ROOT"
+    "$BUILD_CONTEXT_ROOT"
 
   az containerapp registry set \
     --name "$CONTAINER_APP_NAME" \

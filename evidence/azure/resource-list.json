@@ -2,6 +2,7 @@
   {
     "location": "eastus2",
     "name": "stsignalfoundry",
+    "sku": "Standard_LRS",
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -16,6 +17,7 @@
   {
     "location": "eastus2",
     "name": "law-signal-foundry",
+    "sku": null,
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -30,6 +32,7 @@
   {
     "location": "eastus2",
     "name": "acrsignalfoundry",
+    "sku": "Basic",
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -44,6 +47,7 @@
   {
     "location": "eastus2",
     "name": "swa-signal-foundry",
+    "sku": "Free",
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -58,6 +62,7 @@
   {
     "location": "eastus2",
     "name": "kv-signal-foundry",
+    "sku": null,
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -72,6 +77,7 @@
   {
     "location": "eastus2",
     "name": "appi-signal-foundry",
+    "sku": null,
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -86,6 +92,7 @@
   {
     "location": "eastus2",
     "name": "cae-signal-foundry",
+    "sku": null,
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -100,6 +107,7 @@
   {
     "location": "eastus2",
     "name": "ca-signal-foundry-mcp",
+    "sku": null,
     "tags": {
       "app": "signal-foundry",
       "checkpoint": "F",
@@ -114,6 +122,7 @@
   {
     "location": "global",
     "name": "Application Insights Smart Detection",
+    "sku": null,
     "tags": null,
     "type": "microsoft.insights/actiongroups"
   }

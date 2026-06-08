@@ -34,12 +34,15 @@ Date: 2026-06-08
 - `13d4b12` Add Copilot package validation
 - `4f7890d` Add Asteria Copilot operating contract
 - `26ab24d` Add Copilot evidence diagnostic
+- `93d6c38` Capture Copilot Chat evidence
+- `547f5de` Add Asteria demo defaults guardrails
 
 ## Deployment Checkpoints
 
 - Azure resource group: `rg-signal-foundry-hackathon`
-- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:asteria-defaults-20260608-1132`
-- Container revision: `ca-signal-foundry-mcp--0000014`
+- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
+- Container digest: `sha256:b4476a02af78cdf0608b51982acb70b3166bb6a28e49badb3f8b7a9a0fcd7dea`
+- Container revision: `ca-signal-foundry-mcp--0000016`
 - Static Web Apps site: `swa-signal-foundry`
 - Azure Table registry mirror: `Actors`, `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`
 - Budget: `signal-foundry-hackathon-budget`

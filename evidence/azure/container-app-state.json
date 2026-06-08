@@ -1,9 +1,15 @@
 {
   "fqdn": "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
-  "image": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f-20260607-0727",
-  "latestReadyRevisionName": "ca-signal-foundry-mcp--0000004",
-  "latestRevisionName": "ca-signal-foundry-mcp--0000004",
-  "provisioningState": "Succeeded",
+  "image": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f",
+  "lastModifiedAt": "2026-06-08T16:53:49.8391174",
+  "latestReadyRevisionName": "ca-signal-foundry-mcp--0000016",
+  "latestRevisionName": "ca-signal-foundry-mcp--0000016",
+  "revisionTraffic": [
+    {
+      "latestRevision": true,
+      "weight": 100
+    }
+  ],
   "runningStatus": "Running",
   "scale": {
     "cooldownPeriod": 300,
@@ -11,5 +17,14 @@
     "minReplicas": 0,
     "pollingInterval": 30,
     "rules": null
+  },
+  "tags": {
+    "app": "signal-foundry",
+    "checkpoint": "F",
+    "costGuard": "scale-to-zero",
+    "costPosture": "consumption-scale-to-zero",
+    "environment": "hackathon",
+    "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+    "owner": "azure-devops-worker"
   }
 }
