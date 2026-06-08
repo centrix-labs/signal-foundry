@@ -6,7 +6,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Criterion | Status | Evidence |
 | --- | --- | --- |
-| Copilot Chat agent | Package-ready; tenant sideload screenshot pending | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
+| Copilot Chat agent | Ready; Microsoft 365 Copilot Chat screenshots captured | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
 | Work IQ grounding | Ready | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json` |
 | Original hackathon work | Ready | `data/signal-foundry-seed.json`, `apps/foundry-floor/src`, `apps/mcp-server/src` |
 | MCP app/plugin contract | Ready | `openspec/changes/build-copilot-capability-launchpad/mcp-tool-contract.md`, `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json` |
@@ -38,6 +38,9 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Interactive review release | `evidence/screenshots/review-queue-interactive-release.png` |
 | Review-to-atlas release state | `evidence/screenshots/review-release-atlas-flow.png` |
 | Copilot Mirror | `evidence/screenshots/copilot-mirror.png` |
+| Copilot Chat agent invocation | `evidence/screenshots/copilot-agent-invocation-asteria.png` |
+| Copilot Chat role recommendation | `evidence/screenshots/copilot-workiq-recommendation-asteria.png` |
+| Copilot Chat anti-surveillance refusal | `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png` |
 | Light Executive view | `evidence/screenshots/light-executive.png` |
 | Local tablet view | `evidence/screenshots/foundry-floor-tablet.png` |
 | Unauthorized rejection | `unauthorized-approval` in `evidence/signal-foundry-demo-evidence.json`; deployed 403 in `evidence/azure/deployed-smoke-results.md` |
@@ -48,7 +51,7 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Gate | Evidence Asset |
 | --- | --- |
-| Copilot surface | `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`, tenant sideload pending |
+| Copilot surface | `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png` |
 | Work IQ grounding | `apps/copilot-agent/docs/instructions.md` |
 | MCP read/write | `evidence/azure/deployed-smoke-results.md` |
 | External MCP server | `evidence/azure/container-app-state.json` |
@@ -60,18 +63,18 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 | Review Queue | `evidence/screenshots/review-queue.png` |
 | Azure registry | `evidence/azure/table-registry-sample.json` |
 | Audit safety | `scripts/validate-evidence.mjs`, secret scan, Log Analytics sample |
-| Anti-surveillance | `evidence/signal-foundry-demo-evidence.json` |
+| Anti-surveillance | `evidence/signal-foundry-demo-evidence.json`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png` |
 | Demo repeatability | `scripts/reset.ts`, `/admin/reset`, `scripts/local-smoke.sh` |
 | Visual quality | `evidence/screenshots/azure-foundry-floor-desktop.png` |
 | Evidence mapping | This checklist and `evidence/acceptance-rubric-audit.md` |
 
-## Remaining Tenant-Dependent Evidence
+## Microsoft 365 Copilot Chat screenshots captured
 
-- Microsoft 365 Copilot Chat sideload screenshot.
-- Copilot Chat role recommendation screenshot.
-- Copilot Chat anti-surveillance refusal screenshot.
+- `evidence/screenshots/copilot-agent-invocation-asteria.png`
+- `evidence/screenshots/copilot-workiq-recommendation-asteria.png`
+- `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
 
-Use `evidence/copilot/copilot-evidence-capture-runbook.md` for the exact prompts and pass criteria.
+Use `evidence/copilot/copilot-evidence-capture-runbook.md` to recapture the same evidence if the tenant package is reinstalled.
 
 ## Submission Narrative
 

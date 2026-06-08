@@ -6,7 +6,7 @@ Date: 2026-06-08
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| Copilot surface | Passed for package readiness; tenant screenshot pending | `apps/copilot-agent/package/manifest.json`, `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, `evidence/copilot/package-map.md`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
+| Copilot surface | Passed | `apps/copilot-agent/package/manifest.json`, `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/copilot/package-map.md`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
 | Work IQ grounding | Passed | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json` |
 | MCP read/write | Passed | `evidence/azure/deployed-smoke-results.md` |
 | External MCP server | Passed | `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health` |
@@ -17,7 +17,7 @@ Date: 2026-06-08
 | Signal Atlas | Passed | `evidence/screenshots/azure-signal-atlas.png` |
 | Review Queue | Passed | `evidence/screenshots/review-queue.png` |
 | Audit safety | Passed | `npm run validate`, secret scan, `evidence/azure/sanitized-log-analytics-sample.json` |
-| Anti-surveillance | Passed in evidence and agent instructions; tenant screenshot pending | `evidence/signal-foundry-demo-evidence.json`, `apps/copilot-agent/docs/safety-boundaries.md` |
+| Anti-surveillance | Passed in evidence, agent instructions, and Microsoft 365 Copilot Chat screenshot | `evidence/signal-foundry-demo-evidence.json`, `apps/copilot-agent/docs/safety-boundaries.md`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png` |
 | Demo repeatability | Passed | `npm run reset`, `/admin/reset`, deployed golden smoke |
 | Visual quality | Passed | `evidence/screenshots/foundry-floor-desktop.png`, `evidence/screenshots/azure-foundry-floor-desktop.png` |
 | Evidence mapping | Passed | `evidence/judge-evidence-checklist.md` |

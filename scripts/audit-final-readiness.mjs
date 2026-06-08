@@ -22,10 +22,10 @@ const requiredCopilotScreenshots = [
 ];
 
 const requiredEvidencePhrases = [
-  "tenant sideload screenshot pending",
-  "Microsoft 365 Copilot Chat sideload screenshot",
-  "Copilot Chat role recommendation screenshot",
-  "Copilot Chat anti-surveillance refusal screenshot"
+  "evidence/screenshots/copilot-agent-invocation-asteria.png",
+  "evidence/screenshots/copilot-workiq-recommendation-asteria.png",
+  "evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png",
+  "Microsoft 365 Copilot Chat screenshots captured"
 ];
 
 function fileStatus(relativePath) {

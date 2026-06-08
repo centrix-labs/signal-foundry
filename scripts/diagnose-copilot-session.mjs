@@ -53,8 +53,11 @@ function formatBoolean(value) {
 }
 
 const files = snapshotFiles();
-const signals = collectSignals(files);
 const latestSnapshot = files.length > 0 ? files[files.length - 1].replace(`${repoRoot}/`, "") : "none";
+const latestFile = files.length > 0 ? files[files.length - 1] : undefined;
+const latestSignals = collectSignals(latestFile ? [latestFile] : []);
+const historicalSignals = collectSignals(files);
+const capturedScreenshots = requiredScreenshots.filter((path) => existsSync(join(repoRoot, path)));
 const latestSnapshotTimestamp = latestSnapshot.match(/page-(.+)\.yml$/)?.[1] ?? "no-snapshot";
 
 const lines = [
@@ -64,19 +67,19 @@ const lines = [
   "",
   "This diagnostic summarizes safe browser-state signals only. It does not copy raw Copilot chat text, tenant content, user names, emails, tokens, cookies, or Microsoft 365 source material.",
   "",
-  "## Snapshot Signals",
+  "## Latest Snapshot Signals",
   "",
   `- Snapshot files inspected: ${files.length}`,
   `- Latest snapshot path: \`${latestSnapshot}\``,
-  `- M365 Copilot page: ${formatBoolean(signals.m365Copilot)}`,
-  `- Work IQ control: ${formatBoolean(signals.workIqVisible)}`,
-  `- Copilot message box: ${formatBoolean(signals.messageBoxVisible)}`,
-  `- Sign-in pending screen: ${formatBoolean(signals.signInPending)}`,
-  `- Signal Foundry text in snapshot body: ${formatBoolean(signals.signalFoundryAgent)}`,
+  `- M365 Copilot page: ${formatBoolean(latestSignals.m365Copilot)}`,
+  `- Work IQ control: ${formatBoolean(latestSignals.workIqVisible)}`,
+  `- Copilot message box: ${formatBoolean(latestSignals.messageBoxVisible)}`,
+  `- Signal Foundry text in snapshot body: ${formatBoolean(latestSignals.signalFoundryAgent)}`,
+  `- Historical sign-in pending screen: ${formatBoolean(historicalSignals.signInPending)}`,
   "",
   "## Evidence Status",
   "",
-  "The snapshot diagnostic is not a substitute for judge-ready screenshots. The final readiness gate still requires authenticated Microsoft 365 Copilot screenshots saved as valid PNG files:",
+  `Authenticated Microsoft 365 Copilot screenshots captured: ${capturedScreenshots.length} of ${requiredScreenshots.length}. The final readiness gate validates these as non-empty PNG files with minimum dimensions:`,
   "",
   ...requiredScreenshots.map((path) => `- \`${path}\``),
   "",

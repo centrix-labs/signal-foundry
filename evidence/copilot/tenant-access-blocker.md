@@ -1,4 +1,4 @@
-# Copilot Tenant Access Blocker
+# Copilot Tenant Access Resolution
 
 Date: 2026-06-08
 
@@ -12,7 +12,7 @@ Retried after Checkpoint G evidence completion and received the same sign-in sta
 
 Retried again after the final evidence package commit and received the same sign-in state.
 
-## Result
+## Original Result
 
 Chrome reached Microsoft Entra sign-in instead of an authenticated Microsoft 365 Copilot Chat session.
 
@@ -24,14 +24,20 @@ Observed page text included:
 
 `Sign in`, `No account? Create one!`, `Can’t access your account?`, and `Sign-in options`.
 
+## Resolution
+
+Microsoft 365 Copilot Chat was later available in an authenticated browser session with the Signal Foundry agent installed.
+
+Captured evidence:
+
+- `evidence/screenshots/copilot-agent-invocation-asteria.png`
+- `evidence/screenshots/copilot-workiq-recommendation-asteria.png`
+- `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
+
 ## Impact
 
-The repo contains a sideload-ready Copilot declarative agent package and live Azure MCP endpoint alignment, but the following evidence remains tenant-dependent:
-
-- Microsoft 365 Copilot Chat sideload screenshot.
-- Copilot Chat role recommendation screenshot.
-- Copilot Chat anti-surveillance refusal screenshot.
+The repo contains a sideload-ready Copilot declarative agent package, live Azure MCP endpoint alignment, and Microsoft 365 Copilot Chat screenshot evidence.
 
 ## Next Manual Step
 
-Sign in to Microsoft 365 Copilot Chat with the tenant account, confirm the tenant-owned OAuth reference, sideload `evidence/copilot/signal-foundry-copilot-asteria-live-20260608-1145.zip`, and follow `evidence/copilot/copilot-evidence-capture-runbook.md` to capture the three pending screenshots.
+Reconfirm the tenant-owned OAuth reference only if the Copilot package is reinstalled or republished. Use `evidence/copilot/copilot-evidence-capture-runbook.md` to recapture screenshots if needed.

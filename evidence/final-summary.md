@@ -32,6 +32,8 @@ Date: 2026-06-08
 - `b1cc4fb` Record Asteria deployment evidence
 - `48919b0` Refresh Copilot evidence capture package
 - `13d4b12` Add Copilot package validation
+- `4f7890d` Add Asteria Copilot operating contract
+- `26ab24d` Add Copilot evidence diagnostic
 
 ## Deployment Checkpoints
 
@@ -53,6 +55,7 @@ Date: 2026-06-08
 - Cost posture: `evidence/azure/budget.json`
 - Key Vault metadata: `evidence/azure/key-vault-secret-metadata.json`
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
+- Copilot Chat screenshots: `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/screenshots/copilot-workiq-recommendation-asteria.png`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
 - Copilot package: `evidence/copilot/signal-foundry-copilot-asteria-operating-contract-20260608-1215.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
@@ -60,7 +63,4 @@ Date: 2026-06-08
 
 ## Remaining Tenant-Dependent Manual Steps
 
-- Sign in to Microsoft 365 Copilot Chat with the tenant account.
-- Confirm the tenant-owned OAuth vault reference in the sideload package.
-- Sideload the Copilot package.
-- Capture Copilot Chat invocation, role recommendation, and anti-surveillance refusal screenshots.
+- None for the current hackathon evidence package. Reconfirm the tenant-owned OAuth vault reference only if the Copilot package is reinstalled or republished.
