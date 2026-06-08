@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-purpose-boundary-20260608-1348.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-mcp-run-functions-20260608-1459.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "d4e494458dc225e2dc231ee0873c8a068847321d2a9e5125c188100b78c41d64";
+const expectedHash = "855ba100693556172455a93c12de91da5314f3e4c395e98371955949b70e6749";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -117,6 +117,7 @@ assertIncludesAll(actionManifest.description_for_model, [
 const toolDescription = readZipJson("actions/mcp-tools.json");
 const tools = toolDescription.tools ?? [];
 assertCondition(tools.length === 11, "MCP tool description must include 11 tools");
+assertCondition(JSON.stringify(actionManifest.runtimes[0].run_for_functions ?? []) === JSON.stringify(tools.map((tool) => tool.name)), "MCP runtime run_for_functions must list every static MCP tool in order");
 for (const tool of tools) {
   const required = tool.inputSchema?.required ?? [];
   assertCondition(required.includes("tenantId"), `${tool.name} missing tenantId requirement`);

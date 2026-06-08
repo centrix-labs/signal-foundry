@@ -205,6 +205,19 @@
       "auth": {
         "type": "None"
       },
+      "run_for_functions": [
+        "search_capabilities",
+        "recommend_capabilities_for_role",
+        "create_capability_proposal",
+        "score_capability_risk",
+        "submit_capability_review",
+        "approve_capability",
+        "reject_capability",
+        "release_capability",
+        "generate_release_packet",
+        "generate_capability_map",
+        "list_mcp_activity"
+      ],
       "spec": {
         "url": "http://localhost:7071/mcp",
         "mcp_tool_description": {
