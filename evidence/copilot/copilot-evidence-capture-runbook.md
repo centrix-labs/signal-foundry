@@ -24,6 +24,14 @@ Save the screenshots into:
 
 Before saving, verify each image contains no raw Microsoft 365 content, secrets, tokens, stack traces, personal contact details, or production customer data.
 
+Optional local diagnostic:
+
+```bash
+npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run copilot:diagnose
+```
+
+This records only safe browser-state signals in `evidence/copilot/copilot-session-diagnostic.md`. It does not replace the three screenshot files required by the final readiness gate.
+
 ## Capture Flow
 
 1. Upload the package in Microsoft 365 Copilot Chat agent publishing or developer sideload for the hackathon tenant.
