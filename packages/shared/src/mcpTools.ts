@@ -3,8 +3,8 @@ import type { ToolName } from "./schemas";
 type JsonSchema = Record<string, unknown>;
 
 const scopedProperties: Record<string, JsonSchema> = {
-  tenantId: { type: "string", description: "Tenant scope for this Signal Foundry registry request." },
-  projectId: { type: "string", description: "Project scope for this Signal Foundry registry request." },
+  tenantId: { type: "string", description: "Tenant scope for this Signal Foundry registry request. Demo default: tenant-asteria-dynamics." },
+  projectId: { type: "string", description: "Project scope for this Signal Foundry registry request. Demo default: revenue-ops-launchpad." },
   correlationId: {
     type: "string",
     minLength: 8,
@@ -58,14 +58,14 @@ export const mcpToolMetadata: Array<{
   },
   {
     name: "recommend_capabilities_for_role",
-    description: "Read role-relevant approved and candidate capabilities from permission-aware Work IQ summaries or synthetic Work IQ-style summaries. Summaries must be brief, non-PII, and never quote raw Microsoft 365 content.",
+    description: "Read role-relevant approved and candidate capabilities from permission-aware Work IQ summaries or synthetic Work IQ-style summaries. Demo default company is Asteria Dynamics. Summaries must be brief, non-PII, and never quote raw Microsoft 365 content.",
     inputSchema: schema({
       role: { type: "string" },
       department: { type: "string" },
       workSignalSummary: {
         type: "string",
         minLength: 10,
-        description: "Permission-aware Work IQ summary or synthetic equivalent. Use aggregated job context, tasks, source types, and workflow friction only; never include raw emails, chats, transcripts, documents, customer records, secrets, or personal data."
+        description: "Permission-aware Work IQ summary or synthetic equivalent. For the demo, use Asteria Dynamics Customer Success / Revenue Operations context. Use aggregated job context, tasks, source types, and workflow friction only; never include raw emails, chats, transcripts, documents, customer records, secrets, or personal data."
       },
       maxResults: { type: "integer", minimum: 1, maximum: 8 }
     }, ["role", "department", "workSignalSummary"]),
@@ -85,7 +85,7 @@ export const mcpToolMetadata: Array<{
       proposedOutputs: { type: "array", items: { type: "string" } },
       sourceSummary: {
         type: "string",
-        description: "Sanitized Work IQ-style source summary. Include source categories and business friction only; never include raw Microsoft 365 content or PII."
+        description: "Sanitized Work IQ-style source summary. For the demo, use Asteria Dynamics Customer Success / Revenue Operations context. Include source categories and business friction only; never include raw Microsoft 365 content or PII."
       }
     }, ["title", "description", "role", "department", "owner", "intendedAudience", "inputsRequired", "proposedOutputs", "sourceSummary"])
   },
