@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-root-mcp-tools-20260608-1527.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "b714eb91b1f69a9bda828d443f03e4bc65ff0f0c177cb964871b8b73decfdcbc";
+const expectedHash = "37606381870826b8a35db8b60fd24642739f947c48ecc9ce55c89e51e23e1e6e";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -59,6 +59,7 @@ assertCondition(!entries.some((entry) => entry.includes("__MACOSX") || entry.sta
 
 const manifest = readZipJson("manifest.json");
 assertCondition(manifest.manifestVersion === "1.27", "Teams manifest version must remain 1.27");
+assertCondition(manifest.version === "0.1.1", "Teams app package version must be newer than the installed 0.1.0 title");
 assertCondition(manifest.name?.short === "Signal Foundry", "Manifest short name must be Signal Foundry");
 assertCondition(manifest.copilotAgents?.declarativeAgents?.[0]?.id === "signalFoundryAgent", "Manifest declarative agent ID mismatch");
 assertCondition(manifest.copilotAgents.declarativeAgents[0].file === "declarative-agent.azure.json", "Manifest must point at Azure declarative agent");

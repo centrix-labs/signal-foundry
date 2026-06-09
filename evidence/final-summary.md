@@ -60,7 +60,7 @@ Date: 2026-06-08
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Copilot Chat screenshots: `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/screenshots/copilot-workiq-recommendation-asteria.png`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
-- Copilot package: `evidence/copilot/signal-foundry-copilot-root-mcp-tools-20260608-1527.zip`
+- Copilot package: `evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 - Final readiness audit: `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run audit:final-readiness`
 

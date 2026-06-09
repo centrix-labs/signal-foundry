@@ -4,8 +4,8 @@ Date: 2026-06-08
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-root-mcp-tools-20260608-1527.zip`
-- SHA-256: `b714eb91b1f69a9bda828d443f03e4bc65ff0f0c177cb964871b8b73decfdcbc`
+- Package: `evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip`
+- SHA-256: `37606381870826b8a35db8b60fd24642739f947c48ecc9ce55c89e51e23e1e6e`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
