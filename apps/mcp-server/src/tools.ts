@@ -4,6 +4,7 @@ import {
   type AtlasNode,
   type Capability,
   type McpAction,
+  type SignalFoundryRegistry,
   type ToolName,
   toolSchemas
 } from "@signal-foundry/shared";
@@ -45,6 +46,8 @@ export function executeTool(store: RegistryStore, action: ToolName, rawInput: un
       return ok(search(registry.capabilities, data), correlationId);
     case "recommend_capabilities_for_role":
       return ok(recommend(registry.capabilities, data, correlationId), correlationId);
+    case "get_user_work_context":
+      return ok(getUserWorkContext(registry, data, activeActor), correlationId);
     case "create_capability_proposal":
       return ok(createProposal(store, data, activeActor), correlationId);
     case "score_capability_risk":
@@ -98,6 +101,101 @@ function recommend(capabilities: Capability[], input: { role: string; department
     rationale: "Recommendations use synthetic Work IQ-style source summaries and approved registry metadata.",
     correlationId
   };
+}
+
+function getUserWorkContext(
+  registry: SignalFoundryRegistry,
+  input: { requestedRole?: string; requestedDepartment?: string; sourceHint?: string },
+  actor: Actor
+) {
+  const defaults = workContextDefaults(actor);
+  const role = sanitizeLabel(input.requestedRole) ?? defaults.jobTitle;
+  const department = sanitizeLabel(input.requestedDepartment) ?? defaults.department;
+  const roleFamily = roleFamilyFor(role, department, defaults.roleFamily);
+  const useCases = useCasesFor(roleFamily);
+  return {
+    companyName: registry.demoScope.companyName,
+    source: input.sourceHint === "graph_profile" || input.sourceHint === "work_iq"
+      ? "permission_aware_profile_summary"
+      : "synthetic_work_iq",
+    profile: {
+      displayName: actor.name,
+      jobTitle: role,
+      department,
+      team: defaults.team,
+      roleFamily,
+      permissionBasis: "Authenticated profile summary; no raw Microsoft 365 content returned."
+    },
+    recommendedUseCaseAreas: useCases,
+    workSignalSummary: [
+      `${department} workflows show recurring handoffs, drafting effort, evidence collection, and review friction.`,
+      "Use approved source categories only: CRM summaries, meeting summaries, support summaries, policy summaries, and proposal metadata."
+    ],
+    message: `I see you're a ${role} working with ${department}. Show governed Copilot use cases for ${useCases.join(", ")}.`,
+    privacyNote: "This is job-context personalization only. Signal Foundry does not rank people, monitor employees, or return raw Microsoft 365 content."
+  };
+}
+
+function workContextDefaults(actor: Actor) {
+  const profiles: Record<string, { jobTitle: string; department: string; team: string; roleFamily: string }> = {
+    "actor-priya": {
+      jobTitle: "Presales Architect",
+      department: "Sales Engineering",
+      team: "Enterprise Growth",
+      roleFamily: "presales"
+    },
+    "actor-alex": {
+      jobTitle: "AI Enablement Reviewer",
+      department: "AI Governance",
+      team: "Capability Review Board",
+      roleFamily: "reviewer"
+    },
+    "actor-dana": {
+      jobTitle: "Chief of Staff",
+      department: "Office of the CIO",
+      team: "Executive Operations",
+      roleFamily: "executive"
+    }
+  };
+  return profiles[actor.id] ?? {
+    jobTitle: actor.role === "reviewer" ? "AI Enablement Reviewer" : "Business User",
+    department: actor.department,
+    team: actor.department,
+    roleFamily: actor.role
+  };
+}
+
+function roleFamilyFor(role: string, department: string, fallback: string) {
+  const value = `${role} ${department}`.toLowerCase();
+  if (value.includes("presales") || value.includes("solution")) {
+    return "presales";
+  }
+  if (value.includes("sales rep") || value.includes("account executive") || value.includes("enterprise sales")) {
+    return "sales";
+  }
+  if (value.includes("customer success") || value.includes("renewal")) {
+    return "customer_success";
+  }
+  if (value.includes("review") || value.includes("governance")) {
+    return "reviewer";
+  }
+  return fallback;
+}
+
+function useCasesFor(roleFamily: string) {
+  const useCases: Record<string, string[]> = {
+    presales: ["discovery prep", "RFP response", "solution briefs", "customer handoffs", "renewal risk prep"],
+    sales: ["account prep", "mutual action plans", "follow-ups", "renewal briefs", "stakeholder mapping"],
+    customer_success: ["QBR prep", "renewal risk briefs", "escalation prep", "health summaries", "handoff packets"],
+    reviewer: ["proposal triage", "risk gate review", "release packet validation", "audit evidence review"],
+    executive: ["portfolio review", "risk posture summaries", "release readiness", "cross-team alignment"]
+  };
+  return useCases[roleFamily] ?? ["workflow discovery", "proposal drafting", "risk review", "release packet prep"];
+}
+
+function sanitizeLabel(value?: string) {
+  const sanitized = value?.replace(/[^\w\s/&-]/g, "").replace(/\s+/g, " ").trim();
+  return sanitized && sanitized.length >= 2 ? sanitized.slice(0, 80) : undefined;
 }
 
 function createProposal(store: RegistryStore, input: any, actor: Actor) {

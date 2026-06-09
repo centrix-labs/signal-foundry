@@ -72,6 +72,26 @@ export const mcpToolMetadata: Array<{
     annotations: { readOnlyHint: true }
   },
   {
+    name: "get_user_work_context",
+    description: "Read a sanitized role, title, team, and Work IQ-style context summary for the authenticated user. Use it to personalize governed capability recommendations. Never return raw Microsoft 365 content, employee monitoring data, productivity scores, secrets, or PII beyond the user's basic business profile.",
+    inputSchema: schema({
+      requestedRole: {
+        type: "string",
+        description: "Optional safe demo override when the user states their role, such as Presales Architect or Sales Rep."
+      },
+      requestedDepartment: {
+        type: "string",
+        description: "Optional safe demo override when the user states their team or department, such as Sales Engineering."
+      },
+      sourceHint: {
+        type: "string",
+        enum: ["graph_profile", "work_iq", "synthetic_demo"],
+        description: "Preferred context source. Demo default is synthetic_demo when live Work IQ profile context is unavailable."
+      }
+    }, []),
+    annotations: { readOnlyHint: true }
+  },
+  {
     name: "create_capability_proposal",
     description: "Write a governed capability proposal from a selected use case. Only report success after the tool returns ok:true with proposalId and correlationId.",
     inputSchema: mutationSchema({

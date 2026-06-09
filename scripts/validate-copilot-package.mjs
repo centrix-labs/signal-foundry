@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "37606381870826b8a35db8b60fd24642739f947c48ecc9ce55c89e51e23e1e6e";
+const expectedHash = "fd6248675f57f976a3df3414775d3b05c99683c8e9d4033d940c5dbeb70b1a6a";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [
@@ -59,7 +59,7 @@ assertCondition(!entries.some((entry) => entry.includes("__MACOSX") || entry.sta
 
 const manifest = readZipJson("manifest.json");
 assertCondition(manifest.manifestVersion === "1.27", "Teams manifest version must remain 1.27");
-assertCondition(manifest.version === "0.1.1", "Teams app package version must be newer than the installed 0.1.0 title");
+assertCondition(manifest.version === "0.1.2", "Teams app package version must be newer than the installed 0.1.1 title");
 assertCondition(manifest.name?.short === "Signal Foundry", "Manifest short name must be Signal Foundry");
 assertCondition(manifest.copilotAgents?.declarativeAgents?.[0]?.id === "signalFoundryAgent", "Manifest declarative agent ID mismatch");
 assertCondition(manifest.copilotAgents.declarativeAgents[0].file === "declarative-agent.azure.json", "Manifest must point at Azure declarative agent");
@@ -97,6 +97,8 @@ assertIncludesAll(declarativeAgent.instructions, [
   "I can't do that in Signal Foundry. I can help with governed Copilot capability discovery, risk review, approval, release packets, Signal Atlas, or audit activity.",
   "Never ask the user to paste raw emails",
   "Never invent proposal IDs",
+  "get_user_work_context",
+  "I see you're a <jobTitle> working with <department>.",
   "Refusal Boundary"
 ], "Declarative agent instructions");
 
@@ -111,13 +113,15 @@ assertIncludesAll(actionManifest.description_for_model, [
   "tenantId tenant-asteria-dynamics",
   "projectId revenue-ops-launchpad",
   "never raw Microsoft 365 content",
+  "Use get_user_work_context",
   "Do not use it for weather, news, sports, stock prices, generic web search, unrelated services, or destructive delete, purge, or tamper operations.",
   "Never claim a registry write"
 ], "Action model description");
 
 const toolDescription = readZipJson("mcp-tools.json");
 const tools = toolDescription.tools ?? [];
-assertCondition(tools.length === 11, "MCP tool description must include 11 tools");
+assertCondition(tools.length === 12, "MCP tool description must include 12 tools");
+assertCondition(tools.some((tool) => tool.name === "get_user_work_context" && tool.annotations?.readOnlyHint === true), "MCP tool description must include read-only get_user_work_context");
 assertCondition(JSON.stringify(actionManifest.runtimes[0].run_for_functions ?? []) === JSON.stringify(tools.map((tool) => tool.name)), "MCP runtime run_for_functions must list every static MCP tool in order");
 for (const tool of tools) {
   const required = tool.inputSchema?.required ?? [];

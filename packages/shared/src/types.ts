@@ -15,6 +15,7 @@ export type AudienceScope = "individual" | "team" | "department" | "enterprise" 
 export type McpAction =
   | "search_capabilities"
   | "recommend_capabilities_for_role"
+  | "get_user_work_context"
   | "create_capability_proposal"
   | "score_capability_risk"
   | "submit_capability_review"

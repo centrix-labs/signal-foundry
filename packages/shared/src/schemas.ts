@@ -41,6 +41,12 @@ export const recommendCapabilitiesForRoleInputSchema = scopedRequestSchema.exten
   maxResults: z.number().int().min(1).max(8).default(5)
 });
 
+export const getUserWorkContextInputSchema = scopedRequestSchema.extend({
+  requestedRole: z.string().min(2).optional(),
+  requestedDepartment: z.string().min(2).optional(),
+  sourceHint: z.enum(["graph_profile", "work_iq", "synthetic_demo"]).optional()
+});
+
 export const createCapabilityProposalInputSchema = idempotentRequestSchema.extend({
   title: z.string().min(5),
   description: z.string().min(20),
@@ -110,6 +116,7 @@ export const listMcpActivityInputSchema = scopedRequestSchema.extend({
 export const toolSchemas = {
   search_capabilities: searchCapabilitiesInputSchema,
   recommend_capabilities_for_role: recommendCapabilitiesForRoleInputSchema,
+  get_user_work_context: getUserWorkContextInputSchema,
   create_capability_proposal: createCapabilityProposalInputSchema,
   score_capability_risk: scoreCapabilityRiskInputSchema,
   submit_capability_review: submitCapabilityReviewInputSchema,

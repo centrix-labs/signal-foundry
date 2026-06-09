@@ -9,22 +9,25 @@ Date: 2026-06-08
 
 ## Runtime Image
 
-- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
-- Digest: `sha256:b4476a02af78cdf0608b51982acb70b3166bb6a28e49badb3f8b7a9a0fcd7dea`
-- Revision: `ca-signal-foundry-mcp--0000016`
-- Deployment note: Bicep was reapplied on 2026-06-08 and the MCP image was rebuilt from a sanitized source context to avoid `.git` socket files in Azure CLI packaging.
+- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:work-context-v012`
+- Digest: `sha256:6de9bb44015a0fffcaedf2fd1e7e1b069a7f1ab55fef0501a101add770a33591`
+- Revision: `ca-signal-foundry-mcp--0000018`
+- Deployment note: Bicep was reapplied on 2026-06-09 and the MCP image was rebuilt with the read-only `get_user_work_context` tool plus OAuth bearer synthetic actor fallback for Copilot action calls.
 
 ## Smoke Checks
 
 - Health endpoint: passed.
-- Tool-list endpoint: passed with 11 tools.
-- Active Container Apps revision: passed with 100% traffic on `ca-signal-foundry-mcp--0000016`.
+- Tool-list endpoint: passed with 12 tools.
+- Active Container Apps revision: passed with 100% traffic on `ca-signal-foundry-mcp--0000018`.
 - MCP tool metadata: passed with `Asteria Dynamics`, `tenant-asteria-dynamics`, and `revenue-ops-launchpad` defaults.
-- OpenAPI endpoint: passed with HTTPS server URL and 11 tool paths.
-- MCP JSON-RPC `tools/list`: passed with 11 tools.
+- OpenAPI endpoint: passed with HTTPS server URL and 12 tool paths.
+- MCP JSON-RPC `tools/list`: passed with 12 tools.
 - MCP JSON-RPC `tools/call`: passed for `search_capabilities`.
+- Read-only work context: passed for `get_user_work_context` with bearer auth and sanitized Presales Architect / Sales Engineering context.
 - Authorized synthetic read: passed for role recommendations.
 - Authorized synthetic write: passed for proposal creation.
+- Authorized OAuth-style write: passed for `create_capability_proposal` with `ok:true`, `proposalId: prop-idem-live-oauth-create-2037`, and `correlationId: corr-live-oauth-create`.
+- Audit verification: passed with `list_mcp_activity` showing `create_capability_proposal` success for `corr-live-oauth-create`.
 - Unauthorized approval rejection: passed with HTTP 403 and sanitized body.
 - Golden flow: passed through risk score, review submit, approve, release, and release packet.
 - Deterministic risk gate: passed; medium sensitivity plus customer data scored `medium`.

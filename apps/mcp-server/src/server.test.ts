@@ -28,6 +28,25 @@ describe("Signal Foundry MCP tools", () => {
     expect(result.body.correlationId).toBe("corr-test-read");
   });
 
+  it("returns sanitized user work context without raw content", () => {
+    const store = testStore();
+    const actor = store.read().actors[0];
+    const result = executeTool(store, "get_user_work_context", {
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
+      requestedRole: "Presales Architect",
+      requestedDepartment: "Sales Engineering",
+      sourceHint: "synthetic_demo",
+      correlationId: "corr-work-context"
+    }, actor);
+    expect(result.status).toBe(200);
+    expect(result.body.correlationId).toBe("corr-work-context");
+    expect(JSON.stringify(result.body)).toContain("Presales Architect");
+    expect(JSON.stringify(result.body)).toContain("Sales Engineering");
+    expect(JSON.stringify(result.body)).not.toContain("oauth-token");
+    expect(store.read().mcpActivity.some((activity) => activity.action === "get_user_work_context")).toBe(false);
+  });
+
   it("rejects mutation without confirmation", () => {
     const store = testStore();
     const actor = store.read().actors[0];
@@ -161,8 +180,10 @@ describe("Signal Foundry MCP tools", () => {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ tenantId: demoScope.tenantId, projectId: demoScope.projectId })
       });
+      const toolsBody = await tools.json();
       expect(health.status).toBe(200);
-      expect((await tools.json()).tools).toContain("create_capability_proposal");
+      expect(toolsBody.tools).toContain("create_capability_proposal");
+      expect(toolsBody.tools).toContain("get_user_work_context");
       expect((await openapi.json()).paths["/tools/search_capabilities"]).toBeDefined();
       expect(rejected.status).toBe(401);
       expect(JSON.stringify(await rejected.json())).not.toContain("token");
@@ -234,6 +255,33 @@ describe("Signal Foundry MCP tools", () => {
     }
   });
 
+  it("accepts OAuth bearer writes through the synthetic demo auth boundary", async () => {
+    const store = testStore();
+    const server = createServer(store).listen(0);
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected local test port.");
+    }
+    try {
+      const response = await fetch(`http://127.0.0.1:${address.port}/tools/create_capability_proposal`, {
+        method: "POST",
+        headers: {
+          "authorization": "Bearer oauth-token-redacted",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ ...proposalBody("idem-oauth-create"), correlationId: "corr-oauth-create" })
+      });
+      const body = await response.json();
+      expect(response.status).toBe(200);
+      expect(body.ok).toBe(true);
+      expect(body.proposalId).toBeDefined();
+      expect(JSON.stringify(body)).not.toContain("oauth-token-redacted");
+      expect(store.read().mcpActivity[0]?.correlationId).toBe("corr-oauth-create");
+    } finally {
+      server.close();
+    }
+  });
+
   it("serves MCP JSON-RPC tool list and tool calls", async () => {
     const store = testStore();
     const server = createServer(store).listen(0);
@@ -263,7 +311,9 @@ describe("Signal Foundry MCP tools", () => {
       });
       expect(listed.status).toBe(200);
       const toolList = await listed.json();
-      expect(toolList.result.tools).toHaveLength(11);
+      expect(toolList.result.tools).toHaveLength(12);
+      const workContextTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "get_user_work_context");
+      expect(workContextTool.annotations.readOnlyHint).toBe(true);
       const submitTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "submit_capability_review");
       expect(submitTool.inputSchema.required).toContain("correlationId");
       expect(submitTool.inputSchema.required).toContain("confirmed");

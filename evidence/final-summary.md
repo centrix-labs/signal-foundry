@@ -40,9 +40,9 @@ Date: 2026-06-08
 ## Deployment Checkpoints
 
 - Azure resource group: `rg-signal-foundry-hackathon`
-- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
-- Container digest: `sha256:b4476a02af78cdf0608b51982acb70b3166bb6a28e49badb3f8b7a9a0fcd7dea`
-- Container revision: `ca-signal-foundry-mcp--0000016`
+- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:work-context-v012`
+- Container digest: `sha256:6de9bb44015a0fffcaedf2fd1e7e1b069a7f1ab55fef0501a101add770a33591`
+- Container revision: `ca-signal-foundry-mcp--0000018`
 - Static Web Apps site: `swa-signal-foundry`
 - Azure Table registry mirror: `Actors`, `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`
 - Budget: `signal-foundry-hackathon-budget`
@@ -60,7 +60,7 @@ Date: 2026-06-08
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Copilot Chat screenshots: `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/screenshots/copilot-workiq-recommendation-asteria.png`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
-- Copilot package: `evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip`
+- Copilot package: `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 - Final readiness audit: `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run audit:final-readiness`
 

@@ -27,7 +27,7 @@
 
 - Local package zip: `evidence/copilot/signal-foundry-copilot-local.zip`
 - SHA-256: `96c7727d592abdab678c128adc10f4cb35d0f89850544582c32c94649e40c4d1`
-- Current Azure package zip: `evidence/copilot/signal-foundry-copilot-v011-root-mcp-tools-20260608-1542.zip`
-- Current Azure package SHA-256: `37606381870826b8a35db8b60fd24642739f947c48ecc9ce55c89e51e23e1e6e`
+- Current Azure package zip: `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`
+- Current Azure package SHA-256: `fd6248675f57f976a3df3414775d3b05c99683c8e9d4033d940c5dbeb70b1a6a`
 - Current capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 - Tenant-dependent follow-up: confirm the tenant-owned Entra app and `OAuthPluginVault` reference before sideload, then capture the three Copilot screenshots in the runbook.

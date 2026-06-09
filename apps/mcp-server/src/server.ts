@@ -5,7 +5,14 @@ import { actorIdFromBearer, resolveActor } from "./auth";
 import { RegistryStore } from "./store";
 import { executeTool, toolNames } from "./tools";
 
-const readToolNames: ToolName[] = ["search_capabilities", "recommend_capabilities_for_role", "generate_release_packet", "generate_capability_map", "list_mcp_activity"];
+const readToolNames: ToolName[] = [
+  "search_capabilities",
+  "recommend_capabilities_for_role",
+  "get_user_work_context",
+  "generate_release_packet",
+  "generate_capability_map",
+  "list_mcp_activity"
+];
 
 export function createServer(store = new RegistryStore()) {
   const app = express();

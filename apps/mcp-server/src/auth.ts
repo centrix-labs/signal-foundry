@@ -3,6 +3,7 @@ import type { Actor, McpAction, Role, SignalFoundryRegistry } from "@signal-foun
 const readActions: McpAction[] = [
   "search_capabilities",
   "recommend_capabilities_for_role",
+  "get_user_work_context",
   "generate_release_packet",
   "generate_capability_map",
   "list_mcp_activity"
@@ -37,8 +38,14 @@ export function resolveActor(registry: SignalFoundryRegistry, actorId?: string):
 }
 
 export function actorIdFromBearer(value?: string) {
-  const match = value?.match(/^Bearer\s+demo-(actor-[a-z-]+)$/i);
-  return match?.[1];
+  const demoMatch = value?.match(/^Bearer\s+demo-(actor-[a-z-]+)$/i);
+  if (demoMatch) {
+    return demoMatch[1];
+  }
+  if (/^Bearer\s+\S+/i.test(value ?? "")) {
+    return process.env["SIGNAL_FOUNDRY_SYNTHETIC_OAUTH_ACTOR_ID"] ?? "actor-priya";
+  }
+  return undefined;
 }
 
 export function authorize(action: McpAction, actor: Actor | undefined) {
