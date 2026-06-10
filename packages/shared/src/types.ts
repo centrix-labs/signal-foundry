@@ -65,6 +65,22 @@ export interface CapabilityProposal extends Omit<Capability, "id" | "status" | "
   correlationId: string;
 }
 
+export interface AdvisoryRiskStep {
+  signal: string;
+  concern: string;
+  suggestedControl: string;
+}
+
+export interface AdvisoryRiskAnalysis {
+  status: "available" | "unavailable";
+  model?: string;
+  summary?: string;
+  steps?: AdvisoryRiskStep[];
+  suggestedRiskLevel?: RiskLevel;
+  agreesWithGate?: boolean;
+  generatedAt?: string;
+}
+
 export interface RiskReview {
   id: string;
   proposalId: string;
@@ -77,6 +93,7 @@ export interface RiskReview {
   requiresHumanReview: boolean;
   requiredControls: string[];
   rationale: string;
+  advisory?: AdvisoryRiskAnalysis;
   createdAt: string;
   correlationId: string;
 }

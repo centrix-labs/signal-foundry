@@ -97,7 +97,7 @@ export function createServer(store = new RegistryStore()) {
     });
   });
 
-  app.post("/mcp", (request, response) => {
+  app.post("/mcp", async (request, response) => {
     const { id, method, params } = request.body ?? {};
     const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
     const actor = resolveActor(store.read(), actorId);
@@ -132,7 +132,7 @@ export function createServer(store = new RegistryStore()) {
         response.status(404).json(mcpError(id, "Unknown tool."));
         return;
       }
-      const result = executeTool(store, toolName, params?.arguments ?? {}, actor);
+      const result = await executeTool(store, toolName, params?.arguments ?? {}, actor);
       response.status(result.status >= 500 ? 500 : 200).json({
         jsonrpc: "2.0",
         id,
@@ -147,7 +147,7 @@ export function createServer(store = new RegistryStore()) {
     response.status(400).json(mcpError(id, "Unsupported MCP method."));
   });
 
-  app.post("/tools/:toolName", (request, response) => {
+  app.post("/tools/:toolName", async (request, response) => {
     const toolName = request.params["toolName"] as ToolName;
     if (!toolNames.includes(toolName)) {
       response.status(404).json({ ok: false, error: { message: "Unknown tool." } });
@@ -155,7 +155,7 @@ export function createServer(store = new RegistryStore()) {
     }
     const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
     const actor = resolveActor(store.read(), actorId);
-    const result = executeTool(store, toolName, request.body, actor);
+    const result = await executeTool(store, toolName, request.body, actor);
     response.status(result.status).json(result.body);
   });
 

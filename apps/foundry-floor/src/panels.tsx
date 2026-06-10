@@ -157,6 +157,7 @@ export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: C
         <span>{isBlocked ? "blocked checks" : "checks evaluated"}</span>
       </div>
       <p>{isBlocked ? "Monitoring-style requests are refused. Convert the ask into a workflow-level capability before review." : selectedRisk.rationale}</p>
+      {!isBlocked && <AdvisoryAnalysis review={selectedRisk} />}
       <div className="checklist">
         {controlChecks.map((check) => (
           <details key={check.label} open={check.status !== "passed"}>
@@ -170,6 +171,50 @@ export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: C
         ))}
       </div>
     </section>
+  );
+}
+
+function AdvisoryAnalysis({ review }: { review: RiskReview }) {
+  const advisory = review.advisory;
+  if (!advisory || advisory.status !== "available") {
+    return (
+      <div className="advisory-analysis muted" aria-label="Advisory analysis">
+        <p className="advisory-note">Advisory unavailable — deterministic verdict stands.</p>
+      </div>
+    );
+  }
+  const disagrees = advisory.agreesWithGate === false;
+  return (
+    <div className="advisory-analysis" aria-label="Advisory analysis">
+      <div className="advisory-heading">
+        <Sparkles size={14} />
+        <strong>Advisory Analysis</strong>
+        {advisory.model && <small>{advisory.model}</small>}
+      </div>
+      {disagrees ? (
+        <p className="advisory-arbitration" role="note">
+          Advisory suggested {advisory.suggestedRiskLevel ? riskLabels[advisory.suggestedRiskLevel] : "a different level"} —
+          deterministic gate ruled {riskLabels[review.riskLevel]}. Gate wins.
+        </p>
+      ) : (
+        advisory.suggestedRiskLevel && (
+          <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>
+        )
+      )}
+      {advisory.summary && <p>{advisory.summary}</p>}
+      {advisory.steps && advisory.steps.length > 0 && (
+        <ul className="advisory-steps">
+          {advisory.steps.map((step) => (
+            <li key={`${step.signal}-${step.concern}`}>
+              <strong>{step.signal}</strong>
+              <span>{step.concern}</span>
+              <em>{step.suggestedControl}</em>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="advisory-note">Advisory only — the deterministic risk gate is the source of truth.</p>
+    </div>
   );
 }
 

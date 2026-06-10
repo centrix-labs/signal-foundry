@@ -9,6 +9,7 @@ import {
   toolSchemas
 } from "@signal-foundry/shared";
 import { addActivity, addRejectedActivity, makeId, nowIso } from "./audit";
+import { generateAdvisoryRiskAnalysis } from "./advisory";
 import { authorize, isWriteAction } from "./auth";
 import { scoreRisk } from "./risk";
 import type { RegistryStore } from "./store";
@@ -17,7 +18,7 @@ export const toolNames = Object.keys(toolSchemas) as ToolName[];
 
 type ToolResult = { status: number; body: Record<string, unknown> };
 
-export function executeTool(store: RegistryStore, action: ToolName, rawInput: unknown, actor: Actor | undefined): ToolResult {
+export async function executeTool(store: RegistryStore, action: ToolName, rawInput: unknown, actor: Actor | undefined): Promise<ToolResult> {
   const correlationId = getCorrelationId(rawInput);
   const auth = authorize(action, actor);
   if (!auth.ok) {
@@ -51,7 +52,7 @@ export function executeTool(store: RegistryStore, action: ToolName, rawInput: un
     case "create_capability_proposal":
       return ok(createProposal(store, data, activeActor), correlationId);
     case "score_capability_risk":
-      return ok(scoreProposal(store, data, activeActor), correlationId);
+      return ok(await scoreProposal(store, data, activeActor), correlationId);
     case "submit_capability_review":
       return ok(submitReview(store, data, activeActor), correlationId);
     case "approve_capability":
@@ -226,22 +227,45 @@ function createProposal(store: RegistryStore, input: any, actor: Actor) {
   return { proposalId, status: "proposed", correlationId: input.correlationId ?? proposalId };
 }
 
-function scoreProposal(store: RegistryStore, input: any, actor: Actor) {
+async function scoreProposal(store: RegistryStore, input: any, actor: Actor) {
   const result = scoreRisk(input);
   const riskReviewId = makeId("risk", input.idempotencyKey);
   const existing = store.read().riskReviews.find((risk) => risk.id === riskReviewId);
   if (existing) {
-    return { riskReviewId: existing.id, riskLevel: existing.riskLevel, requiredControls: existing.requiredControls, rationale: existing.rationale, correlationId: existing.correlationId };
+    return { riskReviewId: existing.id, riskLevel: existing.riskLevel, requiredControls: existing.requiredControls, rationale: existing.rationale, advisory: existing.advisory, correlationId: existing.correlationId };
   }
+  const proposalRecord = store.read().proposals.find((item) => item.id === input.proposalId);
+  // Advisory wording only; the deterministic result above is the source of truth
+  // and must be unaffected by advisory availability, content, or failure.
+  const advisory = await generateAdvisoryRiskAnalysis(
+    {
+      title: proposalRecord?.title ?? "Unknown proposal",
+      description: proposalRecord?.description ?? "No description on record.",
+      role: proposalRecord?.role ?? "unknown",
+      department: proposalRecord?.department ?? "unknown"
+    },
+    {
+      dataSensitivity: input.dataSensitivity,
+      externalSharing: input.externalSharing,
+      automationLevel: input.automationLevel,
+      audienceScope: input.audienceScope,
+      usesCustomerData: input.usesCustomerData,
+      requiresHumanReview: input.requiresHumanReview
+    },
+    { riskLevel: result.riskLevel, requiredControls: result.requiredControls }
+  );
   store.write((registry) => {
     const proposal = registry.proposals.find((item) => item.id === input.proposalId);
     if (proposal) {
       proposal.status = result.riskLevel === "blocked" ? "blocked" : "risk_scored";
     }
-    registry.riskReviews.push({ id: riskReviewId, ...input, ...result, createdAt: nowIso(), correlationId: input.correlationId ?? riskReviewId });
-    addActivity(registry, "score_capability_risk", actor, input.proposalId, "success", input.correlationId ?? riskReviewId, "Risk gate produced deterministic score and controls.");
+    registry.riskReviews.push({ id: riskReviewId, ...input, ...result, advisory, createdAt: nowIso(), correlationId: input.correlationId ?? riskReviewId });
+    const advisoryNote = advisory.status === "available"
+      ? `Advisory analysis attached (${advisory.agreesWithGate === false ? "disagrees with gate; gate wins" : "agrees with gate"}).`
+      : "Advisory unavailable; deterministic verdict stands.";
+    addActivity(registry, "score_capability_risk", actor, input.proposalId, "success", input.correlationId ?? riskReviewId, `Risk gate produced deterministic score and controls. ${advisoryNote}`);
   });
-  return { riskReviewId, ...result, correlationId: input.correlationId ?? riskReviewId };
+  return { riskReviewId, ...result, advisory, correlationId: input.correlationId ?? riskReviewId };
 }
 
 function submitReview(store: RegistryStore, input: any, actor: Actor) {

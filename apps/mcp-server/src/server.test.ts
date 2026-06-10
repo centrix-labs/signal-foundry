@@ -12,10 +12,10 @@ function testStore() {
 }
 
 describe("Signal Foundry MCP tools", () => {
-  it("lists role-relevant recommendations with correlation IDs", () => {
+  it("lists role-relevant recommendations with correlation IDs", async () => {
     const store = testStore();
     const actor = store.read().actors[0];
-    const result = executeTool(store, "recommend_capabilities_for_role", {
+    const result = await executeTool(store, "recommend_capabilities_for_role", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       role: "Enterprise Account Manager",
@@ -28,10 +28,10 @@ describe("Signal Foundry MCP tools", () => {
     expect(result.body.correlationId).toBe("corr-test-read");
   });
 
-  it("returns sanitized user work context without raw content", () => {
+  it("returns sanitized user work context without raw content", async () => {
     const store = testStore();
     const actor = store.read().actors[0];
-    const result = executeTool(store, "get_user_work_context", {
+    const result = await executeTool(store, "get_user_work_context", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       requestedRole: "Presales Architect",
@@ -47,10 +47,10 @@ describe("Signal Foundry MCP tools", () => {
     expect(store.read().mcpActivity.some((activity) => activity.action === "get_user_work_context")).toBe(false);
   });
 
-  it("rejects mutation without confirmation", () => {
+  it("rejects mutation without confirmation", async () => {
     const store = testStore();
     const actor = store.read().actors[0];
-    const result = executeTool(store, "create_capability_proposal", {
+    const result = await executeTool(store, "create_capability_proposal", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-test-no-confirm",
@@ -67,13 +67,13 @@ describe("Signal Foundry MCP tools", () => {
     expect(result.status).toBe(400);
   });
 
-  it("runs proposal, risk, review, approval, and release flow", () => {
+  it("runs proposal, risk, review, approval, and release flow", async () => {
     const store = testStore();
     const employee = store.read().actors[0];
     const reviewer = store.read().actors[1];
-    const created = executeTool(store, "create_capability_proposal", proposalBody("idem-flow-create"), employee);
+    const created = await executeTool(store, "create_capability_proposal", proposalBody("idem-flow-create"), employee);
     const proposalId = created.body.proposalId as string;
-    const risk = executeTool(store, "score_capability_risk", {
+    const risk = await executeTool(store, "score_capability_risk", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-risk",
@@ -86,7 +86,7 @@ describe("Signal Foundry MCP tools", () => {
       requiresHumanReview: true,
       confirmed: true
     }, reviewer);
-    const review = executeTool(store, "submit_capability_review", {
+    const review = await executeTool(store, "submit_capability_review", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-review",
@@ -95,7 +95,7 @@ describe("Signal Foundry MCP tools", () => {
       dueDate: "2026-06-08",
       confirmed: true
     }, reviewer);
-    const approved = executeTool(store, "approve_capability", {
+    const approved = await executeTool(store, "approve_capability", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-approve",
@@ -104,7 +104,7 @@ describe("Signal Foundry MCP tools", () => {
       approvalNotes: "Controls accepted.",
       confirmed: true
     }, reviewer);
-    const released = executeTool(store, "release_capability", {
+    const released = await executeTool(store, "release_capability", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-flow-release",
@@ -120,10 +120,10 @@ describe("Signal Foundry MCP tools", () => {
     expect(store.read().releasePackets).toHaveLength(1);
   });
 
-  it("rejects employee approval attempts with sanitized error", () => {
+  it("rejects employee approval attempts with sanitized error", async () => {
     const store = testStore();
     const employee = store.read().actors[0];
-    const result = executeTool(store, "approve_capability", {
+    const result = await executeTool(store, "approve_capability", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-bad-approve",
@@ -136,9 +136,9 @@ describe("Signal Foundry MCP tools", () => {
     expect(JSON.stringify(result.body)).not.toContain("stack");
   });
 
-  it("records unauthorized attempts without raw request content", () => {
+  it("records unauthorized attempts without raw request content", async () => {
     const store = testStore();
-    const result = executeTool(store, "approve_capability", {
+    const result = await executeTool(store, "approve_capability", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-unauth-audit",
@@ -154,11 +154,11 @@ describe("Signal Foundry MCP tools", () => {
     expect(serialized).not.toContain("Should not pass");
   });
 
-  it("keeps repeated proposal creation idempotent", () => {
+  it("keeps repeated proposal creation idempotent", async () => {
     const store = testStore();
     const employee = store.read().actors[0];
-    const first = executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
-    const second = executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
+    const first = await executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
+    const second = await executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
     expect(first.body.proposalId).toBe(second.body.proposalId);
     expect(store.read().proposals).toHaveLength(1);
   });
@@ -195,12 +195,12 @@ describe("Signal Foundry MCP tools", () => {
   it("serves authorized registry snapshots without actor records", async () => {
     const store = testStore();
     const reviewer = store.read().actors[1];
-    executeTool(store, "create_capability_proposal", proposalBody("idem-snapshot-create"), store.read().actors[0]);
+    await executeTool(store, "create_capability_proposal", proposalBody("idem-snapshot-create"), store.read().actors[0]);
     const proposalId = store.read().proposals[0]?.id;
     if (!proposalId || !reviewer) {
       throw new Error("Expected proposal and reviewer fixtures.");
     }
-    executeTool(store, "submit_capability_review", {
+    await executeTool(store, "submit_capability_review", {
       tenantId: demoScope.tenantId,
       projectId: demoScope.projectId,
       idempotencyKey: "idem-snapshot-review",
