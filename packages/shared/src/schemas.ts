@@ -23,7 +23,8 @@ export const scopedRequestSchema = z.object({
 });
 
 export const idempotentRequestSchema = scopedRequestSchema.extend({
-  idempotencyKey: z.string().min(8)
+  idempotencyKey: z.string().min(8),
+  confirmed: z.literal(true)
 });
 
 export const searchCapabilitiesInputSchema = scopedRequestSchema.extend({

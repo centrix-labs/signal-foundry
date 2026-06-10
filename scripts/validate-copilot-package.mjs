@@ -1,9 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const repoRoot = resolve("/Users/mattgraves/Documents/hackathon-enterprise");
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
 const expectedHash = "fd6248675f57f976a3df3414775d3b05c99683c8e9d4033d940c5dbeb70b1a6a";

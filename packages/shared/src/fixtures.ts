@@ -83,6 +83,7 @@ export const validProposalFixture = {
   tenantId: demoScope.tenantId,
   projectId: demoScope.projectId,
   idempotencyKey: "idem-renewal-brief-001",
+  confirmed: true,
   title: "Renewal Brief Generator",
   description: "Create a governed renewal brief from approved account and workflow summaries.",
   role: "Enterprise Account Manager",

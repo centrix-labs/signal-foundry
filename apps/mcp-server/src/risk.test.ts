@@ -6,6 +6,7 @@ const baseRiskInput = {
   tenantId: demoScope.tenantId,
   projectId: demoScope.projectId,
   idempotencyKey: "idem-risk-test",
+  confirmed: true,
   proposalId: "prop-risk-test",
   dataSensitivity: "low",
   externalSharing: "low",
