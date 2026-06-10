@@ -1,7 +1,8 @@
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const repoRoot = "/Users/mattgraves/Documents/hackathon-enterprise";
+const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const validator = `${repoRoot}/scripts/validate-evidence.mjs`;
 const evidenceDirectory = `${repoRoot}/evidence`;
 

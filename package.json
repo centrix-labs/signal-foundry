@@ -27,7 +27,8 @@
     "container:build": "bash scripts/container-build.sh",
     "container:run": "bash scripts/container-run.sh",
     "smoke:local": "bash scripts/local-smoke.sh",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "test:e2e": "playwright test --config tests/playwright.config.ts"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",

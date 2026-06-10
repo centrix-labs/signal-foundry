@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/Users/mattgraves/Documents/hackathon-enterprise"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MCP_PORT="${SIGNAL_FOUNDRY_LOCAL_PORT:-7071}"
 FRONTEND_HOST="${SIGNAL_FOUNDRY_FRONTEND_HOST:-127.0.0.1}"
 

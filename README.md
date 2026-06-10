@@ -15,9 +15,9 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 ## Local Development
 
 ```bash
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise install
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run validate
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run dev:all
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise install
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run dev:all
 ```
 
 Local endpoints:
@@ -28,17 +28,17 @@ Local endpoints:
 ## Local Container
 
 ```bash
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run container:build
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run container:run
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run smoke:local
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run container:build
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run container:run
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run smoke:local
 ```
 
 ## Azure Deployment
 
 ```bash
-bash /Users/mattgraves/Documents/hackathon-enterprise/scripts/deploy.sh --plan
-bash /Users/mattgraves/Documents/hackathon-enterprise/scripts/deploy.sh --what-if
-bash /Users/mattgraves/Documents/hackathon-enterprise/scripts/deploy.sh --apply --build-image --deploy-static
+bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --plan
+bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --what-if
+bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply --build-image --deploy-static
 ```
 
 Before `--apply`, declare the blast radius and rollback path. The target resource group is `rg-signal-foundry-hackathon` in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.

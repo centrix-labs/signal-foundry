@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { demoRegistry, demoScope, type SignalFoundryRegistry } from "@signal-foundry/shared";
 import { createTableStorageAdapterFromEnv, type TableStorageRegistryAdapter } from "./tableStorageAdapter";
 
-const defaultPath = "/Users/mattgraves/Documents/hackathon-enterprise/data/signal-foundry-seed.json";
+const defaultPath = fileURLToPath(new URL("../../../data/signal-foundry-seed.json", import.meta.url));
 
 export class RegistryStore {
   private registry: SignalFoundryRegistry;
