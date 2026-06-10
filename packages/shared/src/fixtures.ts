@@ -60,7 +60,24 @@ export const demoRegistry: SignalFoundryRegistry = {
       updatedAt: now
     }
   ],
-  proposals: [],
+  proposals: [
+    {
+      id: "prop-autonomous-renewal-outreach",
+      title: "Autonomous Renewal Outreach Composer",
+      description: "Drafts and sends renewal outreach automatically across all Asteria Dynamics enterprise accounts using approved summaries only. No sensitive data classes and no customer data records are accessed.",
+      role: "Enterprise Account Manager",
+      department: "Customer Success",
+      owner: "Priya Shah",
+      intendedAudience: "enterprise",
+      inputsRequired: ["Approved renewal summaries", "Outreach templates"],
+      proposedOutputs: ["Scheduled outreach drafts", "Send log summary"],
+      sourceSummary: "Synthetic demo proposal tuned for the advisory disagreement walkthrough: benign-sounding inputs that the deterministic gate scores high (autonomous + enterprise-wide + no required human review).",
+      status: "proposed",
+      createdBy: "Priya Shah",
+      createdAt: now,
+      correlationId: "corr-seed-advisory-001"
+    }
+  ],
   riskReviews: [],
   reviewItems: [],
   releasePackets: [],

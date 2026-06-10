@@ -157,10 +157,11 @@ describe("Signal Foundry MCP tools", () => {
   it("keeps repeated proposal creation idempotent", async () => {
     const store = testStore();
     const employee = store.read().actors[0];
+    const seededCount = store.read().proposals.length;
     const first = await executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
     const second = await executeTool(store, "create_capability_proposal", proposalBody("idem-repeat"), employee);
     expect(first.body.proposalId).toBe(second.body.proposalId);
-    expect(store.read().proposals).toHaveLength(1);
+    expect(store.read().proposals).toHaveLength(seededCount + 1);
   });
 
   it("serves health, tool list, and unauthorized rejection over HTTP", async () => {
