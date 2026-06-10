@@ -40,6 +40,26 @@ When running this project with Codex agent teams, use `gpt-5.5` for every build 
 | Demo script validation | QA lead | `gpt-5.5` | 0.1 | high | Golden path and unauthorized path pass repeatedly |
 | Judge narrative | Product storyteller | `gpt-5.5` | 0.3 | medium | Clear Microsoft 365 Copilot + MCP + Work IQ story |
 
+## Build-Agent Assignments: Foundry + Work IQ Uplift (Claude)
+
+The uplift pass defined in `foundry-workiq-uplift-prompt.md` runs on Claude agents. Full per-task table lives in that prompt; summary:
+
+| Workstream | Owner Model | Temp | Effort | Reviewer |
+| --- | --- | --- | --- | --- |
+| 1 Foundry advisory backend + arbitration | Fable 5 (`claude-fable-5`) | 0.1 | high | Opus 4.8 |
+| 1 Advisory UI | Sonnet 4.6 (`claude-sonnet-4-6`) | 0.2 | medium | Opus 4.8 |
+| 2 Work IQ grounding + agent instructions | Fable 5 | 0.1 | high | Opus 4.8 |
+| 3 Foundry Floor filters/search | Sonnet 4.6 | 0.2 | medium | Opus 4.8 |
+| 4 Playwright E2E | Sonnet 4.6 | 0.1 | medium | lead |
+| 5 Contract hardening + hygiene | Sonnet 4.6 / Haiku 4.5 (`claude-haiku-4-5-20251001`) | 0.0-0.1 | high / low | lead |
+| 6 Adaptive Card manifests | Fable 5 | 0.1 | high | Opus 4.8 |
+| 6 Card templates | Sonnet 4.6 | 0.2 | medium | Opus 4.8 |
+| 7 Evidence closure | Sonnet 4.6 | 0.1 | medium | lead |
+| Azure provisioning/deploy | Fable 5 | 0.1 | high | Opus 4.8 |
+| Lead integration + commits | Fable 5 | 0.1 | high | — |
+
+Rules: strongest model on safety claims, Microsoft schema fidelity, and Azure; reviewer model always differs from implementer; temperature binds only for API-driven agents (Claude Code uses effort/thinking depth); same temperature guidance as below.
+
 ## Prompting Rules For Runtime Agents
 
 - Ask for explicit confirmation before mutation tools.
