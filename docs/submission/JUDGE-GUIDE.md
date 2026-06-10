@@ -1,0 +1,59 @@
+# Judge Guide — Signal Foundry
+
+## 60-second orientation
+
+Signal Foundry turns employee AI ideas into governed, human-approved Copilot
+workflows. Copilot Chat agent (discovery + proposals) → external MCP server
+(deterministic risk gate + Azure AI Foundry advisory reasoning) → human review
+→ audit-safe release packets, all visible on the Foundry Floor command center.
+
+## Live demo (no setup)
+
+- Foundry Floor: https://red-coast-0b0c14e0f.7.azurestaticapps.net
+- MCP health: https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health
+- Tool list: same host, `/tools`
+
+## Run locally (Node 20+)
+
+```bash
+git clone https://github.com/centrix-labs/signal-foundry
+cd signal-foundry
+npm install
+npm run validate     # typecheck + 52 tests + evidence/package/card validators
+npm run test:e2e     # Playwright golden flow (needs: npx playwright install chromium)
+npm run dev:all      # MCP on :7071, Foundry Floor on :5173
+```
+
+Demo actors (send as `x-sf-actor-id` header or `Bearer demo-actor-<name>`):
+`actor-priya` (employee), `actor-alex` (reviewer), `actor-dana` (admin).
+
+Golden flow against the local server:
+
+```bash
+curl -s -X POST localhost:7071/admin/reset -H "x-sf-actor-id: actor-dana"
+# then create -> score -> submit -> approve -> release via POST /tools/<name>
+# (tests/e2e/golden-flow.spec.ts is the executable reference for exact payloads)
+```
+
+## What to look for
+
+1. **Confirmation gate:** any mutation without `confirmed: true` fails at both
+   runtime and schema level (`packages/shared/src/schemas.ts`).
+2. **Advisory arbitration:** score the seeded proposal
+   `prop-autonomous-renewal-outreach` per
+   `apps/copilot-agent/docs/advisory-disagreement-demo.md` — deterministic gate
+   rules high, advisory analysis renders beside it, gate wins on disagreement.
+   With advisory off, deterministic outcomes are byte-identical (tested).
+3. **Unauthorized path:** approve as `actor-priya` → sanitized 403, no stack
+   traces, rejection logged in the MCP Activity Rail.
+4. **Anti-surveillance:** the agent instructions refuse monitoring/ranking asks
+   (`apps/copilot-agent/package/declarative-agent.azure.json`).
+5. **Copilot package:** sideload-ready v0.1.3 zip under `evidence/copilot/`,
+   hash-pinned by `npm run validate:copilot`; Adaptive Card templates inline in
+   all four action manifests (`npm run validate:cards`).
+
+## Evidence map
+
+`evidence/judge-evidence-checklist.md` maps every rubric criterion to its
+artifact; `evidence/copilot/copilot-evidence-capture-runbook.md` documents the
+sideload path and the tenant-dependent captures.

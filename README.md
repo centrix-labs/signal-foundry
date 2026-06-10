@@ -12,6 +12,23 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 - MCP/API: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io`
 - Evidence summary: `evidence/azure/deployed-smoke-results.md`
 
+## For Judges
+
+Start with [docs/submission/JUDGE-GUIDE.md](docs/submission/JUDGE-GUIDE.md) —
+60-second orientation, live URLs, local quickstart, and what to look for.
+Architecture: [docs/submission/architecture.md](docs/submission/architecture.md).
+
+```mermaid
+flowchart LR
+    USER["Employee / Reviewer"] --> DA["M365 Copilot Chat\nSignal Foundry declarative agent\nPeople + Meetings grounding\nAdaptive Card responses"]
+    DA -->|"OAuth - MCP action"| MCP["External MCP server\nAzure Container Apps\n12 tools - correlation IDs"]
+    MCP --> GATE["Deterministic risk gate\nsource of truth"]
+    GATE -.->|"advisory only"| LLM["Azure AI Foundry\nmulti-step risk deliberation"]
+    MCP --> REG["Registry + Azure Table Storage\nApp Insights telemetry"]
+    REVIEWER["Human reviewer"] --> FLOOR["Foundry Floor\nAzure Static Web Apps + Entra"]
+    FLOOR --> MCP
+```
+
 ## Local Development
 
 ```bash
