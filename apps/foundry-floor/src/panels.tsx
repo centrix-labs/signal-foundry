@@ -26,7 +26,25 @@ import {
 } from "./data";
 import { signOutUrl, type StaticWebAppUser } from "./auth";
 
-export function LeftRail({ activeView, onView }: { activeView: string; onView: (view: string) => void }) {
+export interface RecordFilters {
+  role?: string;
+  department?: string;
+  pendingOnly?: boolean;
+}
+
+export function LeftRail({
+  activeView,
+  onView,
+  records = capabilities,
+  filters = {},
+  onFiltersChange
+}: {
+  activeView: string;
+  onView: (view: string) => void;
+  records?: readonly Capability[];
+  filters?: RecordFilters;
+  onFiltersChange?: (filters: RecordFilters) => void;
+}) {
   const items = [
     ["floor", "Foundry Floor"],
     ["atlas", "Signal Atlas"],
@@ -35,6 +53,12 @@ export function LeftRail({ activeView, onView }: { activeView: string; onView: (
     ["mirror", "Copilot Mirror"],
     ["executive", "Light Executive"]
   ] as const;
+  const roles = [...new Set(records.map((item) => item.role))];
+  const departments = [...new Set(records.map((item) => item.department))];
+
+  function toggle(change: RecordFilters) {
+    onFiltersChange?.({ ...filters, ...change });
+  }
 
   return (
     <aside className="left-rail" aria-label="Foundry navigation">
@@ -61,9 +85,36 @@ export function LeftRail({ activeView, onView }: { activeView: string; onView: (
       </div>
       <div className="filter-stack">
         <span>Filters</span>
-        <button type="button">Role: Account Manager</button>
-        <button type="button">Department: Customer Success</button>
-        <button type="button">Stage: Pending Review</button>
+        {roles.map((role) => (
+          <button
+            key={role}
+            type="button"
+            className={filters.role === role ? "active" : ""}
+            aria-pressed={filters.role === role}
+            onClick={() => toggle({ role: filters.role === role ? undefined : role })}
+          >
+            Role: {role}
+          </button>
+        ))}
+        {departments.map((department) => (
+          <button
+            key={department}
+            type="button"
+            className={filters.department === department ? "active" : ""}
+            aria-pressed={filters.department === department}
+            onClick={() => toggle({ department: filters.department === department ? undefined : department })}
+          >
+            Department: {department}
+          </button>
+        ))}
+        <button
+          type="button"
+          className={filters.pendingOnly ? "active" : ""}
+          aria-pressed={Boolean(filters.pendingOnly)}
+          onClick={() => toggle({ pendingOnly: filters.pendingOnly ? undefined : true })}
+        >
+          Stage: Pending Review
+        </button>
       </div>
     </aside>
   );
@@ -72,11 +123,15 @@ export function LeftRail({ activeView, onView }: { activeView: string; onView: (
 export function TopBar({
   theme,
   onThemeChange,
-  user
+  user,
+  searchQuery = "",
+  onSearchChange
 }: {
   theme: "dark" | "light";
   onThemeChange: (theme: "dark" | "light") => void;
   user?: StaticWebAppUser;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }) {
   const displayName = user?.userDetails || "Avery M.";
   const initials = displayName
@@ -94,7 +149,12 @@ export function TopBar({
       </div>
       <label className="search-box">
         <span>Search</span>
-        <input value="renewals, risk gates, releases" readOnly aria-label="Search synthetic records" />
+        <input
+          value={searchQuery}
+          onChange={(event) => onSearchChange?.(event.target.value)}
+          placeholder="renewals, risk gates, releases"
+          aria-label="Search synthetic records"
+        />
       </label>
       <div className="operator-badge">
         <span>{initials}</span>
@@ -129,6 +189,9 @@ export function CapabilityList({
           <h2>Capability records</h2>
         </div>
       </div>
+      {records.length === 0 && (
+        <p className="empty-state">No records match the current search and filters.</p>
+      )}
       {records.map((item) => (
         <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} onClick={() => onSelect(item.id)}>
           <span className={`dot ${item.riskLevel}`} />

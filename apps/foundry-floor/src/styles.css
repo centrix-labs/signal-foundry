@@ -550,3 +550,15 @@ nav button.active,
 .advisory-steps li span { font-size: 0.84rem; }
 .advisory-steps li em { color: var(--steel); font-size: 0.8rem; font-style: normal; }
 .advisory-note { color: var(--steel); font-size: 0.78rem; }
+
+/* Functional filter toggles and empty search state */
+.filter-stack button.active {
+  border-color: color-mix(in oklch, var(--teal) 70%, transparent);
+  color: var(--teal);
+  background: color-mix(in oklch, var(--teal) 14%, transparent);
+}
+.capability-list .empty-state {
+  color: var(--steel);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.2rem;
+}

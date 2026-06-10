@@ -10,7 +10,8 @@ import {
   ReleasePacketDrawer,
   ReviewQueue,
   RiskGate,
-  TopBar
+  TopBar,
+  type RecordFilters
 } from "./panels";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
@@ -233,6 +234,8 @@ function AuthenticatedWorkspace({
   onThemeChange: (theme: "dark" | "light") => void;
 }) {
   const dashboardData = useDashboardData();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState<RecordFilters>({});
   const {
     activeView,
     setActiveView,
@@ -249,11 +252,35 @@ function AuthenticatedWorkspace({
     approveRelease
   } = useDemoState(dashboardData.records);
 
+  const pendingStatuses: readonly string[] = ["proposed", "risk_scored", "in_review"];
+  const query = searchQuery.trim().toLowerCase();
+  const visibleRecords = records.filter((item) => {
+    return (!query
+        || item.title.toLowerCase().includes(query)
+        || item.role.toLowerCase().includes(query)
+        || item.department.toLowerCase().includes(query))
+      && (!filters.role || item.role === filters.role)
+      && (!filters.department || item.department === filters.department)
+      && (!filters.pendingOnly || pendingStatuses.includes(item.status));
+  });
+
   return (
     <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
-      <LeftRail activeView={activeView} onView={(view) => setActiveView(view as ViewKey)} />
+      <LeftRail
+        activeView={activeView}
+        onView={(view) => setActiveView(view as ViewKey)}
+        records={records}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
       <div className="workspace">
-        <TopBar theme={theme} onThemeChange={onThemeChange} user={authUser} />
+        <TopBar
+          theme={theme}
+          onThemeChange={onThemeChange}
+          user={authUser}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
         <div className="demo-controls">
           <span>Checkpoint D / Step {demoStep + 1}: {statusLabels[selected.status]}</span>
           <span className={`data-source ${dashboardData.isLive ? "live" : "fallback"}`}>
@@ -264,7 +291,7 @@ function AuthenticatedWorkspace({
         </div>
         {activeView === "floor" ? (
           <FoundryFloor
-            records={records}
+            records={visibleRecords}
             selected={selected}
             selectedId={selectedId}
             onSelect={setSelectedId}
@@ -274,8 +301,8 @@ function AuthenticatedWorkspace({
             riskReviews={dashboardData.riskReviews}
           />
         ) : null}
-        {activeView === "atlas" ? <AtlasView records={records} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}
-        {activeView === "pipeline" ? <PipelineView records={records} selected={selected} /> : null}
+        {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}
+        {activeView === "pipeline" ? <PipelineView records={visibleRecords} selected={selected} /> : null}
         {activeView === "review" ? (
           <ReviewQueue
             records={records}
