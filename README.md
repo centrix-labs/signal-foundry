@@ -43,6 +43,10 @@ bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --appl
 
 Before `--apply`, declare the blast radius and rollback path. The target resource group is `rg-signal-foundry-hackathon` in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.
 
+## Advisory Reasoning + Work IQ Grounding
+
+An Azure AI Foundry model produces an advisory multi-step risk deliberation for every scored proposal; the deterministic risk gate remains the source of truth and visibly arbitrates any disagreement in the Risk Gate panel. Work IQ-style grounding flows through the Copilot surface as permission-aware summaries only — the MCP server never receives raw Microsoft 365 content. Advisory mode degrades gracefully (`SIGNAL_FOUNDRY_ADVISORY_MODE=off`), so the golden demo never depends on a live model endpoint.
+
 ## Safety
 
 - Synthetic enterprise data only by default.
