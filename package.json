@@ -23,12 +23,13 @@
     "audit:final-readiness": "node scripts/audit-final-readiness.mjs",
     "copilot:diagnose": "node scripts/diagnose-copilot-session.mjs",
     "screenshots": "playwright test --config tests/playwright.config.ts",
-    "validate": "openspec validate build-copilot-capability-launchpad --strict && npm run typecheck && npm run test && npm run validate:evidence && npm run validate:copilot",
+    "validate": "openspec validate build-copilot-capability-launchpad --strict && npm run typecheck && npm run test && npm run validate:evidence && npm run validate:copilot && npm run validate:cards",
     "container:build": "bash scripts/container-build.sh",
     "container:run": "bash scripts/container-run.sh",
     "smoke:local": "bash scripts/local-smoke.sh",
     "deploy": "bash scripts/deploy.sh",
-    "test:e2e": "playwright test --config tests/playwright.config.ts"
+    "test:e2e": "playwright test --config tests/playwright.config.ts",
+    "validate:cards": "node scripts/sync-adaptive-cards.mjs --check"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",

@@ -1,0 +1,49 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Release Packet ${version}",
+      "weight": "Bolder",
+      "size": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        { "title": "Owner", "value": "${owner}" },
+        { "title": "Reviewer", "value": "${reviewer}" },
+        { "title": "Audience", "value": "${approvedAudience}" },
+        { "title": "Released", "value": "${releasedAt}" }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "Approved sources: ${join(approvedSourceTypes, '; ')}",
+      "wrap": true,
+      "isSubtle": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Usage guidance: ${join(usageGuidance, '; ')}",
+      "wrap": true,
+      "isSubtle": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Human review enforced before release. Correlation: ${correlationId}",
+      "isSubtle": true,
+      "size": "Small",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open Foundry Floor",
+      "url": "{{PORTAL_URL}}"
+    }
+  ]
+}

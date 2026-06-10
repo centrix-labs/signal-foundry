@@ -1,0 +1,79 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Risk Gate Verdict",
+      "weight": "Bolder",
+      "size": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Deterministic verdict: ${upper(riskLevel)}",
+      "weight": "Bolder",
+      "color": "${if(riskLevel == 'low', 'Good', if(riskLevel == 'medium', 'Warning', 'Attention'))}",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "${rationale}",
+      "wrap": true,
+      "isSubtle": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Required controls: ${join(requiredControls, '; ')}",
+      "wrap": true
+    },
+    {
+      "type": "Container",
+      "$when": "${advisory.status == 'available'}",
+      "separator": true,
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Advisory Analysis (${advisory.model})",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "$when": "${advisory.agreesWithGate == false}",
+          "text": "Advisory suggested ${advisory.suggestedRiskLevel} — deterministic gate ruled ${riskLevel}. Gate wins.",
+          "color": "Warning",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "$when": "${advisory.agreesWithGate == true}",
+          "text": "Advisory agrees with the deterministic gate (${riskLevel}).",
+          "color": "Good",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "text": "${advisory.summary}",
+          "wrap": true
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "$when": "${advisory.status != 'available'}",
+      "text": "Advisory unavailable — deterministic verdict stands.",
+      "isSubtle": true,
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Advisory only — the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
+      "isSubtle": true,
+      "size": "Small",
+      "wrap": true
+    }
+  ]
+}

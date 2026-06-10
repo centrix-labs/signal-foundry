@@ -1,0 +1,32 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Proposal Created",
+      "weight": "Bolder",
+      "size": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Proposal ${proposalId} is recorded with status ${status}.",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Next step: score capability risk, then submit for human review. Releases always require reviewer approval.",
+      "isSubtle": true,
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Correlation: ${correlationId}",
+      "isSubtle": true,
+      "size": "Small",
+      "wrap": true
+    }
+  ]
+}

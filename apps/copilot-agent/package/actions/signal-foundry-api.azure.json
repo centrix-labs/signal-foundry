@@ -15,7 +15,11 @@
           "body": "Search Signal Foundry capability records?",
           "isNonConsequential": true
         },
-        "security_info": { "data_handling": ["GetPrivateData"] }
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData"
+          ]
+        }
       }
     },
     {
@@ -28,7 +32,51 @@
           "body": "Search role-relevant capability recommendations?",
           "isNonConsequential": true
         },
-        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        },
+        "response_semantics": {
+          "data_path": "$.approvedCapabilities",
+          "properties": {
+            "title": "$.title",
+            "subtitle": "$.status"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "${title}",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "${role} / ${department}",
+                "isSubtle": true,
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "${description}",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Risk: ${riskLevel} | Status: ${status} | Version: ${version}",
+                "isSubtle": true,
+                "size": "Small",
+                "wrap": true
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -40,7 +88,50 @@
           "title": "Create proposal",
           "body": "Create a Signal Foundry capability proposal and audit event?"
         },
-        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        },
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.proposalId",
+            "subtitle": "$.status"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Proposal Created",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Proposal ${proposalId} is recorded with status ${status}.",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Next step: score capability risk, then submit for human review. Releases always require reviewer approval.",
+                "isSubtle": true,
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Correlation: ${correlationId}",
+                "isSubtle": true,
+                "size": "Small",
+                "wrap": true
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -52,7 +143,98 @@
           "title": "Score risk",
           "body": "Create a risk review record for this proposal?"
         },
-        "security_info": { "data_handling": ["DataTransform", "ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "DataTransform",
+            "ResourceStateUpdate"
+          ]
+        },
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.riskLevel",
+            "subtitle": "$.correlationId"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Risk Gate Verdict",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Deterministic verdict: ${upper(riskLevel)}",
+                "weight": "Bolder",
+                "color": "${if(riskLevel == 'low', 'Good', if(riskLevel == 'medium', 'Warning', 'Attention'))}",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "${rationale}",
+                "wrap": true,
+                "isSubtle": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Required controls: ${join(requiredControls, '; ')}",
+                "wrap": true
+              },
+              {
+                "type": "Container",
+                "$when": "${advisory.status == 'available'}",
+                "separator": true,
+                "items": [
+                  {
+                    "type": "TextBlock",
+                    "text": "Advisory Analysis (${advisory.model})",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "$when": "${advisory.agreesWithGate == false}",
+                    "text": "Advisory suggested ${advisory.suggestedRiskLevel} — deterministic gate ruled ${riskLevel}. Gate wins.",
+                    "color": "Warning",
+                    "weight": "Bolder",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "$when": "${advisory.agreesWithGate == true}",
+                    "text": "Advisory agrees with the deterministic gate (${riskLevel}).",
+                    "color": "Good",
+                    "wrap": true
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "${advisory.summary}",
+                    "wrap": true
+                  }
+                ]
+              },
+              {
+                "type": "TextBlock",
+                "$when": "${advisory.status != 'available'}",
+                "text": "Advisory unavailable — deterministic verdict stands.",
+                "isSubtle": true,
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Advisory only — the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
+                "isSubtle": true,
+                "size": "Small",
+                "wrap": true
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -64,7 +246,11 @@
           "title": "Submit review",
           "body": "Submit this proposal for human review?"
         },
-        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
       }
     },
     {
@@ -76,7 +262,11 @@
           "title": "Approve capability",
           "body": "Approve this proposal as the authenticated reviewer?"
         },
-        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
       }
     },
     {
@@ -88,7 +278,11 @@
           "title": "Reject capability",
           "body": "Reject this proposal and record the reason?"
         },
-        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
       }
     },
     {
@@ -100,7 +294,11 @@
           "title": "Release capability",
           "body": "Release this approved capability and create a release packet?"
         },
-        "security_info": { "data_handling": ["ResourceStateUpdate"] }
+        "security_info": {
+          "data_handling": [
+            "ResourceStateUpdate"
+          ]
+        }
       }
     },
     {
@@ -113,7 +311,80 @@
           "body": "Generate an audit-safe release packet?",
           "isNonConsequential": true
         },
-        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        },
+        "response_semantics": {
+          "data_path": "$.releasePacket",
+          "properties": {
+            "title": "$.version",
+            "subtitle": "$.owner"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Release Packet ${version}",
+                "weight": "Bolder",
+                "size": "Medium",
+                "wrap": true
+              },
+              {
+                "type": "FactSet",
+                "facts": [
+                  {
+                    "title": "Owner",
+                    "value": "${owner}"
+                  },
+                  {
+                    "title": "Reviewer",
+                    "value": "${reviewer}"
+                  },
+                  {
+                    "title": "Audience",
+                    "value": "${approvedAudience}"
+                  },
+                  {
+                    "title": "Released",
+                    "value": "${releasedAt}"
+                  }
+                ]
+              },
+              {
+                "type": "TextBlock",
+                "text": "Approved sources: ${join(approvedSourceTypes, '; ')}",
+                "wrap": true,
+                "isSubtle": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Usage guidance: ${join(usageGuidance, '; ')}",
+                "wrap": true,
+                "isSubtle": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "Human review enforced before release. Correlation: ${correlationId}",
+                "isSubtle": true,
+                "size": "Small",
+                "wrap": true
+              }
+            ],
+            "actions": [
+              {
+                "type": "Action.OpenUrl",
+                "title": "Open Foundry Floor",
+                "url": "https://red-coast-0b0c14e0f.7.azurestaticapps.net"
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -126,7 +397,12 @@
           "body": "Generate audit-safe Signal Atlas map data?",
           "isNonConsequential": true
         },
-        "security_info": { "data_handling": ["GetPrivateData", "DataTransform"] }
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData",
+            "DataTransform"
+          ]
+        }
       }
     },
     {
@@ -139,7 +415,11 @@
           "body": "List sanitized MCP activity records?",
           "isNonConsequential": true
         },
-        "security_info": { "data_handling": ["GetPrivateData"] }
+        "security_info": {
+          "data_handling": [
+            "GetPrivateData"
+          ]
+        }
       }
     }
   ],
