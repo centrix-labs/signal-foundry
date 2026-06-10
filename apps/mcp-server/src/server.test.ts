@@ -47,6 +47,29 @@ describe("Signal Foundry MCP tools", () => {
     expect(store.read().mcpActivity.some((activity) => activity.action === "get_user_work_context")).toBe(false);
   });
 
+  it("uses agent-supplied work-context summaries and strips unsafe content", async () => {
+    const store = testStore();
+    const actor = store.read().actors[0];
+    const result = await executeTool(store, "get_user_work_context", {
+      tenantId: demoScope.tenantId,
+      projectId: demoScope.projectId,
+      requestedRole: "Presales Architect",
+      requestedDepartment: "Sales Engineering",
+      sourceHint: "work_iq",
+      workSummary: "Renewal prep cycles with weekly QBR meetings; contact admin@example.com for escalations.",
+      activeProjects: ["Asteria Q3 Renewals", "Enterprise Expansion"],
+      recurringWorkflows: ["QBR prep", "Escalation briefs"],
+      correlationId: "corr-grounded-context"
+    }, actor);
+    expect(result.status).toBe(200);
+    expect(result.body.groundingBasis).toBe("agent_supplied_summary");
+    expect(result.body.source).toBe("permission_aware_profile_summary");
+    const serialized = JSON.stringify(result.body);
+    expect(serialized).toContain("Asteria Q3 Renewals");
+    expect(serialized).toContain("QBR prep");
+    expect(serialized).not.toContain("admin@example.com");
+  });
+
   it("rejects mutation without confirmation", async () => {
     const store = testStore();
     const actor = store.read().actors[0];

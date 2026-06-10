@@ -4,8 +4,8 @@ Date: 2026-06-08
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`
-- SHA-256: `fd6248675f57f976a3df3414775d3b05c99683c8e9d4033d940c5dbeb70b1a6a`
+- Package: `evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip`
+- SHA-256: `e1e2fbf45a2c2425f840335e8e81d674d6395a63240441defc496774966da20d`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
@@ -140,3 +140,31 @@ Expected evidence:
 - The screenshots contain no real tenant data.
 - The package hash above matches the uploaded package.
 - Any mutation claim is backed by a returned Signal Foundry tool result and verified MCP activity.
+
+## Tenant Unblock Playbook (sideload path)
+
+Work the blocker in this order; the outcome is either captured evidence or a
+runbook step a human can complete in one sitting.
+
+1. Existing tenant: `npm install -g @microsoft/m365agentstoolkit-cli`, then
+   `atk auth login` (interactive — requires the user) and
+   `atk install --file-path evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip`.
+   Custom app upload must be enabled by the tenant admin.
+2. If blocked: join the Microsoft 365 Developer Program, provision an instant
+   sandbox tenant, enable custom app upload in the Teams admin center, then
+   `atk auth login` against the sandbox and `atk install` as above.
+3. Licensing check (verified 2026-06-10 from the declarative agent manifest
+   docs): capabilities beyond WebSearch — Signal Foundry enables People and
+   Meetings — require a Microsoft 365 Copilot license or tenant metered usage.
+   If the sandbox lacks both, fall back to the Copilot Mirror narrative plus
+   this validated sideload-ready package and record that limitation here.
+4. First sideload verification cycle (cards): invoke the agent, run the risk
+   scoring step, and observe whether the risk-verdict Adaptive Card renders via
+   the RemoteMCPServer runtime. If it does not render, switch the declarative
+   agent action to `actions/signal-foundry-api.azure.json` (OpenApi runtime,
+   same tools, cards already injected) for the demo path and note the doc gap.
+
+Capture once unblocked: agent invocation, Work IQ-grounded recommendation
+(People + Meetings capabilities), risk-verdict card with advisory arbitration,
+release-packet card, and the in-chat anti-surveillance refusal using the
+prompts above.

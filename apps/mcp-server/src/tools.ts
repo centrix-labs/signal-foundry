@@ -9,7 +9,7 @@ import {
   toolSchemas
 } from "@signal-foundry/shared";
 import { addActivity, addRejectedActivity, makeId, nowIso } from "./audit";
-import { generateAdvisoryRiskAnalysis } from "./advisory";
+import { generateAdvisoryRiskAnalysis, sanitizeAdvisoryText } from "./advisory";
 import { authorize, isWriteAction } from "./auth";
 import { scoreRisk } from "./risk";
 import type { RegistryStore } from "./store";
@@ -83,10 +83,11 @@ function search(capabilities: Capability[], input: { query?: string; role?: stri
   };
 }
 
-function recommend(capabilities: Capability[], input: { role: string; department: string; maxResults: number }, correlationId: string) {
+function recommend(capabilities: Capability[], input: { role: string; department: string; workSignalSummary: string; maxResults: number }, correlationId: string) {
   const approvedCapabilities = capabilities
     .filter((capability) => capability.department === input.department || capability.role === input.role)
     .slice(0, input.maxResults);
+  const groundedOn = sanitizeAdvisoryText(input.workSignalSummary, 200);
   return {
     approvedCapabilities,
     candidateCapabilities: [
@@ -99,14 +100,22 @@ function recommend(capabilities: Capability[], input: { role: string; department
         rationale: "Combines approved meeting, CRM, and support summaries into a reviewable prep workflow."
       }
     ].slice(0, Math.max(0, input.maxResults - approvedCapabilities.length)),
-    rationale: "Recommendations use synthetic Work IQ-style source summaries and approved registry metadata.",
+    rationale: `Recommendations matched to the supplied work-context signals and approved registry metadata. Grounded on: ${groundedOn}`,
+    groundedOn,
     correlationId
   };
 }
 
 function getUserWorkContext(
   registry: SignalFoundryRegistry,
-  input: { requestedRole?: string; requestedDepartment?: string; sourceHint?: string },
+  input: {
+    requestedRole?: string;
+    requestedDepartment?: string;
+    sourceHint?: string;
+    workSummary?: string;
+    activeProjects?: string[];
+    recurringWorkflows?: string[];
+  },
   actor: Actor
 ) {
   const defaults = workContextDefaults(actor);
@@ -114,11 +123,27 @@ function getUserWorkContext(
   const department = sanitizeLabel(input.requestedDepartment) ?? defaults.department;
   const roleFamily = roleFamilyFor(role, department, defaults.roleFamily);
   const useCases = useCasesFor(roleFamily);
+  const suppliedSummary = sanitizeAdvisoryText(input.workSummary, 600);
+  const activeProjects = (input.activeProjects ?? []).map((item) => sanitizeLabel(item)).filter((item): item is string => Boolean(item)).slice(0, 5);
+  const recurringWorkflows = (input.recurringWorkflows ?? []).map((item) => sanitizeLabel(item)).filter((item): item is string => Boolean(item)).slice(0, 5);
+  const hasGroundedSummary = suppliedSummary.length >= 10;
+  const workSignalSummary = hasGroundedSummary
+    ? [
+        suppliedSummary,
+        ...(activeProjects.length > 0 ? [`Active projects: ${activeProjects.join(", ")}.`] : []),
+        ...(recurringWorkflows.length > 0 ? [`Recurring workflows: ${recurringWorkflows.join(", ")}.`] : []),
+        "Use approved source categories only: CRM summaries, meeting summaries, support summaries, policy summaries, and proposal metadata."
+      ]
+    : [
+        `${department} workflows show recurring handoffs, drafting effort, evidence collection, and review friction.`,
+        "Use approved source categories only: CRM summaries, meeting summaries, support summaries, policy summaries, and proposal metadata."
+      ];
   return {
     companyName: registry.demoScope.companyName,
-    source: input.sourceHint === "graph_profile" || input.sourceHint === "work_iq"
+    source: hasGroundedSummary || input.sourceHint === "graph_profile" || input.sourceHint === "work_iq"
       ? "permission_aware_profile_summary"
       : "synthetic_work_iq",
+    groundingBasis: hasGroundedSummary ? "agent_supplied_summary" : "synthetic_demo_profile",
     profile: {
       displayName: actor.name,
       jobTitle: role,
@@ -128,10 +153,7 @@ function getUserWorkContext(
       permissionBasis: "Authenticated profile summary; no raw Microsoft 365 content returned."
     },
     recommendedUseCaseAreas: useCases,
-    workSignalSummary: [
-      `${department} workflows show recurring handoffs, drafting effort, evidence collection, and review friction.`,
-      "Use approved source categories only: CRM summaries, meeting summaries, support summaries, policy summaries, and proposal metadata."
-    ],
+    workSignalSummary,
     message: `I see you're a ${role} working with ${department}. Show governed Copilot use cases for ${useCases.join(", ")}.`,
     privacyNote: "This is job-context personalization only. Signal Foundry does not rank people, monitor employees, or return raw Microsoft 365 content."
   };

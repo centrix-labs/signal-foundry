@@ -30,3 +30,20 @@ UNCONFIRMED items (no official doc statement found; handle per the uplift prompt
   `scripts/validate-copilot-package.mjs` (repo moved to `~/Development`).
 - Test floor: 24 (18 mcp-server, 6 shared). Evidence validator: 46 files, 4 scenarios.
   Copilot package validator: 6 files, 12 tools, hash `fd6248675f57...`.
+
+## 2026-06-10 — declarative agent capabilities (v1.6 vs v1.7)
+
+- Capability set is identical in v1.6 and v1.7; v1.7 adds only `editorial_answers`,
+  `default_response_mode`, and conversation-starter `depends_on`. No upgrade needed —
+  manifests stay on v1.6.
+- No `WorkIQ` capability exists. Work-context grounding = `People`, `Meetings`,
+  `TeamsMessages`, `Email`, `OneDriveAndSharePoint`, `GraphConnectors`.
+- Enabled for Signal Foundry (narrowest defensible set): `People` with
+  `include_related_content: false` (org chart, names, emails, skills only) and
+  `Meetings` (no `items_by_id` filter). Raw-message capabilities (Email,
+  TeamsMessages) deliberately NOT enabled — aligns with the no-raw-content and
+  anti-surveillance posture.
+- `capabilities` and `actions` combine freely (official example declares both).
+- Licensing: any capability beyond WebSearch requires a Copilot license or tenant
+  metered usage. Recorded for the sideload runbook.
+- Sources: declarative-agent-manifest-1.7 and -1.6 pages, fetched 2026-06-10.

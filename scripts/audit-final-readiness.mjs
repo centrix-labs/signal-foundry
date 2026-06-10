@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const requiredFiles = [
-  "evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip",
+  "evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip",
   "evidence/copilot/copilot-evidence-capture-runbook.md",
   "evidence/azure/deployed-smoke-results.md",
   "evidence/azure/resource-list.json",

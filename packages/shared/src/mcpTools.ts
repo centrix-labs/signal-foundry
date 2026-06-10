@@ -73,7 +73,7 @@ export const mcpToolMetadata: Array<{
   },
   {
     name: "get_user_work_context",
-    description: "Read a sanitized role, title, team, and Work IQ-style context summary for the authenticated user. Use it to personalize governed capability recommendations. Never return raw Microsoft 365 content, employee monitoring data, productivity scores, secrets, or PII beyond the user's basic business profile.",
+    description: "Read a sanitized role, title, team, and Work IQ-style context summary for the authenticated user. Use it to personalize governed capability recommendations. Accepts only permission-aware summary fields from the agent's People/Meetings grounding (length-capped); never pass and never return raw Microsoft 365 content, employee monitoring data, productivity scores, secrets, or PII beyond the user's basic business profile.",
     inputSchema: schema({
       requestedRole: {
         type: "string",
@@ -87,6 +87,20 @@ export const mcpToolMetadata: Array<{
         type: "string",
         enum: ["graph_profile", "work_iq", "synthetic_demo"],
         description: "Preferred context source. Demo default is synthetic_demo when live Work IQ profile context is unavailable."
+      },
+      workSummary: {
+        type: "string",
+        description: "Optional permission-aware work-context summary (max 600 chars) derived from People/Meetings grounding. Summary wording only; never raw message, meeting, or document content."
+      },
+      activeProjects: {
+        type: "array",
+        items: { type: "string" },
+        description: "Optional list of up to 5 active project names (max 80 chars each) inferred from grounded context."
+      },
+      recurringWorkflows: {
+        type: "array",
+        items: { type: "string" },
+        description: "Optional list of up to 5 recurring workflow names (max 80 chars each) inferred from grounded context."
       }
     }, []),
     annotations: { readOnlyHint: true }

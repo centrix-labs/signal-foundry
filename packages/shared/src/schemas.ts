@@ -45,7 +45,12 @@ export const recommendCapabilitiesForRoleInputSchema = scopedRequestSchema.exten
 export const getUserWorkContextInputSchema = scopedRequestSchema.extend({
   requestedRole: z.string().min(2).optional(),
   requestedDepartment: z.string().min(2).optional(),
-  sourceHint: z.enum(["graph_profile", "work_iq", "synthetic_demo"]).optional()
+  sourceHint: z.enum(["graph_profile", "work_iq", "synthetic_demo"]).optional(),
+  // Agent-supplied permission-aware summary fields only; raw Microsoft 365
+  // content is rejected by length caps and never accepted by contract.
+  workSummary: z.string().min(10).max(600).optional(),
+  activeProjects: z.array(z.string().min(2).max(80)).max(5).optional(),
+  recurringWorkflows: z.array(z.string().min(2).max(80)).max(5).optional()
 });
 
 export const createCapabilityProposalInputSchema = idempotentRequestSchema.extend({
