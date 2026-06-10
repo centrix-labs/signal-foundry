@@ -42,3 +42,19 @@ curl -fsS -X POST https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastu
 - MCP is the system of record for governed proposals, risk, approval, release, and audit.
 - Human review is required before release.
 - Audit telemetry records compact metadata and correlation IDs only.
+
+## 2026-06-10 — Foundry/Work IQ uplift verification (claude/foundry-workiq-uplift)
+
+- Full validate chain green: 28 mcp-server tests (advisory module, grounded work
+  context, schema-enforced confirmation), 24 shared tests, evidence validator
+  (46 files, 4 scenarios), Copilot package validator (v0.1.3,
+  e1e2fbf45a2c...), adaptive card check (4 cards x 4 manifests).
+- Playwright golden-flow E2E: propose -> score (advisory unavailable with mode
+  off, deterministic verdict unchanged) -> submit -> approve -> release, plus
+  sanitized unauthorized rejection. Passed twice consecutively from /admin/reset.
+- Advisory disagreement demo seeded: prop-autonomous-renewal-outreach with
+  boundary-tipping inputs documented in
+  apps/copilot-agent/docs/advisory-disagreement-demo.md (3-consecutive-run
+  verification pending Azure Foundry provisioning).
+- Remaining tenant-dependent captures and the unblock playbook are listed in
+  evidence/copilot/copilot-evidence-capture-runbook.md.
