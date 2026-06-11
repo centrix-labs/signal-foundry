@@ -25,6 +25,8 @@ available.
 Required source reading before editing
 Read these files before making changes:
 
+- /Users/mattgraves/.llm/GLOBAL_ENGINEERING.md
+- /Users/mattgraves/.llm/REVIEW_PROTOCOL.md
 - /Users/mattgraves/Development/hackathon-enterprise/docs/submission/hackathon-win-portal-spec.md
 - /Users/mattgraves/Development/hackathon-enterprise/apps/foundry-floor/src/App.tsx
 - /Users/mattgraves/Development/hackathon-enterprise/apps/foundry-floor/src/panels.tsx
@@ -38,6 +40,13 @@ Read these files before making changes:
 - /Users/mattgraves/Development/hackathon-enterprise/apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json
 
 Non-negotiable no-hallucination rules
+- Follow all global rules in /Users/mattgraves/.llm/GLOBAL_ENGINEERING.md,
+  especially absolute-path tool usage, read-before-edit, state-change
+  declarations, verification from source, and quick review-board mode before
+  final response.
+- Follow /Users/mattgraves/.llm/REVIEW_PROTOCOL.md for any paid or external
+  model review. If no paid/external review is used, state that no review cost
+  was incurred.
 - Do not invent product capabilities, Microsoft behavior, tenant configuration,
   live license state, admin approval, Graph indexing, or registry mutations.
 - Do not show raw Microsoft 365 content, customer data, secrets, tokens,
