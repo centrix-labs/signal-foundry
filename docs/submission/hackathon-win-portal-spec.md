@@ -111,6 +111,142 @@ Current blockers to a 9.8+ score:
 5. Progressive disclosure. First screen shows the story; drawers and tabs show evidence.
 6. Screen-share first. Light mode is the default judging mode; dark mode remains available.
 
+## Source-Backed Implementation Contract
+
+This section is binding for implementation. If it conflicts with a looser phase
+description below, use this section.
+
+### Judge Mode Component Contract
+
+Add a dedicated Judge Mode rather than overloading the existing dashboard grid.
+
+Required source changes:
+
+- Add a `judge` view key to the existing view model in `apps/foundry-floor/src/data.ts`.
+- Default `activeView` to `judge` in `apps/foundry-floor/src/App.tsx`.
+- `resetDemo()` must return the app to `judge`, selected first capability, stage
+  `Discover`, and pending decision state.
+- Keep existing `floor`, `atlas`, `pipeline`, `review`, `mirror`, and
+  `executive` views reachable from the left rail.
+- Create a `JudgeMode` component in `apps/foundry-floor/src/App.tsx` or a new
+  local component file if that is cleaner. Do not create a new data-fetching
+  path; use `useDashboardData`.
+
+Required `JudgeMode` props:
+
+```ts
+type JudgeStageKey = "discover" | "propose" | "score" | "review" | "release";
+
+interface JudgeModeProps {
+  records: readonly Capability[];
+  selected: Capability;
+  selectedId: string;
+  onSelect: (id: string) => void;
+  activity: ReturnType<typeof useDashboardData>["mcpActivity"];
+  packets: ReturnType<typeof useDashboardData>["releasePackets"];
+  reviews: ReturnType<typeof useDashboardData>["reviewItems"];
+  riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
+  stageIndex: number;
+  onAdvance: () => void;
+  onReset: () => void;
+  onOpenMirror: () => void;
+}
+```
+
+The five-stage model must be data-driven, not scattered string literals:
+
+```ts
+const judgeStages = [
+  { key: "discover", label: "Discover" },
+  { key: "propose", label: "Propose" },
+  { key: "score", label: "Score" },
+  { key: "review", label: "Review" },
+  { key: "release", label: "Release" }
+] as const;
+```
+
+Map `demoStep` to `judgeStages[demoStep % judgeStages.length]`. The primary
+button can say `Run live proof` only when `demoStep === 0`; otherwise it says
+`Advance story`.
+
+### Allowed UI Claims And Data Sources
+
+Every claim below must be rendered from the named source or omitted/fallbacked.
+
+| Visible Claim | Required Source | Fallback |
+| --- | --- | --- |
+| `People + Meetings` | `apps/copilot-agent/package/declarative-agent.azure.json` `capabilities` | `Copilot grounding configured` |
+| `Summary-only` / `No raw M365 content` | Declarative agent instructions plus MCP tool schema descriptions | `Synthetic demo context` |
+| `OAuth` | `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json` runtime `auth.type === "OAuthPluginVault"` | `Auth configured` |
+| `<N> required controls` | `selectedRisk.requiredControls.length` | `Controls unavailable` |
+| `Deterministic verdict: <risk>` | `selectedRisk.riskLevel` | `Deterministic verdict unavailable` |
+| `Correlation IDs` | `McpActivity.correlationId` or `ReleasePacket.correlationId` | `Audit correlation pending` |
+| `Release packet` | Matching `ReleasePacket` for the selected capability | `Release packet not yet generated` |
+| `Human review required` | `RiskReview.requiresHumanReview` or matching `ReviewItem.status` | `Review state unavailable` |
+
+Do not hard-code `18 controls`. The current code has an `18 checks evaluated`
+display, but the source-backed risk controls are the `RiskReview.requiredControls`
+array. If the UI keeps a separate check count, label it as checks, not controls,
+and map it to the actual checklist array rendered by the component.
+
+### Risk And Advisory Data Mapping
+
+The Risk Gate comparison must use existing `RiskReview` and advisory fields.
+
+AI advisory column:
+
+- If `review.advisory?.status !== "available"`: show
+  `Advisory unavailable` and `Deterministic verdict stands`.
+- If available:
+  - Suggested level: `review.advisory.suggestedRiskLevel`, or `Not provided`.
+  - Reason: `review.advisory.summary`, or the first
+    `review.advisory.steps[].concern`, or `Not provided`.
+  - Agreement: `review.advisory.agreesWithGate`.
+  - Model: `review.advisory.model` only when present.
+
+Deterministic gate column:
+
+- Decision: derive from `review.riskLevel` and `review.requiresHumanReview`.
+- Controls: render `review.requiredControls`.
+- Why it wins: fixed copy is allowed only as
+  `Deterministic gate is the source of truth`; this is backed by the advisory
+  code path and tests.
+
+Do not show sample advisory text such as `renewal context is useful but
+sensitive` unless that exact text is present in the selected `RiskReview`
+rationale, advisory summary, or captured evidence.
+
+### Evidence Capture Contract
+
+New implementation evidence must use deterministic names under a fresh timestamp
+folder:
+
+`evidence/demo-walkthrough/<YYYY-MM-DDTHH-mm-ssZ>/`
+
+Required screenshots:
+
+- `01-judge-mode-desktop.png` at 1440x1000.
+- `02-judge-mode-mobile.png` at 390x844.
+- `03-risk-gate-comparison.png` at 1440x1000 with stage `Score`.
+- `04-review-required.png` at 1440x1000 with stage `Review`.
+- `05-release-packet.png` at 1440x1000 with stage `Release`.
+- `06-copilot-proof-panel.png` at 1440x1000.
+- `07-evidence-timeline.png` at 1440x1000.
+
+Required text artifact:
+
+- `walkthrough-summary.md` containing:
+  - app URL used,
+  - data source state (`Live registry synced` or `Sample demo fallback`),
+  - selected capability ID,
+  - selected risk review ID,
+  - screenshot list,
+  - validation commands run,
+  - claim audit.
+
+Do not mark a 40/40 category complete until its screenshot exists and the
+claim audit points to source or runtime evidence.
+
 ## Phase 0: Package And Baseline Freeze
 
 Goal: Lock the known-good Copilot package and current portal state before UI changes.
@@ -167,7 +303,7 @@ Required first viewport layout:
 - Large central `Signal Atlas` hero.
 - Right-side proof rail with three compact proof cards:
   - `Copilot grounded` / `People + Meetings, summary-only`
-  - `Risk gated` / `18 controls, deterministic verdict`
+  - `Risk gated` / `<N> required controls, deterministic verdict`
   - `Audit ready` / `correlation IDs, release packet`
 - Bottom primary action:
   - `Run live proof` before the first step.
@@ -175,7 +311,8 @@ Required first viewport layout:
 
 Detailed behavior:
 
-- Stage 1 Discover: Highlight raw work signals entering Atlas from the left.
+- Stage 1 Discover: Highlight approved summary work-context signals entering
+  Atlas from the left.
 - Stage 2 Propose: Show proposed `Renewal Brief Generator` capability record.
 - Stage 3 Score: Highlight amber risk gate and deterministic controls.
 - Stage 4 Review: Show human reviewer pending/approved state.
@@ -197,7 +334,7 @@ Acceptance criteria:
 - No raw tenant data appears in any new copy.
 - Claim audit maps every proof card to an existing source:
   - `People + Meetings` -> `apps/copilot-agent/package/declarative-agent.azure.json`.
-  - `18 controls` -> existing risk/control data used by `RiskGate`.
+  - `<N> required controls` -> selected `RiskReview.requiredControls.length`.
   - `correlation IDs` -> existing MCP activity/release packet data.
 
 Target score lift: +5 to +7.
@@ -215,7 +352,7 @@ Tasks:
 
 - Increase Atlas canvas size in Judge Mode.
 - Add direct in-canvas labels:
-  - `Raw work signals`
+  - `Summary work signals`
   - `Signal Foundry`
   - `Risk gate`
   - `Approved workflows`
@@ -235,7 +372,8 @@ Acceptance criteria:
 
 - Atlas remains legible in screenshots.
 - The `Risk gate` is visually identifiable without reading surrounding panels.
-- The visual metaphor matches the submission image: raw signals forged into approved workflows.
+- The visual metaphor matches the submission image: approved summary signals
+  forged into governed workflows.
 - Atlas labels do not claim data sources beyond what exists in current synthetic data.
 - Flow animation works in normal mode and stops/reduces under `prefers-reduced-motion`.
 
@@ -253,12 +391,13 @@ Goal: Make the risk model understandable to a non-technical judge.
 Replace the current low-contrast advisory block with a decision comparison:
 
 - Left: `AI advisory`
-  - `Suggested: Medium`
-  - `Reason: renewal context is useful but sensitive`
+  - `Suggested: <advisory.suggestedRiskLevel | Not provided | Unavailable>`
+  - `Reason: <advisory.summary | first advisory step concern | Not provided>`
 - Right: `Deterministic gate`
-  - `Decision: Human review required`
-  - `Why it wins: policy controls are authoritative`
-- Footer: `Release blocked until reviewer approval`
+  - `Decision: <derived from riskLevel and requiresHumanReview>`
+  - `Why it wins: Deterministic gate is the source of truth`
+- Footer: `Release blocked until reviewer approval` only when the selected
+  review/release state supports it; otherwise show the matching verified state.
 
 Controls list:
 
@@ -276,6 +415,8 @@ Acceptance criteria:
 - Every advisory/gate value comes from existing `RiskReview` data or is explicitly
   labeled unavailable.
 - Deterministic gate is always visually authoritative over advisory reasoning.
+- No hard-coded advisory level or reason appears unless it exists in the selected
+  `RiskReview`, advisory payload, or evidence artifact.
 
 Target score lift: +2 to +3.
 
@@ -407,12 +548,13 @@ Goal: Update all submission evidence to reflect the new winning flow.
 Tasks:
 
 - Run local or deployed app and capture:
-  - Judge Mode first screen.
-  - Stage 3 risk gate.
-  - Stage 4 review required.
-  - Stage 5 release packet.
-  - Copilot Mirror proof panel.
-  - Mobile Judge Mode.
+  - `01-judge-mode-desktop.png`.
+  - `02-judge-mode-mobile.png`.
+  - `03-risk-gate-comparison.png`.
+  - `04-review-required.png`.
+  - `05-release-packet.png`.
+  - `06-copilot-proof-panel.png`.
+  - `07-evidence-timeline.png`.
 - Refresh walkthrough video.
 - Update:
   - `docs/submission/SUBMISSION.md`
@@ -425,6 +567,8 @@ Acceptance criteria:
 
 - Demo script starts with Judge Mode.
 - Submission copy points to the exact proof flow.
+- `walkthrough-summary.md` includes URL, live/fallback state, selected IDs,
+  screenshot list, validation commands, and claim audit.
 - Evidence validator passes after new files are added.
 - The final scorecard is filled out with links to the screenshots and commands that support each 40-point category.
 
