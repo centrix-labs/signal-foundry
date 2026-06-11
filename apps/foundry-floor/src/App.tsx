@@ -111,7 +111,8 @@ function FoundryFloor({
   activity,
   packets,
   reviews,
-  riskReviews
+  riskReviews,
+  onOpenMirror
 }: {
   records: readonly Capability[];
   selected: Capability;
@@ -121,6 +122,7 @@ function FoundryFloor({
   packets: ReturnType<typeof useDashboardData>["releasePackets"];
   reviews: ReturnType<typeof useDashboardData>["reviewItems"];
   riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
+  onOpenMirror: () => void;
 }) {
   return (
     <div className="floor-grid">
@@ -137,7 +139,7 @@ function FoundryFloor({
             <span className="status-pill approved">Live</span>
           </div>
           <p>{copilotTurns[2]?.text}</p>
-          <button type="button" className="text-link">Open mirror <ChevronRight size={14} /></button>
+          <button type="button" className="text-link" onClick={onOpenMirror}>Open mirror <ChevronRight size={14} /></button>
         </section>
       </div>
       <div className="right-stack">
@@ -299,6 +301,7 @@ function AuthenticatedWorkspace({
             packets={dashboardData.releasePackets}
             reviews={dashboardData.reviewItems}
             riskReviews={dashboardData.riskReviews}
+            onOpenMirror={() => setActiveView("mirror")}
           />
         ) : null}
         {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}

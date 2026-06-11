@@ -18,6 +18,16 @@ function MicrosoftMark() {
   );
 }
 
+function showMicrosoftMark() {
+  const envValue = import.meta.env["VITE_SHOW_MICROSOFT_MARK"] as string | undefined;
+  if (envValue?.toLowerCase() === "false") {
+    return false;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  return params.get("hideMicrosoftLogo") !== "1";
+}
+
 function SignalMark() {
   return (
     <span className="login-mark" aria-hidden="true">
@@ -30,6 +40,7 @@ function SignalMark() {
 
 export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: LoginScreenProps) {
   const signInUrl = microsoftSignInUrl();
+  const includeMicrosoftMark = showMicrosoftMark();
 
   return (
     <main className={`login-page ${theme === "light" ? "login-light" : ""}`}>
@@ -93,7 +104,7 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
 
         <div className="login-provider-stack">
           <a className="login-provider" href={signInUrl}>
-            <MicrosoftMark />
+            {includeMicrosoftMark ? <MicrosoftMark /> : null}
             Continue with Microsoft
           </a>
           <a className="login-provider" href={signInUrl}>
