@@ -39,6 +39,14 @@ button {
   cursor: pointer;
 }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid color-mix(in oklch, var(--teal) 72%, white);
+  outline-offset: 3px;
+}
+
 .app-shell {
   background:
     linear-gradient(90deg, oklch(0.11 0.018 220), transparent 36%),
@@ -504,52 +512,6 @@ nav button.active,
   animation: traceCurrentStage 2.4s linear infinite;
   opacity: 0.52;
 }
-
-/* Advisory analysis (Foundry advisory reasoning; deterministic gate is source of truth) */
-.advisory-analysis {
-  margin: 0.6rem 0;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: color-mix(in oklch, var(--graphite-2) 75%, transparent);
-  display: grid;
-  gap: 0.45rem;
-}
-.advisory-analysis.muted { opacity: 0.75; }
-.advisory-heading {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--teal);
-}
-.advisory-heading small { color: var(--steel); margin-left: auto; }
-.advisory-arbitration {
-  border-left: 3px solid var(--amber);
-  padding: 0.4rem 0.6rem;
-  background: color-mix(in oklch, var(--amber) 14%, transparent);
-  color: var(--amber);
-  border-radius: 6px;
-  font-weight: 600;
-}
-.advisory-agreement { color: var(--green); }
-.advisory-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.4rem;
-}
-.advisory-steps li {
-  display: grid;
-  gap: 0.15rem;
-  padding: 0.4rem 0.55rem;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.advisory-steps li strong { color: var(--teal); font-size: 0.82rem; }
-.advisory-steps li span { font-size: 0.84rem; }
-.advisory-steps li em { color: var(--steel); font-size: 0.8rem; font-style: normal; }
-.advisory-note { color: var(--steel); font-size: 0.78rem; }
 
 /* Functional filter toggles and empty search state */
 .filter-stack button.active {

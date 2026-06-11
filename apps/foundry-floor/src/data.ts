@@ -12,7 +12,7 @@ import type {
   RiskReview
 } from "@signal-foundry/shared";
 
-export type ViewKey = "floor" | "atlas" | "pipeline" | "review" | "mirror" | "executive";
+export type ViewKey = "judge" | "floor" | "atlas" | "pipeline" | "review" | "mirror" | "executive";
 
 export type PositionedNode = AtlasNode & {
   x: number;

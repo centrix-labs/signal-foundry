@@ -57,7 +57,7 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
           <SignalMark />
           <h1 id="login-title">Signal Foundry</h1>
         </div>
-        <p className="login-tagline"><strong>Forge raw signals.</strong> Build trusted intelligence.</p>
+        <p className="login-tagline"><strong>Forge summary signals.</strong> Build trusted intelligence.</p>
 
         <form
           className="login-form"
@@ -90,7 +90,7 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
                 <small>Secure session on this device</small>
               </span>
             </label>
-            <button type="button" className="login-link">Forgot password?</button>
+            <button type="button" className="login-link" onClick={() => window.location.assign(signInUrl)}>Forgot password?</button>
           </div>
 
           <button type="submit" className="login-primary">
@@ -114,7 +114,7 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
         </div>
 
         <p className="login-legal">
-          By continuing, you agree to our <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.
+          By continuing, you agree to the Signal Foundry demo terms and privacy boundary.
         </p>
       </section>
     </main>

@@ -1,0 +1,288 @@
+.judge-mode {
+  display: grid;
+  gap: var(--lg, 16px);
+}
+
+.judge-hero {
+  align-items: end;
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(280px, 0.72fr) minmax(420px, 1fr);
+}
+
+.judge-copy h1 {
+  font-family: Bahnschrift, "Aptos Display", Aptos, sans-serif;
+  font-size: 2.35rem;
+  line-height: 0.96;
+  margin: 0;
+}
+
+.judge-copy p:last-child {
+  color: oklch(0.79 0.028 220);
+  font-size: 1.02rem;
+  line-height: 1.42;
+  margin: var(--sm, 8px) 0 0;
+  max-width: 54ch;
+}
+
+.stage-stepper {
+  background: color-mix(in oklch, var(--panel) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: var(--sm, 8px);
+}
+
+.stage-stepper button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--steel);
+  display: flex;
+  gap: var(--sm, 8px);
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px;
+}
+
+.stage-stepper button span {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  display: grid;
+  font-size: 0.72rem;
+  height: 22px;
+  place-items: center;
+  width: 22px;
+}
+
+.stage-stepper button.active {
+  background: color-mix(in oklch, var(--amber) 14%, var(--graphite-3));
+  border-color: color-mix(in oklch, var(--amber) 58%, transparent);
+  color: var(--amber);
+}
+
+.judge-grid {
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
+}
+
+.judge-atlas .atlas-panel {
+  min-height: 520px;
+}
+
+.proof-rail {
+  display: grid;
+  gap: var(--md, 12px);
+}
+
+.proof-rail article,
+.judge-stage-card dl div,
+.risk-comparison-grid article,
+.copilot-bridge li,
+.proof-badges span {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.proof-rail article {
+  background: color-mix(in oklch, var(--panel) 92%, transparent);
+  display: grid;
+  gap: var(--sm, 8px);
+  padding: var(--lg, 16px);
+}
+
+.proof-rail article svg,
+.copilot-bridge li svg {
+  color: var(--teal);
+}
+
+.proof-rail article span,
+.risk-comparison-grid span {
+  color: var(--steel);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.proof-rail article strong {
+  color: oklch(0.94 0.024 205);
+  line-height: 1.25;
+}
+
+.proof-rail article small,
+.judge-stage-card dd {
+  overflow-wrap: anywhere;
+}
+
+.judge-evidence-row {
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(260px, 0.8fr) minmax(340px, 1.1fr) minmax(300px, 0.9fr);
+}
+
+.judge-stage-card dl {
+  display: grid;
+  gap: var(--sm, 8px);
+  margin: var(--lg, 16px) 0;
+}
+
+.judge-stage-card dl div {
+  padding: 9px 10px;
+}
+
+.judge-stage-card dt {
+  color: var(--steel);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+}
+
+.judge-stage-card dd {
+  margin: 3px 0 0;
+}
+
+.judge-actions {
+  display: flex;
+  gap: var(--sm, 8px);
+}
+
+.judge-actions button {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: inherit;
+  display: flex;
+  gap: var(--sm, 8px);
+  padding: 10px 12px;
+}
+
+.copilot-bridge ol {
+  display: grid;
+  gap: var(--sm, 8px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.copilot-bridge li {
+  align-items: center;
+  display: flex;
+  gap: var(--sm, 8px);
+  padding: 10px 12px;
+}
+
+.proof-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sm, 8px);
+  margin-block-start: var(--lg, 16px);
+}
+
+.proof-badges span {
+  color: var(--teal);
+  font-size: 0.74rem;
+  padding: 5px 8px;
+}
+
+/* Advisory comparison: Foundry guidance can inform, but the deterministic gate wins. */
+.advisory-analysis {
+  background: color-mix(in oklch, var(--graphite-2) 75%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.6rem 0;
+  padding: 0.7rem 0.8rem;
+}
+
+.advisory-analysis.muted {
+  opacity: 0.9;
+}
+
+.advisory-heading {
+  align-items: center;
+  color: var(--teal);
+  display: flex;
+  gap: 0.45rem;
+}
+
+.advisory-heading small {
+  color: var(--steel);
+  margin-left: auto;
+}
+
+.risk-comparison-grid {
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.risk-comparison-grid article {
+  background: color-mix(in oklch, var(--graphite-3) 72%, transparent);
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+}
+
+.risk-comparison-grid strong {
+  color: oklch(0.91 0.026 210);
+}
+
+.deterministic-wins {
+  border-color: color-mix(in oklch, var(--teal) 45%, transparent) !important;
+}
+
+.advisory-warn {
+  border-color: color-mix(in oklch, var(--amber) 54%, transparent) !important;
+}
+
+.advisory-arbitration {
+  background: color-mix(in oklch, var(--amber) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--amber) 48%, transparent);
+  border-radius: 7px;
+  color: var(--amber);
+  font-weight: 600;
+  padding: 0.5rem 0.65rem;
+}
+
+.advisory-agreement {
+  color: var(--green);
+}
+
+.advisory-steps {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.advisory-steps li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.4rem 0.55rem;
+}
+
+.advisory-steps li strong {
+  color: var(--teal);
+  font-size: 0.82rem;
+}
+
+.advisory-steps li span {
+  font-size: 0.84rem;
+}
+
+.advisory-steps li em {
+  color: var(--steel);
+  font-size: 0.8rem;
+  font-style: normal;
+}
+
+.advisory-note {
+  color: var(--steel);
+  font-size: 0.78rem;
+}

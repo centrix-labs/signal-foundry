@@ -234,6 +234,8 @@ summary em,
 .light-mode .search-box,
 .light-mode .demo-controls,
 .light-mode .context-card,
+.light-mode .stage-stepper,
+.light-mode .proof-rail article,
 .light-mode .chat-input {
   background: oklch(0.985 0.006 205);
   border-color: oklch(0.84 0.026 210);
@@ -263,6 +265,9 @@ summary em,
 .light-mode details,
 .light-mode .artifact-list div,
 .light-mode .packet-grid div,
+.light-mode .judge-stage-card dl div,
+.light-mode .risk-comparison-grid article,
+.light-mode .copilot-bridge li,
 .light-mode .decision-banner,
 .light-mode .approval-bar {
   background: oklch(0.97 0.008 205);
@@ -297,6 +302,27 @@ summary em,
   border-color: oklch(0.74 0.036 210);
   box-shadow: 0 10px 28px rgba(28, 42, 54, 0.12);
   color: oklch(0.24 0.026 220);
+}
+
+.light-mode .proof-rail article strong,
+.light-mode .risk-comparison-grid strong,
+.light-mode .judge-stage-card dd {
+  color: oklch(0.22 0.03 220);
+}
+
+.light-mode .judge-copy p:last-child,
+.light-mode .proof-rail article span,
+.light-mode .risk-comparison-grid span,
+.light-mode .node-label span,
+.light-mode .atlas-field-labels {
+  color: oklch(0.42 0.026 220);
+}
+
+.light-mode .atlas-badges span,
+.light-mode .atlas-legend span {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.76 0.036 210);
+  color: oklch(0.25 0.032 220);
 }
 
 .light-mode .risk-gate p,
@@ -383,6 +409,8 @@ summary em,
   }
 
   .floor-grid,
+  .judge-grid,
+  .judge-evidence-row,
   .mirror-layout,
   .atlas-view,
   .review-queue-layout {
@@ -413,6 +441,7 @@ summary em,
   }
 
   .demo-controls,
+  .judge-actions,
   .approval-bar,
   .segmented,
   .mirror-actions {
@@ -422,9 +451,44 @@ summary em,
 
   .pipeline-track,
   .release-pipeline.factory .pipeline-track,
+  .stage-stepper,
   .executive-grid,
   .packet-grid {
     grid-template-columns: 1fr;
+  }
+
+  .judge-hero,
+  .judge-grid,
+  .judge-evidence-row {
+    grid-template-columns: 1fr;
+  }
+
+  .judge-copy h1 {
+    font-size: 1.75rem;
+  }
+
+  .judge-atlas .atlas-panel,
+  .judge-atlas-panel .atlas-canvas,
+  .judge-atlas-panel .atlas-canvas svg {
+    min-height: 320px;
+  }
+
+  .atlas-field-labels {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .atlas-legend {
+    bottom: 8px;
+    left: 10px;
+    right: auto;
+  }
+
+  .atlas-badges {
+    bottom: 50px;
+    left: 10px;
+    right: 10px;
   }
 
   .capability-list {

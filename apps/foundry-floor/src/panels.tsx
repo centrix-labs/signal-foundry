@@ -25,6 +25,8 @@ import {
   type CopilotTurn
 } from "./data";
 import { signOutUrl, type StaticWebAppUser } from "./auth";
+import { decisionCopy } from "./decisionText";
+import { proofSentence } from "./proofText";
 import { SignalAtlas } from "./visuals";
 
 export interface RecordFilters {
@@ -47,6 +49,7 @@ export function LeftRail({
   onFiltersChange?: (filters: RecordFilters) => void;
 }) {
   const items = [
+    ["judge", "Judge Mode"],
     ["floor", "Foundry Floor"],
     ["atlas", "Signal Atlas"],
     ["pipeline", "Release Pipeline"],
@@ -67,7 +70,7 @@ export function LeftRail({
         <span className="forge-mark">SF</span>
         <div>
           <strong>Signal Foundry</strong>
-          <small>Raw | Forged | Approved</small>
+          <small>Summarized | Forged | Approved</small>
         </div>
       </div>
       <nav>
@@ -204,11 +207,12 @@ export function CapabilityList({
   );
 }
 
-export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: Capability; riskReviews?: readonly RiskReview[] }) {
+export function RiskGate({ selected, riskReviews = [riskReview], compact = false }: { selected: Capability; riskReviews?: readonly RiskReview[]; compact?: boolean }) {
   const isBlocked = selected.status === "blocked";
   const selectedRisk = riskReviews.find((item) => item.proposalId === selected.id) ?? riskReview;
+  const reviewDecision = selectedRisk.requiresHumanReview ? "Human review required" : "Assistive release path";
   return (
-    <section className="panel risk-gate" aria-label="Risk Gate">
+    <section className={`panel risk-gate ${compact ? "compact-risk" : ""}`} aria-label="Risk Gate">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Risk Gate</p>
@@ -217,11 +221,11 @@ export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: C
         <span className={`status-pill ${selected.riskLevel}`}>{riskLabels[selected.riskLevel]}</span>
       </div>
       <div className="risk-score">
-        <strong>{isBlocked ? "0" : "18"}</strong>
-        <span>{isBlocked ? "blocked checks" : "checks evaluated"}</span>
+        <strong>{isBlocked ? "0" : selectedRisk.requiredControls.length}</strong>
+        <span>{isBlocked ? "blocked controls" : "required controls"}</span>
       </div>
       <p>{isBlocked ? "Monitoring-style requests are refused. Convert the ask into a workflow-level capability before review." : selectedRisk.rationale}</p>
-      {!isBlocked && <AdvisoryAnalysis review={selectedRisk} />}
+      {!isBlocked && <AdvisoryAnalysis review={selectedRisk} decision={reviewDecision} />}
       <div className="checklist">
         {controlChecks.map((check) => (
           <details key={check.label} open={check.status !== "passed"}>
@@ -238,34 +242,48 @@ export function RiskGate({ selected, riskReviews = [riskReview] }: { selected: C
   );
 }
 
-function AdvisoryAnalysis({ review }: { review: RiskReview }) {
+function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: string }) {
   const advisory = review.advisory;
+  const suggested = advisory?.suggestedRiskLevel ? riskLabels[advisory.suggestedRiskLevel] : advisory?.status === "available" ? "Not provided" : "Unavailable";
+  const reason = advisory?.summary ?? advisory?.steps?.[0]?.concern ?? (advisory?.status === "available" ? "Not provided" : "Deterministic verdict stands.");
   if (!advisory || advisory.status !== "available") {
     return (
-      <div className="advisory-analysis muted" aria-label="Advisory analysis">
-        <p className="advisory-note">Advisory unavailable — deterministic verdict stands.</p>
+      <div className="advisory-analysis comparison muted" aria-label="Advisory analysis">
+        <div>
+          <span>AI advisory</span>
+          <strong>Advisory unavailable</strong>
+          <p>Deterministic verdict stands.</p>
+        </div>
+        <div>
+          <span>Deterministic gate</span>
+          <strong>{decision}</strong>
+          <p>Deterministic gate is the source of truth.</p>
+        </div>
+        <p className="advisory-note">Controls remain based on the deterministic risk review.</p>
       </div>
     );
   }
   const disagrees = advisory.agreesWithGate === false;
   return (
-    <div className="advisory-analysis" aria-label="Advisory analysis">
+    <div className="advisory-analysis comparison" aria-label="Advisory analysis">
       <div className="advisory-heading">
         <Sparkles size={14} />
         <strong>Advisory Analysis</strong>
         {advisory.model && <small>{advisory.model}</small>}
       </div>
-      {disagrees ? (
-        <p className="advisory-arbitration" role="note">
-          Advisory suggested {advisory.suggestedRiskLevel ? riskLabels[advisory.suggestedRiskLevel] : "a different level"} —
-          deterministic gate ruled {riskLabels[review.riskLevel]}. Gate wins.
-        </p>
-      ) : (
-        advisory.suggestedRiskLevel && (
-          <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>
-        )
-      )}
-      {advisory.summary && <p>{advisory.summary}</p>}
+      <div className="risk-comparison-grid">
+        <article className={disagrees ? "advisory-warn" : "advisory-ok"}>
+          <span>AI advisory</span>
+          <strong>Suggested: {suggested}</strong>
+          <p>{reason}</p>
+        </article>
+        <article className="deterministic-wins">
+          <span>Deterministic gate</span>
+          <strong>Decision: {decision}</strong>
+          <p>Deterministic gate is the source of truth.</p>
+        </article>
+      </div>
+      {disagrees ? <p className="advisory-arbitration" role="note">Advisory differs from the deterministic gate. Gate wins.</p> : <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>}
       {advisory.steps && advisory.steps.length > 0 && (
         <ul className="advisory-steps">
           {advisory.steps.map((step) => (
@@ -323,10 +341,10 @@ export function ReleasePacketDrawer({
   );
 }
 
-export function McpActivityRail({ compact = false, items = mcpActivity }: { compact?: boolean; items?: readonly McpActivity[] }) {
+export function McpActivityRail({ compact = false, proofMode = false, items = mcpActivity }: { compact?: boolean; proofMode?: boolean; items?: readonly McpActivity[] }) {
   const visibleItems = compact ? items.slice(0, 4) : items;
   return (
-    <aside className={`panel mcp-rail ${compact ? "compact" : ""}`} aria-label="MCP Activity">
+    <aside className={`panel mcp-rail ${compact ? "compact" : ""} ${proofMode ? "proof-timeline" : ""}`} aria-label={proofMode ? "MCP Evidence Timeline" : "MCP Activity"}>
       <div className="panel-heading">
         <div>
           <p className="eyebrow">MCP Activity</p>
@@ -339,7 +357,7 @@ export function McpActivityRail({ compact = false, items = mcpActivity }: { comp
           <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
           <div>
             <strong>{item.action}</strong>
-            <p>{item.summary}</p>
+            <p>{proofMode ? proofSentence(item) : item.summary}</p>
             <small>{item.actor} / {item.correlationId}</small>
           </div>
         </article>
@@ -418,25 +436,6 @@ export function ReviewQueue({
   );
 }
 
-const decisionCopy = {
-  pending: {
-    title: "Reviewer decision pending",
-    body: "Release remains blocked until a human reviewer approves the packet."
-  },
-  saved: {
-    title: "Saved for later",
-    body: "The packet stays in review with audit-safe context preserved for the next reviewer pass."
-  },
-  changes_requested: {
-    title: "Changes requested",
-    body: "The proposal is held before release and the next action is recorded in the review queue."
-  },
-  released: {
-    title: "Approved and released",
-    body: "The capability is now a released workflow with the packet, atlas node, and MCP trace aligned."
-  }
-} as const;
-
 export function CopilotMirror({
   turns,
   selected,
@@ -489,11 +488,13 @@ export function CopilotMirror({
 export function ExecutiveView({
   selected,
   reviews = reviewItems,
-  events = auditEvents
+  events = auditEvents,
+  onOpenReview
 }: {
   selected: Capability;
   reviews?: readonly ReviewItem[];
   events?: readonly AuditEvent[];
+  onOpenReview?: () => void;
 }) {
   return (
     <section className="executive-view">
@@ -535,7 +536,7 @@ export function ExecutiveView({
           </div>
         ))}
       </div>
-      <button type="button" className="primary action-button">Open release packet <ChevronRight size={16} /></button>
+      <button type="button" className="primary action-button" onClick={onOpenReview}>Open release packet <ChevronRight size={16} /></button>
     </section>
   );
 }

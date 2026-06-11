@@ -1,5 +1,10 @@
 .atlas-panel {
+  display: grid;
   min-height: 560px;
+}
+
+.judge-atlas-panel {
+  min-height: 520px;
 }
 
 .compact-atlas {
@@ -8,6 +13,7 @@
 
 .atlas-canvas {
   background:
+    radial-gradient(circle at 52% 45%, color-mix(in oklch, var(--teal) 10%, transparent), transparent 34%),
     repeating-linear-gradient(90deg, rgba(124, 132, 142, 0.05) 0 1px, transparent 1px 52px),
     color-mix(in oklch, var(--graphite) 86%, black);
   border: 1px solid var(--line);
@@ -21,6 +27,14 @@
   display: block;
   min-height: inherit;
   width: 100%;
+}
+
+.judge-atlas-panel .atlas-canvas {
+  min-height: 440px;
+}
+
+.judge-atlas-panel .atlas-canvas svg {
+  min-height: 430px;
 }
 
 .constellation circle {
@@ -69,6 +83,10 @@
   stroke-width: 1.28;
 }
 
+.atlas-edge.stage-active .atlas-link {
+  stroke-width: 1.6;
+}
+
 #tealArrow path {
   fill: var(--teal);
 }
@@ -113,6 +131,10 @@
 
 .atlas-node.risk_gate .node-dot {
   background: var(--amber);
+}
+
+.atlas-node.stage-active .node-hit {
+  box-shadow: 0 0 26px color-mix(in oklch, var(--amber) 52%, transparent);
 }
 
 .atlas-node.workflow.released .node-hit {
@@ -194,6 +216,44 @@
 .legend-amber { background: var(--amber); }
 .legend-muted { background: var(--steel); }
 
+.atlas-field-labels {
+  align-items: center;
+  color: var(--steel);
+  display: flex;
+  font-size: 0.76rem;
+  inset: 12px 14px auto;
+  justify-content: space-between;
+  pointer-events: none;
+  position: absolute;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.atlas-field-labels .gate.active {
+  color: var(--amber);
+  font-weight: 800;
+}
+
+.atlas-badges {
+  align-items: center;
+  bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sm, 8px);
+  left: 16px;
+  position: absolute;
+  z-index: 2;
+}
+
+.atlas-badges span {
+  background: color-mix(in oklch, var(--graphite) 82%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: oklch(0.84 0.03 205);
+  font-size: 0.74rem;
+  padding: 5px 8px;
+}
+
 .segmented {
   display: flex;
   gap: var(--sm, 8px);
@@ -218,6 +278,24 @@
 }
 
 @media (max-width: 760px) {
+  .judge-atlas-panel,
+  .judge-atlas-panel .atlas-canvas,
+  .judge-atlas-panel .atlas-canvas svg {
+    min-height: 320px;
+  }
+
+  .atlas-field-labels {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .atlas-badges {
+    bottom: 50px;
+    left: 10px;
+    right: 10px;
+  }
+
   .atlas-legend {
     font-size: 0.68rem;
     gap: 8px;

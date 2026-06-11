@@ -15,6 +15,8 @@ type AtlasProps = {
   selectedId: string;
   onSelect: (id: string) => void;
   compact?: boolean;
+  judgeMode?: boolean;
+  stageKey?: string;
 };
 
 function nodeById(id: string): PositionedNode {
@@ -30,13 +32,13 @@ function pathFor(source: PositionedNode, target: PositionedNode): string {
   return `M ${source.x} ${source.y} C ${mid} ${source.y}, ${mid} ${target.y}, ${target.x} ${target.y}`;
 }
 
-export function SignalAtlas({ records = [], selectedId, onSelect, compact = false }: AtlasProps) {
+export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey }: AtlasProps) {
   return (
-    <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""}`} aria-label="Signal Atlas">
+    <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""}`} aria-label="Signal Atlas">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Signal Atlas</p>
-          <h2>Raw signals forged into approved workflows</h2>
+          <h2>Summary work signals forged into approved workflows</h2>
         </div>
         <div className="segmented">
           <span>Live</span>
@@ -45,6 +47,14 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
         </div>
       </div>
       <div className="atlas-canvas">
+        {judgeMode ? (
+          <div className="atlas-field-labels" aria-hidden="true">
+            <span className="inbound">Summary work signals</span>
+            <span className="forge">Signal Foundry</span>
+            <span className={stageKey === "score" ? "gate active" : "gate"}>Risk gate</span>
+            <span className="outbound">Approved workflows</span>
+          </div>
+        ) : null}
         <svg viewBox="0 0 100 112" role="img" aria-label="Animated graph of signals, roles, risk gates, and workflows">
           <defs>
             <filter id="tealGlow" x="-30%" y="-30%" width="160%" height="160%">
@@ -73,8 +83,9 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             const target = nodeById(edge.target);
             const path = pathFor(source, target);
             const isRisk = edge.kind === "risk_gate" || edge.kind === "approval_path";
+            const isStageRisk = stageKey === "score" && (edge.kind === "risk_gate" || edge.source === "gate-risk");
             return (
-              <g key={edge.id} className={`atlas-edge ${edge.kind}`} style={{ animationDelay: `${index * 120}ms` }}>
+              <g key={edge.id} className={`atlas-edge ${edge.kind} ${isStageRisk ? "stage-active" : ""}`} style={{ animationDelay: `${index * 120}ms` }}>
                 {isRisk ? <path className={`atlas-link-backdrop ${edge.kind}`} d={path} pathLength={1} /> : null}
                 <path
                   className={`atlas-link ${edge.kind}`}
@@ -91,8 +102,9 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
           {atlasNodes.map((node) => {
             const record = records.find((item) => item.id === node.id);
             const currentNode = record ? { ...node, label: record.title, riskLevel: record.riskLevel, status: record.status } : node;
+            const isStageRiskNode = stageKey === "score" && currentNode.id === "gate-risk";
             return (
-            <g key={currentNode.id} className={`atlas-node ${currentNode.kind} ${selectedId === currentNode.id ? "selected" : ""} ${currentNode.status ?? ""}`}>
+            <g key={currentNode.id} className={`atlas-node ${currentNode.kind} ${selectedId === currentNode.id ? "selected" : ""} ${currentNode.status ?? ""} ${isStageRiskNode ? "stage-active" : ""}`}>
               <foreignObject x={currentNode.x - 2.8} y={currentNode.y - 2.8} width="5.6" height="5.6">
                 <button type="button" className="node-hit" onClick={() => onSelect(currentNode.id)} aria-label={`Select ${currentNode.label}`}>
                   <span className="node-dot" />
@@ -109,6 +121,13 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             );
           })}
         </svg>
+        {judgeMode ? (
+          <div className="atlas-badges" aria-label="Atlas proof badges">
+            <span>No raw content</span>
+            <span>Summary-only</span>
+            <span>Approved packet</span>
+          </div>
+        ) : null}
         <div className="atlas-legend">
           <span><i className="legend-teal" /> Signal flow</span>
           <span><i className="legend-amber" /> Risk gate</span>
