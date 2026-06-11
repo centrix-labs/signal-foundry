@@ -32,8 +32,32 @@
     "applicationInsightsName": {
       "value": "appi-signal-foundry"
     },
+    "enableFoundryAdvisory": {
+      "value": true
+    },
+    "foundryAccountName": {
+      "value": "aif-signal-foundry"
+    },
+    "foundryDeploymentName": {
+      "value": "sf-advisory-gpt41-mini"
+    },
+    "foundryModelName": {
+      "value": "gpt-4.1-mini"
+    },
+    "foundryModelVersion": {
+      "value": "2025-04-14"
+    },
+    "foundryDeploymentSkuName": {
+      "value": "Standard"
+    },
+    "foundryDeploymentCapacity": {
+      "value": 1
+    },
+    "foundryApiVersion": {
+      "value": "2024-10-21"
+    },
     "containerImage": {
-      "value": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+      "value": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f"
     },
     "containerPort": {
       "value": 7071

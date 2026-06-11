@@ -5,11 +5,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "7ec661d1612f0dba9f72709f24c8005e2ad432eefd41b5afa7ee4d12cd6e883b";
+const expectedHash = "0189b098cddfc99f0459e9c41acf345d64f44cebba1c6a5cada9b6751b019f0e";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
+const maxInstructionsLength = 8000;
 const requiredEntries = [
   "manifest.json",
   "declarative-agent.azure.json",
@@ -60,7 +61,7 @@ assertCondition(!entries.some((entry) => entry.includes("__MACOSX") || entry.sta
 
 const manifest = readZipJson("manifest.json");
 assertCondition(manifest.manifestVersion === "1.27", "Teams manifest version must remain 1.27");
-assertCondition(manifest.version === "0.1.3", "Teams app package version must be newer than the installed 0.1.2 title");
+assertCondition(manifest.version === "0.1.5", "Teams app package version must be newer than the installed 0.1.4 title");
 assertCondition(manifest.name?.short === "Signal Foundry", "Manifest short name must be Signal Foundry");
 assertCondition(manifest.copilotAgents?.declarativeAgents?.[0]?.id === "signalFoundryAgent", "Manifest declarative agent ID mismatch");
 assertCondition(manifest.copilotAgents.declarativeAgents[0].file === "declarative-agent.azure.json", "Manifest must point at Azure declarative agent");
@@ -73,6 +74,10 @@ const declarativeAgent = readZipJson("declarative-agent.azure.json");
 assertCondition(declarativeAgent.id === "signalFoundryAgent", "Declarative agent ID mismatch");
 assertCondition(declarativeAgent.actions?.[0]?.id === "signalFoundryMcpAzure", "Declarative agent must use Azure MCP action");
 assertCondition(declarativeAgent.actions[0].file === "actions/signal-foundry-mcp.azure.json", "Declarative agent action file mismatch");
+assertCondition(
+  declarativeAgent.instructions.length <= maxInstructionsLength,
+  `Declarative agent instructions must be ${maxInstructionsLength} characters or fewer`
+);
 assertIncludesAll(JSON.stringify(declarativeAgent.conversation_starters), [
   "Presales Use Cases",
   "We see you're a Presales Architect working with Sales Engineering.",
@@ -89,11 +94,11 @@ assertIncludesAll(declarativeAgent.instructions, [
   "Anchor the experience in Asteria Dynamics and the scoped demo defaults before using tools.",
   "Use Work IQ only as permission-aware job context or synthetic Work IQ-style summaries.",
   "Keep discovery, proposal, risk scoring, review, approval, and release as separate state transitions.",
-  "Treat deterministic tool results as the source of truth and verify mutations with `list_mcp_activity`.",
+  "Treat deterministic tool results as the source of truth and verify mutations with list_mcp_activity.",
   "Refuse surveillance or productivity-ranking requests and redirect to workflow-level improvement.",
   "Purpose Boundary",
   "Do not perform unrelated services or lookups, including weather, news, sports, stock prices, generic web search",
-  "Do not call tools or external services for out-of-scope requests.",
+  "Do not call tools for out-of-scope requests.",
   "Do not delete, purge, erase, hide, disable, or tamper with capability records",
   "I can't do that in Signal Foundry. I can help with governed Copilot capability discovery, risk review, approval, release packets, Signal Atlas, or audit activity.",
   "Never ask the user to paste raw emails",

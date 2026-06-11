@@ -30,6 +30,30 @@ param logAnalyticsName string = 'law-signal-foundry'
 @description('Application Insights component name.')
 param applicationInsightsName string = 'appi-signal-foundry'
 
+@description('Create the Azure AI Foundry / Azure OpenAI advisory resource and model deployment.')
+param enableFoundryAdvisory bool = true
+
+@description('Azure AI Foundry / Azure OpenAI account name. Must be globally unique.')
+param foundryAccountName string = 'aif-signal-foundry'
+
+@description('Azure AI Foundry / Azure OpenAI advisory deployment name used by the MCP server.')
+param foundryDeploymentName string = 'sf-advisory-gpt41-mini'
+
+@description('Azure AI Foundry / Azure OpenAI advisory model name.')
+param foundryModelName string = 'gpt-4.1-mini'
+
+@description('Azure AI Foundry / Azure OpenAI advisory model version.')
+param foundryModelVersion string = '2025-04-14'
+
+@description('Azure AI Foundry / Azure OpenAI deployment SKU. Standard uses the regional quota available in eastus2 for hackathon use.')
+param foundryDeploymentSkuName string = 'Standard'
+
+@description('Azure AI Foundry / Azure OpenAI deployment capacity. Keep low for hackathon cost control.')
+param foundryDeploymentCapacity int = 1
+
+@description('Azure OpenAI-compatible API version used by the MCP advisory client.')
+param foundryApiVersion string = '2024-10-21'
+
 @description('Placeholder or pushed MCP image. Default is public so the first infra deployment is not blocked by ACR content.')
 param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
@@ -88,6 +112,14 @@ module resources './resources.bicep' = {
     containerPort: containerPort
     containerRegistryName: containerRegistryName
     expectedSubscriptionId: expectedSubscriptionId
+    enableFoundryAdvisory: enableFoundryAdvisory
+    foundryAccountName: foundryAccountName
+    foundryApiVersion: foundryApiVersion
+    foundryDeploymentCapacity: foundryDeploymentCapacity
+    foundryDeploymentName: foundryDeploymentName
+    foundryDeploymentSkuName: foundryDeploymentSkuName
+    foundryModelName: foundryModelName
+    foundryModelVersion: foundryModelVersion
     keyVaultName: keyVaultName
     location: location
     logAnalyticsName: logAnalyticsName
@@ -103,5 +135,8 @@ module resources './resources.bicep' = {
 output resourceGroup string = rg.name
 output subscriptionGuard string = actualSubscriptionId == expectedSubscriptionId ? 'expected-subscription' : 'blocked-wrong-subscription'
 output containerAppUrl string = resources.outputs.containerAppUrl
+output foundryAdvisoryMode string = resources.outputs.foundryAdvisoryMode
+output foundryEndpoint string = resources.outputs.foundryEndpoint
+output foundryDeployment string = resources.outputs.foundryDeployment
 output staticWebAppHostname string = resources.outputs.staticWebAppHostname
 output storageTables array = resources.outputs.storageTables

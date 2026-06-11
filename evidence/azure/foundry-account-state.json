@@ -1,0 +1,26 @@
+{
+  "disableLocalAuth": true,
+  "endpoint": "https://aif-signal-foundry.openai.azure.com/",
+  "location": "eastus2",
+  "name": "aif-signal-foundry",
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "sku": {
+    "capacity": null,
+    "family": null,
+    "name": "S0",
+    "size": null,
+    "tier": null
+  },
+  "tags": {
+    "app": "signal-foundry",
+    "checkpoint": "F",
+    "costGuard": "pay-per-token-low-capacity",
+    "costPosture": "consumption-scale-to-zero",
+    "environment": "hackathon",
+    "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+    "owner": "azure-devops-worker",
+    "service": "foundry-advisory"
+  },
+  "type": "Microsoft.CognitiveServices/accounts"
+}

@@ -16,13 +16,15 @@ workflows. Copilot Chat agent (discovery + proposals) → external MCP server
 ## Run locally (Node 20+)
 
 ```bash
-git clone https://github.com/centrix-labs/signal-foundry
-cd signal-foundry
-npm install
-npm run validate     # typecheck + 52 tests + evidence/package/card validators
-npm run test:e2e     # Playwright golden flow (needs: npx playwright install chromium)
-npm run dev:all      # MCP on :7071, Foundry Floor on :5173
+git clone https://github.com/centrix-labs/signal-foundry /tmp/signal-foundry
+npm --prefix /tmp/signal-foundry install
+npm --prefix /tmp/signal-foundry run validate
+npm --prefix /tmp/signal-foundry run test:e2e
+npm --prefix /tmp/signal-foundry run dev:all
 ```
+
+`npm run validate` includes typecheck, tests, evidence validation, Copilot
+package validation, Work IQ + Foundry readiness, and Adaptive Card validation.
 
 Demo actors (send as `x-sf-actor-id` header or `Bearer demo-actor-<name>`):
 `actor-priya` (employee), `actor-alex` (reviewer), `actor-dana` (admin).
@@ -48,9 +50,13 @@ curl -s -X POST localhost:7071/admin/reset -H "x-sf-actor-id: actor-dana"
    traces, rejection logged in the MCP Activity Rail.
 4. **Anti-surveillance:** the agent instructions refuse monitoring/ranking asks
    (`apps/copilot-agent/package/declarative-agent.azure.json`).
-5. **Copilot package:** sideload-ready v0.1.3 zip under `evidence/copilot/`,
+5. **Work IQ + Foundry proof:** `npm run validate:workiq-foundry` checks the
+   Copilot grounding, MCP Work IQ tools, Foundry advisory path, portal rendering,
+   and evidence honesty. See
+   `docs/submission/work-iq-foundry-readiness.md`.
+6. **Copilot package:** sideload-ready v0.1.5 zip under `evidence/copilot/`,
    hash-pinned by `npm run validate:copilot`; Adaptive Card templates inline in
-   all four action manifests (`npm run validate:cards`).
+   the Copilot action manifest (`npm run validate:cards`).
 
 ## Evidence map
 

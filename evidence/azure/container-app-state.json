@@ -1,8 +1,6 @@
 {
-  "id": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.App/containerapps/ca-signal-foundry-mcp",
   "identity": {
     "principalId": "00000000-0000-0000-0000-000000000000",
-    "tenantId": "YOUR-ENTRA-TENANT-ID",
     "type": "SystemAssigned"
   },
   "location": "East US 2",
@@ -10,82 +8,26 @@
   "properties": {
     "configuration": {
       "activeRevisionsMode": "Single",
-      "dapr": null,
-      "identitySettings": [],
       "ingress": {
-        "additionalPortMappings": null,
-        "allowInsecure": false,
-        "clientCertificateMode": null,
-        "corsPolicy": null,
-        "customDomains": null,
-        "exposedPort": 0,
         "external": true,
         "fqdn": "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
-        "ipSecurityRestrictions": null,
-        "stickySessions": null,
         "targetPort": 7071,
         "traffic": [
           {
             "latestRevision": true,
             "weight": 100
           }
-        ],
-        "transport": "Http"
-      },
-      "maxInactiveRevisions": null,
-      "registries": [
-        {
-          "identity": "system",
-          "passwordSecretRef": "",
-          "server": "acrsignalfoundry.azurecr.io",
-          "username": ""
-        }
-      ],
-      "runtime": null,
-      "secrets": null,
-      "service": null
+        ]
+      }
     },
-    "customDomainVerificationId": "311EA9FDB79EFF90EECC9809ADE53C44F197A0B79FB0135E82F6CBF5306D8255",
-    "delegatedIdentities": [],
-    "environmentId": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.App/managedEnvironments/cae-signal-foundry",
-    "eventStreamEndpoint": "https://eastus2.azurecontainerapps.dev/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/containerApps/ca-signal-foundry-mcp/eventstream",
-    "latestReadyRevisionName": "ca-signal-foundry-mcp--0000018",
-    "latestRevisionFqdn": "ca-signal-foundry-mcp--0000018.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
-    "latestRevisionName": "ca-signal-foundry-mcp--0000018",
-    "managedEnvironmentId": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.App/managedEnvironments/cae-signal-foundry",
-    "outboundIpAddresses": [
-      "20.85.28.69"
-    ],
+    "latestReadyRevisionName": "ca-signal-foundry-mcp--0000021",
+    "latestRevisionName": "ca-signal-foundry-mcp--0000021",
     "provisioningState": "Succeeded",
     "runningStatus": "Running",
     "template": {
       "containers": [
         {
           "env": [
-            {
-              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-              "value": "InstrumentationKey=58afd4e7-93e1-4fc4-831f-c6d110eb4c6f;IngestionEndpoint=https://eastus2-3.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus2.livediagnostics.monitor.azure.com/;ApplicationId=5dd4d5b4-e1db-4d38-8906-ce5d4ef0e531"
-            },
-            {
-              "name": "PORT",
-              "value": "7071"
-            },
-            {
-              "name": "SIGNAL_FOUNDRY_AUTH_MODE",
-              "value": "demo"
-            },
-            {
-              "name": "SIGNAL_FOUNDRY_COMPANY_NAME",
-              "value": "Asteria Dynamics"
-            },
-            {
-              "name": "SIGNAL_FOUNDRY_TENANT_ID",
-              "value": "tenant-asteria-dynamics"
-            },
-            {
-              "name": "SIGNAL_FOUNDRY_PROJECT_ID",
-              "value": "revenue-ops-launchpad"
-            },
             {
               "name": "SIGNAL_FOUNDRY_REGISTRY_MODE",
               "value": "azure-table"
@@ -95,11 +37,23 @@
               "value": "stsignalfoundry"
             },
             {
-              "name": "SIGNAL_FOUNDRY_TELEMETRY_MODE",
-              "value": "audit-safe-compact"
+              "name": "SIGNAL_FOUNDRY_ADVISORY_MODE",
+              "value": "foundry"
+            },
+            {
+              "name": "SIGNAL_FOUNDRY_FOUNDRY_ENDPOINT",
+              "value": "https://aif-signal-foundry.openai.azure.com"
+            },
+            {
+              "name": "SIGNAL_FOUNDRY_FOUNDRY_DEPLOYMENT",
+              "value": "sf-advisory-gpt41-mini"
+            },
+            {
+              "name": "SIGNAL_FOUNDRY_FOUNDRY_API_VERSION",
+              "value": "2024-10-21"
             }
           ],
-          "image": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:work-context-v012",
+          "image": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f",
           "name": "mcp",
           "resources": {
             "cpu": 0.25,
@@ -108,30 +62,16 @@
           }
         }
       ],
-      "initContainers": null,
-      "revisionSuffix": "",
       "scale": {
         "cooldownPeriod": 300,
         "maxReplicas": 1,
         "minReplicas": 0,
         "pollingInterval": 30,
         "rules": null
-      },
-      "serviceBinds": null,
-      "terminationGracePeriodSeconds": null,
-      "volumes": null
-    },
-    "workloadProfileName": null
+      }
+    }
   },
   "resourceGroup": "rg-signal-foundry-hackathon",
-  "systemData": {
-    "createdAt": "2026-06-07T07:04:30.4484365",
-    "createdBy": "<redacted-user>",
-    "createdByType": "User",
-    "lastModifiedAt": "2026-06-09T00:26:37.9966359",
-    "lastModifiedBy": "<redacted-user>",
-    "lastModifiedByType": "User"
-  },
   "tags": {
     "app": "signal-foundry",
     "checkpoint": "F",

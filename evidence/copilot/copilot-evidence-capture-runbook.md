@@ -4,8 +4,8 @@ Date: 2026-06-08
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip`
-- SHA-256: `7ec661d1612f0dba9f72709f24c8005e2ad432eefd41b5afa7ee4d12cd6e883b`
+- Package: `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`
+- SHA-256: `0189b098cddfc99f0459e9c41acf345d64f44cebba1c6a5cada9b6751b019f0e`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
@@ -30,7 +30,7 @@ Before saving, verify each image contains no raw Microsoft 365 content, secrets,
 Optional local diagnostic:
 
 ```bash
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run copilot:diagnose
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run copilot:diagnose
 ```
 
 This records only safe browser-state signals in `evidence/copilot/copilot-session-diagnostic.md`. It does not replace the three screenshot files required by the final readiness gate.
@@ -148,7 +148,7 @@ runbook step a human can complete in one sitting.
 
 1. Existing tenant: `npm install -g @microsoft/m365agentstoolkit-cli`, then
    `atk auth login` (interactive — requires the user) and
-   `atk install --file-path evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip`.
+   `atk install --file-path evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`.
    Custom app upload must be enabled by the tenant admin.
 2. If blocked: join the Microsoft 365 Developer Program, provision an instant
    sandbox tenant, enable custom app upload in the Teams admin center, then

@@ -26,7 +26,7 @@ Date: 2026-06-07
 Local reset:
 
 ```bash
-npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run reset
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run reset
 ```
 
 Deployed demo reset:
@@ -47,14 +47,15 @@ curl -fsS -X POST https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastu
 
 - Full validate chain green: 28 mcp-server tests (advisory module, grounded work
   context, schema-enforced confirmation), 24 shared tests, evidence validator
-  (46 files, 4 scenarios), Copilot package validator (v0.1.3,
-  7ec661d1612f...), adaptive card check (4 cards x 4 manifests).
+  (51 files, 4 scenarios), Copilot package validator (v0.1.5,
+  0189b098cddf...), Work IQ + Foundry readiness gate, and adaptive card check
+  (4 cards x 4 manifests).
 - Playwright golden-flow E2E: propose -> score (advisory unavailable with mode
   off, deterministic verdict unchanged) -> submit -> approve -> release, plus
   sanitized unauthorized rejection. Passed twice consecutively from /admin/reset.
-- Advisory disagreement demo seeded: prop-autonomous-renewal-outreach with
-  boundary-tipping inputs documented in
-  apps/copilot-agent/docs/advisory-disagreement-demo.md (3-consecutive-run
-  verification pending Azure Foundry provisioning).
+- Azure AI Foundry advisory is provisioned in `rg-signal-foundry-hackathon` with
+  `aif-signal-foundry` / `sf-advisory-gpt41-mini`; live MCP smoke captured an
+  available `gpt-4.1-mini-2025-04-14` advisory response while preserving the
+  deterministic gate as source of truth.
 - Remaining tenant-dependent captures and the unblock playbook are listed in
   evidence/copilot/copilot-evidence-capture-runbook.md.

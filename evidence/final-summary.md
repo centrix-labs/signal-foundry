@@ -4,10 +4,10 @@ Date: 2026-06-08
 
 ## Local Commands
 
-- `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run validate`
-- `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run build`
-- `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise audit --omit=optional`
-- `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run smoke:local`
+- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate`
+- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run build`
+- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise audit --omit=optional`
+- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run smoke:local`
 
 ## Azure URLs
 
@@ -40,10 +40,13 @@ Date: 2026-06-08
 ## Deployment Checkpoints
 
 - Azure resource group: `rg-signal-foundry-hackathon`
-- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:work-context-v012`
-- Container digest: `sha256:6de9bb44015a0fffcaedf2fd1e7e1b069a7f1ab55fef0501a101add770a33591`
-- Container revision: `ca-signal-foundry-mcp--0000018`
+- Container image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
+- Container digest: `sha256:c3e23c73da751ad3397a47056d897ac4c1474224def9eaa21f79c90c73aa6713`
+- Container revision: `ca-signal-foundry-mcp--0000021`
+- Azure AI Foundry / Azure OpenAI account: `aif-signal-foundry`
+- Advisory deployment: `sf-advisory-gpt41-mini` (`gpt-4.1-mini`, version `2025-04-14`)
 - Static Web Apps site: `swa-signal-foundry`
+- Static Web Apps publish status: existing site responds, but the 2026-06-11 redeploy did not complete because the local SWA native deploy client failed after backend deployment.
 - Azure Table registry mirror: `Actors`, `Capabilities`, `CapabilityProposals`, `RiskReviews`, `ReviewItems`, `ReleasePackets`, `McpActivity`, `AuditEvents`
 - Budget: `signal-foundry-hackathon-budget`
 - Key Vault: `kv-signal-foundry`
@@ -53,6 +56,9 @@ Date: 2026-06-08
 - Deployed smoke: `evidence/azure/deployed-smoke-results.md`
 - Deployed login smoke: `evidence/azure/deployed-login-smoke.md`
 - Resource list: `evidence/azure/resource-list.json`
+- Foundry advisory smoke: `evidence/azure/foundry-advisory-smoke.md`
+- Foundry account state: `evidence/azure/foundry-account-state.json`
+- Foundry deployment state: `evidence/azure/foundry-deployment-state.json`
 - Azure Table registry sample: `evidence/azure/table-registry-sample.json`
 - Sanitized telemetry: `evidence/azure/sanitized-log-analytics-sample.json`
 - Cost posture: `evidence/azure/budget.json`
@@ -60,9 +66,10 @@ Date: 2026-06-08
 - Screenshots: `evidence/screenshots`, including deployed login screenshots
 - Copilot Chat screenshots: `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/screenshots/copilot-workiq-recommendation-asteria.png`, `evidence/screenshots/copilot-anti-surveillance-refusal-asteria.png`
 - Demo video: `evidence/videos/signal-foundry-live-demo.webm`
-- Copilot package: `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`
+- Copilot package: `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
-- Final readiness audit: `npm --prefix /Users/mattgraves/Documents/hackathon-enterprise run audit:final-readiness`
+- Work IQ + Foundry readiness: `docs/submission/work-iq-foundry-readiness.md`
+- Final readiness audit: `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run audit:final-readiness`
 
 ## Remaining Tenant-Dependent Manual Steps
 

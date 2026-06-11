@@ -125,5 +125,21 @@
     "sku": null,
     "tags": null,
     "type": "microsoft.insights/actiongroups"
+  },
+  {
+    "location": "eastus2",
+    "name": "aif-signal-foundry",
+    "sku": "S0",
+    "tags": {
+      "app": "signal-foundry",
+      "checkpoint": "F",
+      "costGuard": "pay-per-token-low-capacity",
+      "costPosture": "consumption-scale-to-zero",
+      "environment": "hackathon",
+      "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+      "owner": "azure-devops-worker",
+      "service": "foundry-advisory"
+    },
+    "type": "Microsoft.CognitiveServices/accounts"
   }
 ]

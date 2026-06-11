@@ -6,8 +6,8 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Criterion | Status | Evidence |
 | --- | --- | --- |
-| Copilot Chat agent | Ready; Microsoft 365 Copilot Chat screenshots captured | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
-| Work IQ grounding | Ready | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json` |
+| Copilot Chat agent | Ready; Microsoft 365 Copilot Chat screenshots captured | `apps/copilot-agent/package/manifest.json`, `apps/copilot-agent/package/manifest.azure.json`, `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png`, `evidence/copilot/copilot-evidence-capture-runbook.md` |
+| Work IQ grounding | Ready | `apps/copilot-agent/docs/instructions.md`, `evidence/signal-foundry-demo-evidence.json`, `docs/submission/work-iq-foundry-readiness.md` |
 | Original hackathon work | Ready | `data/signal-foundry-seed.json`, `apps/foundry-floor/src`, `apps/mcp-server/src` |
 | MCP app/plugin contract | Ready | `openspec/changes/build-copilot-capability-launchpad/mcp-tool-contract.md`, `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json` |
 | MCP read operations | Ready | `evidence/azure/deployed-smoke-results.md` |
@@ -51,13 +51,14 @@ This checklist maps judge-facing proof to committed artifacts and deployed Azure
 
 | Gate | Evidence Asset |
 | --- | --- |
-| Copilot surface | `evidence/copilot/signal-foundry-copilot-v012-work-context-20260608-2033.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png` |
+| Copilot surface | `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`, `evidence/screenshots/copilot-agent-invocation-asteria.png` |
 | Work IQ grounding | `apps/copilot-agent/docs/instructions.md` |
 | MCP read/write | `evidence/azure/deployed-smoke-results.md` |
 | External MCP server | `evidence/azure/container-app-state.json` |
 | OAuth/auth boundary | `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json`, unauthorized smoke |
 | Human review | Golden flow in `evidence/azure/deployed-smoke-results.md` |
 | Risk gate | `evidence/signal-foundry-demo-evidence.json` |
+| Azure AI Foundry advisory | `apps/mcp-server/src/advisory.ts`, `apps/mcp-server/src/advisory.test.ts`, `docs/submission/work-iq-foundry-readiness.md` |
 | Release packet | Golden flow in `evidence/azure/deployed-smoke-results.md` |
 | Signal Atlas | `evidence/screenshots/azure-signal-atlas.png` |
 | Review Queue | `evidence/screenshots/review-queue.png` |

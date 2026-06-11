@@ -1,6 +1,6 @@
 # Deployed Smoke Results
 
-Date: 2026-06-08
+Date: 2026-06-11
 
 ## Live URLs
 
@@ -9,16 +9,16 @@ Date: 2026-06-08
 
 ## Runtime Image
 
-- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:work-context-v012`
-- Digest: `sha256:6de9bb44015a0fffcaedf2fd1e7e1b069a7f1ab55fef0501a101add770a33591`
-- Revision: `ca-signal-foundry-mcp--0000018`
-- Deployment note: Bicep was reapplied on 2026-06-09 and the MCP image was rebuilt with the read-only `get_user_work_context` tool plus OAuth bearer synthetic actor fallback for Copilot action calls.
+- ACR image: `acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f`
+- Digest: `sha256:c3e23c73da751ad3397a47056d897ac4c1474224def9eaa21f79c90c73aa6713`
+- Revision: `ca-signal-foundry-mcp--0000021`
+- Deployment note: Bicep was reapplied on 2026-06-11 and the MCP image was rebuilt with live Azure AI Foundry advisory mode enabled through managed identity.
 
 ## Smoke Checks
 
 - Health endpoint: passed.
 - Tool-list endpoint: passed with 12 tools.
-- Active Container Apps revision: passed with 100% traffic on `ca-signal-foundry-mcp--0000018`.
+- Active Container Apps revision: passed with 100% traffic on `ca-signal-foundry-mcp--0000021`.
 - MCP tool metadata: passed with `Asteria Dynamics`, `tenant-asteria-dynamics`, and `revenue-ops-launchpad` defaults.
 - OpenAPI endpoint: passed with HTTPS server URL and 12 tool paths.
 - MCP JSON-RPC `tools/list`: passed with 12 tools.
@@ -31,9 +31,10 @@ Date: 2026-06-08
 - Unauthorized approval rejection: passed with HTTP 403 and sanitized body.
 - Golden flow: passed through risk score, review submit, approve, release, and release packet.
 - Deterministic risk gate: passed; medium sensitivity plus customer data scored `medium`.
+- Azure AI Foundry advisory: passed with `advisory.status: available`, model `gpt-4.1-mini-2025-04-14`, deterministic gate still source of truth.
 - Azure Table registry mirror: passed for `Actors`, `Capabilities`, and `McpActivity` table rows.
-- Static Web Apps load: passed with HTTP 200.
-- Static Web Apps asset check: passed with the synthetic Asteria login placeholder and Asteria defaults.
+- Static Web Apps load: passed with HTTP 200 for the existing deployed portal.
+- Static Web Apps redeploy: not completed on 2026-06-11 because the local SWA native deploy client exited with an unknown exception after backend deployment. Re-run SWA deploy from an environment where the native client runs cleanly before claiming the latest frontend bundle is live.
 - Log Analytics sample: captured sanitized audit event with correlation ID only.
 - Budget: resource-group cost budget created with redacted evidence.
 - Key Vault: Static Web Apps deployment token stored; evidence contains metadata only.
@@ -43,6 +44,9 @@ Date: 2026-06-08
 
 - `evidence/azure/resource-list.json`
 - `evidence/azure/container-app-state.json`
+- `evidence/azure/foundry-account-state.json`
+- `evidence/azure/foundry-deployment-state.json`
+- `evidence/azure/foundry-advisory-smoke.md`
 - `evidence/azure/static-web-app-state.json`
 - `evidence/azure/sanitized-log-analytics-sample.json`
 - `evidence/azure/budget.json`

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/Users/mattgraves/Documents/hackathon-enterprise"
+REPO_ROOT="/Users/mattgraves/Development/hackathon-enterprise"
 IMAGE_NAME="${SIGNAL_FOUNDRY_LOCAL_IMAGE:-signal-foundry-mcp:local}"
 
 docker build \

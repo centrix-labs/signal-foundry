@@ -13,6 +13,7 @@ Date: 2026-06-08
 | OAuth/auth boundary | Passed for demo auth; production OAuth pending tenant vault | Deployed 403 unauthorized smoke in `evidence/azure/deployed-smoke-results.md` |
 | Human review | Passed | Golden deployed flow in `evidence/azure/deployed-smoke-results.md` |
 | Risk gate | Passed | Golden deployed flow and screenshots under `evidence/screenshots` |
+| Azure AI Foundry advisory | Passed | `evidence/azure/foundry-advisory-smoke.md`, `evidence/azure/foundry-deployment-state.json` |
 | Release packet | Passed | Golden deployed flow in `evidence/azure/deployed-smoke-results.md` |
 | Signal Atlas | Passed | `evidence/screenshots/azure-signal-atlas.png` |
 | Review Queue | Passed | `evidence/screenshots/review-queue.png` |
@@ -36,7 +37,7 @@ Date: 2026-06-08
 ## Budget And LLM Use
 
 - Runtime does not depend on personal ChatGPT, Claude, or other non-Microsoft LLM accounts.
-- Azure AI Foundry / Azure OpenAI advisory rationale remains optional and unused in the deployed smoke tests.
+- Azure AI Foundry / Azure OpenAI advisory rationale is deployed and live-smoked through the MCP server.
 - Deterministic risk scoring is the source of truth.
 - Azure Budget evidence: `evidence/azure/budget.json`.
 - Key Vault secret metadata: `evidence/azure/key-vault-secret-metadata.json`.

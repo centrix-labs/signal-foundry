@@ -16,9 +16,9 @@ layer every enterprise agent needs.
 - **Enterprise Agents (primary)** — a Microsoft 365 Copilot declarative agent
   with an external MCP server, human-in-the-loop release governance, and
   audit-safe evidence.
-- **Reasoning Agents** — an Azure AI Foundry model produces a multi-step risk
-  deliberation for every proposal; a deterministic gate arbitrates and wins on
-  disagreement ("reasoning with guardrails").
+- **Reasoning Agents** — the Azure AI Foundry / Azure OpenAI advisory path
+  produces multi-step risk deliberation when configured; a deterministic gate
+  arbitrates and wins on disagreement ("reasoning with guardrails").
 - Creative Apps requires AI-assisted development with GitHub Copilot
   specifically — only claim this track if GitHub Copilot was actually part of
   the development workflow.
@@ -36,11 +36,12 @@ other 134 agents get risk-scored, approved, and released.
 Employees discover and propose Copilot workflows in Microsoft 365 Copilot Chat.
 Signal Foundry's declarative agent — grounded in permission-aware People and
 Meetings work context — calls an external MCP server that risk-scores every
-proposal deterministically, attaches an advisory AI deliberation from Azure AI
-Foundry, and routes it to a human reviewer. Nothing releases without explicit
-approval. The Foundry Floor command center shows the Signal Atlas, Review
-Queue, Risk Gate with advisory arbitration, Release Packets, and a sanitized
-MCP activity trail with correlation IDs end to end.
+proposal deterministically, attaches an Azure AI Foundry / Azure OpenAI advisory
+deliberation when configured, and routes it to a human reviewer. Nothing
+releases without explicit approval. The Foundry Floor command center shows the
+Signal Atlas, Review Queue, Risk Gate with advisory arbitration or fallback
+state, Release Packets, and a sanitized MCP activity trail with correlation IDs
+end to end.
 
 ## AI value
 
@@ -86,5 +87,6 @@ Microsoft Entra ID, React + Vite frontend, Vitest + Playwright test harness.
 ## Judge quickstart
 
 See docs/submission/JUDGE-GUIDE.md — clone, `npm install`, `npm run validate`
-(52 tests + evidence/package/card validators), `npm run test:e2e` (golden flow
-against the live local stack), `npm run dev:all` for the interactive demo.
+(52 tests + evidence/package/Work IQ/Foundry/card validators), `npm run
+test:e2e` (golden flow against the live local stack), `npm run dev:all` for the
+interactive demo.

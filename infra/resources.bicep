@@ -39,6 +39,30 @@ param logAnalyticsName string
 @description('Application Insights component name.')
 param applicationInsightsName string
 
+@description('Create the Azure AI Foundry / Azure OpenAI advisory resource and model deployment.')
+param enableFoundryAdvisory bool
+
+@description('Azure AI Foundry / Azure OpenAI account name.')
+param foundryAccountName string
+
+@description('Azure AI Foundry / Azure OpenAI advisory deployment name used by the MCP server.')
+param foundryDeploymentName string
+
+@description('Azure AI Foundry / Azure OpenAI advisory model name.')
+param foundryModelName string
+
+@description('Azure AI Foundry / Azure OpenAI advisory model version.')
+param foundryModelVersion string
+
+@description('Azure AI Foundry / Azure OpenAI deployment SKU.')
+param foundryDeploymentSkuName string
+
+@description('Azure AI Foundry / Azure OpenAI deployment capacity.')
+param foundryDeploymentCapacity int
+
+@description('Azure OpenAI-compatible API version used by the MCP advisory client.')
+param foundryApiVersion string
+
 @description('Log Analytics retention in days.')
 param logRetentionDays int
 
@@ -67,6 +91,31 @@ var guardedTags = union(tags, {
   costPosture: 'consumption-scale-to-zero'
   expectedSubscription: expectedSubscriptionId
 })
+
+var foundryEndpoint = 'https://${foundryAccountName}.openai.azure.com'
+var foundryEnv = enableFoundryAdvisory ? [
+  {
+    name: 'SIGNAL_FOUNDRY_ADVISORY_MODE'
+    value: 'foundry'
+  }
+  {
+    name: 'SIGNAL_FOUNDRY_FOUNDRY_ENDPOINT'
+    value: foundryEndpoint
+  }
+  {
+    name: 'SIGNAL_FOUNDRY_FOUNDRY_DEPLOYMENT'
+    value: foundryDeploymentName
+  }
+  {
+    name: 'SIGNAL_FOUNDRY_FOUNDRY_API_VERSION'
+    value: foundryApiVersion
+  }
+] : [
+  {
+    name: 'SIGNAL_FOUNDRY_ADVISORY_MODE'
+    value: 'off'
+  }
+]
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: logAnalyticsName
@@ -156,6 +205,42 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
+resource foundryAccount 'Microsoft.CognitiveServices/accounts@2024-10-01' = if (enableFoundryAdvisory) {
+  name: foundryAccountName
+  location: location
+  tags: union(guardedTags, {
+    service: 'foundry-advisory'
+    costGuard: 'pay-per-token-low-capacity'
+  })
+  kind: 'OpenAI'
+  sku: {
+    name: 'S0'
+  }
+  properties: {
+    customSubDomainName: foundryAccountName
+    disableLocalAuth: true
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource foundryDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = if (enableFoundryAdvisory) {
+  parent: foundryAccount
+  name: foundryDeploymentName
+  sku: {
+    name: foundryDeploymentSkuName
+    capacity: foundryDeploymentCapacity
+  }
+  properties: {
+    model: {
+      format: 'OpenAI'
+      name: foundryModelName
+      version: foundryModelVersion
+    }
+    raiPolicyName: 'Microsoft.Default'
+    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
+  }
+}
+
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvironmentName
   location: location
@@ -195,7 +280,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
         {
           name: 'mcp'
           image: containerImage
-          env: [
+          env: concat([
             {
               name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
               value: appInsights.properties.ConnectionString
@@ -232,7 +317,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
               name: 'SIGNAL_FOUNDRY_TELEMETRY_MODE'
               value: 'audit-safe-compact'
             }
-          ]
+          ], foundryEnv)
           resources: {
             cpu: json('0.25')
             memory: '0.5Gi'
@@ -267,6 +352,16 @@ resource tableDataRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource foundryOpenAiUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableFoundryAdvisory) {
+  name: guid(foundryAccount.id, containerApp.id, 'CognitiveServicesOpenAIUser')
+  scope: foundryAccount
+  properties: {
+    principalId: containerApp.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd')
+  }
+}
+
 resource staticWebApp 'Microsoft.Web/staticSites@2023-12-01' = {
   name: staticWebAppName
   location: location
@@ -283,6 +378,9 @@ resource staticWebApp 'Microsoft.Web/staticSites@2023-12-01' = {
 
 output acrLoginServer string = acr.properties.loginServer
 output containerAppUrl string = 'https://${containerApp.properties.configuration.ingress.fqdn}'
+output foundryAdvisoryMode string = enableFoundryAdvisory ? 'foundry' : 'off'
+output foundryEndpoint string = enableFoundryAdvisory ? foundryEndpoint : ''
+output foundryDeployment string = enableFoundryAdvisory ? foundryDeploymentName : ''
 output staticWebAppHostname string = staticWebApp.properties.defaultHostname
 output storageAccount string = storage.name
 output storageTables array = registryTables

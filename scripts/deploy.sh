@@ -32,7 +32,7 @@ RUN_TYPECHECK="1"
 
 usage() {
   cat <<USAGE
-Usage: bash /Users/mattgraves/Documents/hackathon-enterprise/scripts/deploy.sh [--plan|--what-if|--apply] [--build-image] [--deploy-static] [--skip-typecheck]
+Usage: bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh [--plan|--what-if|--apply] [--build-image] [--deploy-static] [--skip-typecheck]
 
 Default mode is --plan. It validates local assets and prints the Azure commands
 without mutating Azure resources.
@@ -138,7 +138,7 @@ cat <<APPLY_WARNING
 About to create or update Azure resources.
 Blast radius: resource group $RESOURCE_GROUP in subscription $SUBSCRIPTION_ID.
 Rollback: redeploy the previous Bicep parameters, update the container app to a known-good image, or delete $RESOURCE_GROUP after evidence capture.
-Cost guardrails: Container Apps minReplicas=0, maxReplicas=1, Static Web Apps Free, ACR Basic, Log Analytics 30-day retention.
+Cost guardrails: Container Apps minReplicas=0, maxReplicas=1, Static Web Apps Free, ACR Basic, Log Analytics 30-day retention, Foundry advisory low-capacity pay-per-token deployment.
 APPLY_WARNING
 
 az deployment sub create \
@@ -160,12 +160,17 @@ if [[ "$BUILD_IMAGE" == "1" ]]; then
     --exclude "evidence/screenshots" \
     "$REPO_ROOT/" \
     "$BUILD_CONTEXT_ROOT/"
+  MCP_DOCKERFILE_IN_CONTEXT="$BUILD_CONTEXT_ROOT/$MCP_DOCKERFILE_RELATIVE"
+  if [[ ! -f "$MCP_DOCKERFILE_IN_CONTEXT" ]]; then
+    echo "MCP Dockerfile missing from sanitized build context: $MCP_DOCKERFILE_IN_CONTEXT" >&2
+    exit 1
+  fi
 
   az acr build \
     --registry "$ACR_NAME" \
     --resource-group "$RESOURCE_GROUP" \
     --image "$MCP_IMAGE_REF" \
-    --file "$MCP_DOCKERFILE_RELATIVE" \
+    --file "$MCP_DOCKERFILE_IN_CONTEXT" \
     "$BUILD_CONTEXT_ROOT"
 
   az containerapp registry set \
@@ -191,6 +196,11 @@ if [[ "$DEPLOY_STATIC" == "1" ]]; then
     echo "Static Web Apps deployment token was empty; cannot deploy frontend." >&2
     exit 1
   fi
-  SWA_CLI_DEPLOYMENT_TOKEN="$SWA_TOKEN" npx -y @azure/static-web-apps-cli deploy "$FRONTEND_DIST" --env production
+  npx -y @azure/static-web-apps-cli deploy \
+    --app-location "$REPO_ROOT/apps/foundry-floor" \
+    --output-location "$FRONTEND_DIST" \
+    --swa-config-location "$FRONTEND_DIST" \
+    --deployment-token "$SWA_TOKEN" \
+    --env production
   echo "Static Web Apps deployment complete for $STATIC_WEB_APP_NAME."
 fi

@@ -24,8 +24,9 @@ Expected, in order:
 - OpenSpec strict validation passes
 - Typecheck: no errors across 4 workspaces
 - Tests: **28 passed** (mcp-server) and **24 passed** (shared)
-- `Evidence validation pass: 46 files, 4 scenarios`
-- `Copilot package validation pass: 6 files, 12 tools, 7ec661d1612f...`
+- `Evidence validation pass: 51 files, 4 scenarios`
+- `Copilot package validation pass: 6 files, 12 tools, 0189b098cddf...`
+- `Work IQ + Foundry readiness: ready`
 - `Adaptive card check pass: 4 cards across 4 action manifests.`
 
 ```bash
@@ -102,12 +103,11 @@ Release Packet drawer with version/owner/reviewer/correlation ID, MCP Activity
 Rail showing all five actions plus the rejected attempt, Signal Atlas updated.
 When finished: `Ctrl+C` the dev servers, then `npm run reset` again.
 
-## Phase 3 — Deployed smoke (3 min) — read the warning first
+## Phase 3 — Deployed smoke (3 min)
 
-> **The Azure deployment is STALE relative to main.** It predates the advisory
-> module, grounded work context, cards, filters, and the branded icon. Health
-> and the old golden flow work; the new features do not exist there until you
-> redeploy.
+The Azure MCP deployment is current with the live Foundry advisory backend as of
+2026-06-11. Static Web Apps content may still need redeploy from an environment
+where the SWA native deploy client runs cleanly.
 
 ```bash
 curl -s https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health
@@ -129,17 +129,38 @@ bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --appl
 
 Then re-run the two curl checks and load the SWA URL (real Entra login).
 
-## Phase 4 — Optional: live advisory arbitration
+## Phase 4 — Work IQ + Foundry winning proof
 
-Needs the Azure AI Foundry resource (not yet provisioned — pending approval).
-Once provisioned and `SIGNAL_FOUNDRY_ADVISORY_MODE=foundry` is set, follow
+```bash
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:workiq-foundry
+```
+
+Expected: `Work IQ + Foundry readiness: ready`. The shell-level `Live Foundry
+config` line only reflects local environment variables; the deployed backend
+evidence is `evidence/azure/foundry-advisory-smoke.md`.
+
+Work IQ proof: in Copilot, use `Presales Use Cases`. Expected: the agent uses
+`get_user_work_context`, says it sees a Presales Architect in Sales
+Engineering, recommends governed use cases, and never asks for raw emails,
+chats, documents, transcripts, customer records, or personal data.
+
+Foundry proof: use the deployed Azure AI Foundry / Azure OpenAI account from
+`infra/main.bicep`, then run the advisory disagreement demo for
+`prop-autonomous-renewal-outreach`. Expected: advisory reasoning renders beside
+the deterministic gate, any disagreement is visible, and the gate wins.
+
+## Phase 5 — Optional: live advisory arbitration
+
+Uses the Azure AI Foundry resource from `infra/main.bicep` or an equivalent
+manual Foundry deployment. With
+`SIGNAL_FOUNDRY_ADVISORY_MODE=foundry` set, follow
 `apps/copilot-agent/docs/advisory-disagreement-demo.md`: reset, score the
 seeded `prop-autonomous-renewal-outreach` with the documented inputs, and
 verify the amber arbitration callout reproduces 3 runs in a row. Without it,
 the demo line is "and when the model is down, the deterministic gate stands
 alone" — also true and also a feature.
 
-## Phase 5 — Submission finishers (the human list)
+## Phase 6 — Submission finishers (the human list)
 
 1. Repo visibility: still PRIVATE → flip to Public (Settings → General).
 2. Record the 2:00 video per `docs/submission/demo-video-script.md`; upload;

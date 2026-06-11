@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -5,12 +6,15 @@ import { fileURLToPath } from "node:url";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const requiredFiles = [
-  "evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip",
+  "evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip",
   "evidence/copilot/copilot-evidence-capture-runbook.md",
   "evidence/azure/deployed-smoke-results.md",
   "evidence/azure/resource-list.json",
   "evidence/azure/container-app-state.json",
   "evidence/azure/static-web-app-state.json",
+  "evidence/azure/foundry-account-state.json",
+  "evidence/azure/foundry-deployment-state.json",
+  "evidence/azure/foundry-advisory-smoke.md",
   "evidence/azure/sanitized-log-analytics-sample.json",
   "evidence/azure/budget.json",
   "evidence/videos/signal-foundry-live-demo.webm"
@@ -76,14 +80,27 @@ function assertEvidenceHonesty() {
     .map((phrase) => ({ phrase, status: "missing" }));
 }
 
+function validateHackathonTechnologies() {
+  try {
+    return JSON.parse(execFileSync(process.execPath, [join(repoRoot, "scripts/validate-workiq-foundry.mjs"), "--json"], { encoding: "utf8" }));
+  } catch (error) {
+    return {
+      status: "not_ready",
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
 const requiredFileStatuses = requiredFiles.map(fileStatus);
 const screenshotStatuses = requiredCopilotScreenshots.map(pngStatus);
 const missingEvidencePhrases = assertEvidenceHonesty();
+const hackathonTechnologyReadiness = validateHackathonTechnologies();
 
 const blockingItems = [
   ...requiredFileStatuses.filter((item) => item.status !== "present"),
   ...screenshotStatuses.filter((item) => item.status !== "present"),
-  ...missingEvidencePhrases
+  ...missingEvidencePhrases,
+  ...(hackathonTechnologyReadiness.status === "ready" ? [] : [{ status: "fail", area: "work_iq_foundry_readiness" }])
 ];
 
 const report = {
@@ -91,6 +108,7 @@ const report = {
   requiredFiles: requiredFileStatuses,
   copilotScreenshots: screenshotStatuses,
   evidenceHonesty: missingEvidencePhrases.length === 0 ? "present" : "missing",
+  hackathonTechnologyReadiness,
   blockingItems
 };
 
