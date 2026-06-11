@@ -71,6 +71,9 @@ Microsoft Entra ID, React + Vite frontend, Vitest + Playwright test harness.
 - Code repository: https://github.com/centrix-labs/signal-foundry
 - Demo video: ADD YOUTUBE/VIMEO URL BEFORE SUBMITTING
 - Architecture diagram: docs/submission/architecture.md (rendered in README)
+- Cover image: docs/submission/signal-foundry-cover.png (1672x941, 16:9 — upload
+  as the Innovation Studios project image; it visualizes the product story: raw
+  signals forged through the amber risk gate into approved teal workflows)
 
 ## Judge quickstart
 

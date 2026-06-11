@@ -7,6 +7,7 @@
 | Demo video ≤ 2:00 on YouTube/Vimeo | USER ACTION | Record per docs/submission/demo-video-script.md; existing `evidence/videos/signal-foundry-live-demo.webm` predates advisory/cards — re-record; add URL to SUBMISSION.md + project description |
 | Public GitHub repository | USER ACTION | Remote: github.com/centrix-labs/signal-foundry. Confirm repo visibility is Public; push `claude/foundry-workiq-uplift` and merge to `main` so judges see the final state; paste URL in the Code Repository Link field |
 | Architecture diagram | DONE | docs/submission/architecture.md (Mermaid renders on GitHub; also embedded in README) |
+| Cover image | DONE | docs/submission/signal-foundry-cover.png — upload as the Innovation Studios project image; also the README hero |
 | Setup/usage/walkthrough instructions | DONE | docs/submission/JUDGE-GUIDE.md + README |
 | Submitted on Innovation Studios before close | USER ACTION | Create/finalize project; tracks: Enterprise (primary) + Reasoning |
 | All team members registered + added to project | USER ACTION | Max 5; originator accepts requests |

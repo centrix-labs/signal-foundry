@@ -1,5 +1,7 @@
 # Signal Foundry
 
+![Signal Foundry — raw signals forged through a governed risk gate into approved workflows](docs/submission/signal-foundry-cover.png)
+
 Signal Foundry turns raw work signals and employee AI ideas into governed, risk-reviewed, human-approved, reusable Copilot workflows.
 
 Brand promise: `Raw Signals | Forged with Intelligence | Approved Workflows`
