@@ -74,6 +74,8 @@ Microsoft Entra ID, React + Vite frontend, Vitest + Playwright test harness.
 - Cover image: docs/submission/signal-foundry-cover.png (1672x941, 16:9 — upload
   as the Innovation Studios project image; it visualizes the product story: raw
   signals forged through the amber risk gate into approved teal workflows)
+- Avatar / thumbnail: docs/submission/signal-foundry-avatar.png (1254x1254,
+  1:1 — use for any square project icon, team avatar, or small-tile slot)
 
 ## Judge quickstart
 
