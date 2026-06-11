@@ -1,5 +1,9 @@
 # Submission Checklist (Agents League)
 
+Morning-of: run docs/submission/MORNING-WALKTHROUGH.md top to bottom first —
+it validates everything and walks the live demo step by step with expected
+outputs.
+
 | Requirement | Status | Where / action |
 | --- | --- | --- |
 | Working project with required tools | DONE | Live on Azure; `npm run validate` + `npm run test:e2e` green |
