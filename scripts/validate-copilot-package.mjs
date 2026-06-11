@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "e1e2fbf45a2c2425f840335e8e81d674d6395a63240441defc496774966da20d";
+const expectedHash = "7ec661d1612f0dba9f72709f24c8005e2ad432eefd41b5afa7ee4d12cd6e883b";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const requiredEntries = [

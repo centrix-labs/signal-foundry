@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.27/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.27",
+  "version": "0.1.0",
+  "id": "8d7aa34c-f044-4ef9-8b84-5b665187c5d5",
+  "developer": {
+    "name": "Signal Foundry",
+    "websiteUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net",
+    "privacyUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net/privacy",
+    "termsOfUseUrl": "https://red-coast-0b0c14e0f.7.azurestaticapps.net/terms"
+  },
+  "name": {
+    "short": "Signal Foundry",
+    "full": "Signal Foundry Capability Launchpad"
+  },
+  "description": {
+    "short": "Govern Copilot workflow ideas through review and release.",
+    "full": "Azure sideload manifest for the Signal Foundry Microsoft 365 Copilot Chat declarative agent and authenticated MCP action path."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#00D1C2",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "signalFoundryAgent",
+        "file": "declarative-agent.azure.json"
+      }
+    ]
+  },
+  "validDomains": [
+    "ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
+    "red-coast-0b0c14e0f.7.azurestaticapps.net"
+  ]
+}

@@ -5,7 +5,7 @@ Date: 2026-06-08
 ## Current Sideload Package
 
 - Package: `evidence/copilot/signal-foundry-copilot-v013-cards-workiq-20260610-1621.zip`
-- SHA-256: `e1e2fbf45a2c2425f840335e8e81d674d6395a63240441defc496774966da20d`
+- SHA-256: `7ec661d1612f0dba9f72709f24c8005e2ad432eefd41b5afa7ee4d12cd6e883b`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
