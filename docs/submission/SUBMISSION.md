@@ -76,6 +76,12 @@ Microsoft Entra ID, React + Vite frontend, Vitest + Playwright test harness.
   signals forged through the amber risk gate into approved teal workflows)
 - Avatar / thumbnail: docs/submission/signal-foundry-avatar.png (1254x1254,
   1:1 — use for any square project icon, team avatar, or small-tile slot)
+- Light cover variant: docs/submission/signal-foundry-cover-light.png
+  (1672x941, 16:9 — for slide decks, the executive one-pager, and
+  print-adjacent surfaces; same composition as the dark cover)
+- Light avatar variant: docs/submission/signal-foundry-avatar-light.png
+  (1254x1254, 1:1 — square icon for light surfaces; simplified for
+  small-size legibility)
 
 ## Judge quickstart
 

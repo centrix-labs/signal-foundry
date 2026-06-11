@@ -8,7 +8,9 @@
 | Public GitHub repository | USER ACTION | Remote: github.com/centrix-labs/signal-foundry. Confirm repo visibility is Public; push `claude/foundry-workiq-uplift` and merge to `main` so judges see the final state; paste URL in the Code Repository Link field |
 | Architecture diagram | DONE | docs/submission/architecture.md (Mermaid renders on GitHub; also embedded in README) |
 | Cover image | DONE | docs/submission/signal-foundry-cover.png — upload as the Innovation Studios project image; also the README hero |
-| Avatar / square icon | DONE | docs/submission/signal-foundry-avatar.png (1254x1254) for square icon and small-tile slots |
+| Avatar / square icon | DONE | docs/submission/signal-foundry-avatar.png (1254x1254) for square icon and small-tile slots; also the Copilot agent icon (color.png) |
+| Light cover (decks/print) | DONE | docs/submission/signal-foundry-cover-light.png (1672x941) for slides and the executive one-pager |
+| Light avatar (light surfaces) | DONE | docs/submission/signal-foundry-avatar-light.png (1254x1254), simplified for small sizes |
 | Setup/usage/walkthrough instructions | DONE | docs/submission/JUDGE-GUIDE.md + README |
 | Submitted on Innovation Studios before close | USER ACTION | Create/finalize project; tracks: Enterprise (primary) + Reasoning |
 | All team members registered + added to project | USER ACTION | Max 5; originator accepts requests |
