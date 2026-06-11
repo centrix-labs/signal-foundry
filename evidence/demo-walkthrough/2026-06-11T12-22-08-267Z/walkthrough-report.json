@@ -1,0 +1,113 @@
+{
+  "generatedAt": "2026-06-11T12:22:35.679Z",
+  "portal": "https://red-coast-0b0c14e0f.7.azurestaticapps.net/?hideMicrosoftLogo=1",
+  "apiBase": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io",
+  "checks": [
+    {
+      "name": "live MCP health endpoint returns 200",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "live registry snapshot endpoint returns 200",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "name": "live registry snapshot is complete",
+      "ok": true,
+      "capabilities": 2,
+      "proposals": 0,
+      "activity": 1
+    },
+    {
+      "name": "desktop portal uses live registry data",
+      "ok": true
+    },
+    {
+      "name": "Microsoft provider mark hidden in deployed demo build",
+      "ok": true
+    },
+    {
+      "name": "Mirror view opens",
+      "ok": true
+    },
+    {
+      "name": "Mirror view includes Signal Atlas graph",
+      "ok": true
+    },
+    {
+      "name": "Mirror view exposes Hide mirror",
+      "ok": true
+    },
+    {
+      "name": "Hide mirror returns to Foundry Floor",
+      "ok": true
+    },
+    {
+      "name": "Signal Atlas view opens",
+      "ok": true
+    },
+    {
+      "name": "Release Pipeline view opens",
+      "ok": true
+    },
+    {
+      "name": "Review Queue view opens",
+      "ok": true
+    },
+    {
+      "name": "Light Executive view opens",
+      "ok": true
+    },
+    {
+      "name": "review action state updates",
+      "ok": true
+    },
+    {
+      "name": "mobile Mirror opens from live link",
+      "ok": true
+    },
+    {
+      "name": "mobile Mirror includes graph",
+      "ok": true
+    },
+    {
+      "name": "mobile Hide mirror returns to floor",
+      "ok": true
+    },
+    {
+      "name": "browser fetched live registry snapshot",
+      "ok": true,
+      "network": [
+        {
+          "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/registry/snapshot",
+          "status": 200,
+          "method": "GET"
+        },
+        {
+          "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/registry/snapshot",
+          "status": 200,
+          "method": "GET"
+        }
+      ]
+    }
+  ],
+  "network": [
+    {
+      "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/registry/snapshot",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/registry/snapshot",
+      "status": 200,
+      "method": "GET"
+    }
+  ],
+  "artifacts": {
+    "directory": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z",
+    "desktopVideo": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-desktop-walkthrough.webm",
+    "mobileVideo": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-mobile-mirror.webm"
+  }
+}
