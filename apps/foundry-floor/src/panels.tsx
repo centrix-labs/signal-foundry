@@ -25,6 +25,7 @@ import {
   type CopilotTurn
 } from "./data";
 import { signOutUrl, type StaticWebAppUser } from "./auth";
+import { SignalAtlas } from "./visuals";
 
 export interface RecordFilters {
   role?: string;
@@ -436,7 +437,21 @@ const decisionCopy = {
   }
 } as const;
 
-export function CopilotMirror({ turns, selected }: { turns: CopilotTurn[]; selected: Capability }) {
+export function CopilotMirror({
+  turns,
+  selected,
+  records = capabilities,
+  selectedId,
+  onSelect,
+  onHide
+}: {
+  turns: CopilotTurn[];
+  selected: Capability;
+  records?: readonly Capability[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+  onHide: () => void;
+}) {
   return (
     <section className="mirror-layout">
       <div className="copilot-chat panel">
@@ -445,7 +460,13 @@ export function CopilotMirror({ turns, selected }: { turns: CopilotTurn[]; selec
             <p className="eyebrow">Copilot Mirror</p>
             <h2>Microsoft 365 Copilot proof</h2>
           </div>
-          <span className="status-pill approved">Enterprise mode</span>
+          <div className="mirror-actions">
+            <span className="status-pill approved">Enterprise mode</span>
+            <button type="button" className="text-link" onClick={onHide}>
+              <X size={15} />
+              Hide mirror
+            </button>
+          </div>
         </div>
         {turns.map((turn) => (
           <article key={`${turn.speaker}-${turn.time}`} className={turn.speaker}>
@@ -456,6 +477,7 @@ export function CopilotMirror({ turns, selected }: { turns: CopilotTurn[]; selec
         <div className="chat-input">Message Copilot</div>
       </div>
       <div className="foundry-mirror">
+        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} compact />
         <RiskGate selected={selected} />
         <McpActivityRail compact />
         <ReleasePacketDrawer selected={selected} />

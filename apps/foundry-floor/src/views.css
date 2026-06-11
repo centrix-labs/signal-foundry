@@ -170,6 +170,12 @@ summary em,
   justify-content: center;
 }
 
+.mirror-actions {
+  align-items: center;
+  display: flex;
+  gap: var(--md, 12px);
+}
+
 .mirror-layout,
 .atlas-view {
   display: grid;
@@ -408,7 +414,8 @@ summary em,
 
   .demo-controls,
   .approval-bar,
-  .segmented {
+  .segmented,
+  .mirror-actions {
     align-items: stretch;
     flex-direction: column;
   }

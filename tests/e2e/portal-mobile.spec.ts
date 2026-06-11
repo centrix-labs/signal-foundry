@@ -51,4 +51,8 @@ test("mobile floor can open Copilot Mirror from the live link", async ({ page })
   await expect(page.getByRole("heading", { name: "Microsoft 365 Copilot proof" })).toBeVisible();
   await expect(page.getByText("Enterprise mode")).toBeVisible();
   await expect(page.getByText("Proposal created, medium risk assigned")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Signal Atlas" })).toBeVisible();
+
+  await page.getByRole("button", { name: /Hide mirror/i }).click();
+  await expect(page.getByRole("heading", { name: "Latest governed interaction" })).toBeVisible();
 });

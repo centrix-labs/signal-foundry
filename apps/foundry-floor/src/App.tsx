@@ -321,7 +321,16 @@ function AuthenticatedWorkspace({
             onApproveRelease={approveRelease}
           />
         ) : null}
-        {activeView === "mirror" ? <CopilotMirror turns={copilotTurns} selected={selected} /> : null}
+        {activeView === "mirror" ? (
+          <CopilotMirror
+            turns={copilotTurns}
+            selected={selected}
+            records={visibleRecords}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            onHide={() => setActiveView("floor")}
+          />
+        ) : null}
         {activeView === "executive" ? <ExecutiveView selected={selected} reviews={dashboardData.reviewItems} events={dashboardData.auditEvents} /> : null}
       </div>
     </main>
