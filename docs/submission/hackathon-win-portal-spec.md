@@ -547,6 +547,22 @@ Goal: Update all submission evidence to reflect the new winning flow.
 
 Tasks:
 
+- Run a full Playwright interaction sweep before evidence capture:
+  - Visit every reachable app view, including Judge Mode, Operations/Dashboard,
+    Signal Atlas, Release Pipeline, Review Queue, Copilot Mirror, Executive/Light
+    view, login/access screen, and any new drawer or modal.
+  - Exercise every visible button: `Run live proof`, `Advance story`, reset,
+    nav, theme toggle, filters/search, `Open Copilot proof`, node/capability
+    selectors, review actions, release packet controls, drawer open/close
+    controls, and new icon-only buttons.
+  - Verify links and controls are not dead: no broken hrefs, no buttons with no
+    observable state change, and no console errors after interaction.
+  - Verify animations: Signal Atlas flow is visible in normal mode, stage
+    transitions work, hover/focus states render, and `prefers-reduced-motion`
+    disables or materially reduces non-essential motion.
+  - Verify responsive behavior at 1440x1000, 1024x768, 390x844, and 360x800.
+  - Verify keyboard access, visible focus indicators, accessible names/tooltips
+    for icon buttons, and no broken drawer/modal focus behavior.
 - Run local or deployed app and capture:
   - `01-judge-mode-desktop.png`.
   - `02-judge-mode-mobile.png`.
@@ -566,6 +582,9 @@ Tasks:
 Acceptance criteria:
 
 - Demo script starts with Judge Mode.
+- Playwright QA sweep covers all reachable screens, buttons, links, animations,
+  responsive viewports, and keyboard/focus basics before screenshots are
+  captured.
 - Submission copy points to the exact proof flow.
 - `walkthrough-summary.md` includes URL, live/fallback state, selected IDs,
   screenshot list, validation commands, and claim audit.

@@ -249,6 +249,42 @@ Add walkthrough-summary.md in the same folder with:
 - validation commands run
 - claim audit
 
+End-of-development Playwright QA
+Before claiming the work complete, run a full Playwright interaction sweep
+against the finished portal. This is required even if unit tests and screenshots
+pass.
+
+Coverage requirements:
+- Visit every app view reachable from the left rail or Judge Mode:
+  Judge Mode, Operations/Dashboard, Signal Atlas, Release Pipeline, Review Queue,
+  Copilot Mirror, Executive/Light view, login/access screen, and any drawer or
+  modal introduced by this work.
+- Exercise every visible button at least once:
+  Run live proof, Advance story, Reset golden scenario, nav buttons, theme
+  toggle, search/filter controls, Open Copilot proof, node/capability selectors,
+  review actions, release packet controls, drawer open/close controls, and any
+  new icon-only buttons.
+- Check links and navigation:
+  no dead links, no buttons with no observable state change, no broken hrefs,
+  and no console errors after interaction.
+- Check animations and motion:
+  Signal Atlas flow animation is visible in normal mode, stage transitions work,
+  hover/focus states render, and prefers-reduced-motion either disables or
+  materially reduces non-essential motion.
+- Check responsive behavior:
+  run at 1440x1000, 1024x768, 390x844, and 360x800. No text overlap, clipped
+  primary buttons, inaccessible nav, or hidden proof cards in the required first
+  viewport.
+- Check accessibility basics:
+  keyboard tab order reaches all controls, focus indicators are visible, icon
+  buttons have accessible names or tooltips, and no modal/drawer traps focus
+  incorrectly.
+- Capture or update the required evidence screenshots after this sweep, not
+  before it.
+
+If a control is intentionally inert or demo-only, label it visibly or remove it.
+Do not leave dead buttons, dead links, or non-functioning animated affordances.
+
 Claim audit format
 For every new visible claim, include:
 
@@ -284,6 +320,10 @@ Run after major UI work:
 npm --prefix /Users/mattgraves/Development/hackathon-enterprise run build
 npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e
 
+Run the full Playwright QA sweep before final response. If no existing script
+covers all requirements above, add or extend one under the repo test structure
+and run it with an absolute-path npm command.
+
 Run design scan if available:
 
 npx impeccable --json /Users/mattgraves/Development/hackathon-enterprise/apps/foundry-floor/src
@@ -291,6 +331,7 @@ npx impeccable --json /Users/mattgraves/Development/hackathon-enterprise/apps/fo
 Final response requirements
 - Summarize files changed.
 - List validation commands and results.
+- List Playwright QA coverage and results, including any added/updated test file.
 - List evidence artifacts created.
 - Include the claim audit.
 - Include the final score table.
