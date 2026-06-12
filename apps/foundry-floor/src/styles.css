@@ -314,11 +314,17 @@ nav button.active,
 }
 
 .demo-controls .data-source.live {
+  background: color-mix(in oklch, var(--teal) 16%, transparent);
+  border-color: color-mix(in oklch, var(--teal) 60%, transparent);
   color: var(--teal);
+  font-weight: 700;
 }
 
 .demo-controls .data-source.fallback {
+  background: color-mix(in oklch, var(--amber) 16%, transparent);
+  border-color: color-mix(in oklch, var(--amber) 60%, transparent);
   color: var(--amber);
+  font-weight: 700;
 }
 
 .demo-controls button,

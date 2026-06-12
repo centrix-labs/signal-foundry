@@ -703,3 +703,17 @@ summary em,
 .light-mode .eyebrow {
   color: oklch(0.46 0.105 192);
 }
+
+
+/* Light-mode stage-bar pills: darker ink on tinted fills, matching deck pills */
+.light-mode .demo-controls .data-source.live {
+  background: oklch(0.93 0.045 190);
+  border-color: oklch(0.62 0.11 190);
+  color: oklch(0.36 0.09 195);
+}
+
+.light-mode .demo-controls .data-source.fallback {
+  background: oklch(0.95 0.04 84);
+  border-color: oklch(0.68 0.13 78);
+  color: oklch(0.45 0.11 70);
+}

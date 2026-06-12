@@ -221,8 +221,11 @@
 }
 
 .proof-badges span {
+  background: color-mix(in oklch, var(--teal) 14%, transparent);
+  border-color: color-mix(in oklch, var(--teal) 55%, transparent);
   color: var(--teal);
   font-size: 0.74rem;
+  font-weight: 600;
   padding: 5px 8px;
 }
 
@@ -727,4 +730,32 @@
   .story-ledger {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+
+/* Light-mode action-strip badges and link: darker ink on tinted fills */
+.light-mode .proof-badges span {
+  background: oklch(0.93 0.045 190);
+  border-color: oklch(0.62 0.11 190);
+  color: oklch(0.36 0.09 195);
+}
+
+.light-mode .judge-action-strip .text-link,
+.light-mode .strip-bridge .text-link {
+  color: oklch(0.4 0.1 192);
+}
+
+
+/* Action-strip buttons: themed, not UA ButtonFace */
+.judge-actions button {
+  background: color-mix(in oklch, var(--panel) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: inherit;
+  padding: 10px 14px;
+}
+
+.light-mode .judge-actions button {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
 }
