@@ -55,7 +55,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             <span className="outbound">Approved workflows</span>
           </div>
         ) : null}
-        <svg viewBox="0 0 100 112" role="img" aria-label="Animated graph of signals, roles, risk gates, and workflows">
+        <svg viewBox={judgeMode ? "0 16 100 74" : "0 0 100 112"} role="img" aria-label="Animated graph of signals, roles, risk gates, and workflows">
           <defs>
             <filter id="tealGlow" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="1.8" result="blur" />
