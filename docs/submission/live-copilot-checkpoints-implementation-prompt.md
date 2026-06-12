@@ -9,6 +9,16 @@ absolute paths only, read before edit, keep files under 575 lines, protect
 existing user changes, use `apply_patch` for manual edits, and run the required
 validation before committing or deploying.
 
+Global rules included for implementation:
+
+- Read `/Users/mattgraves/.llm/GLOBAL_ENGINEERING.md` and
+  `/Users/mattgraves/.llm/REVIEW_PROTOCOL.md` before edits.
+- Never use relative tool paths or `cd`; pass absolute paths to every command.
+- Declare blast radius and rollback before deploys, resets, migrations, package
+  upload, or other shared-environment state changes.
+- Run quick review-board mode before final response for code, config,
+  infrastructure, workflow, docs-policy, or agent-behavior changes.
+
 ## Objective
 
 Implementation prompt grade target: **9.9+**. The implementation should be

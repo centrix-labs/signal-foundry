@@ -109,6 +109,7 @@
   "riskReviews": [],
   "reviewItems": [],
   "releasePackets": [],
+  "copilotCheckpoints": [],
   "mcpActivity": [
     {
       "id": "act-seed-001",

@@ -10,6 +10,7 @@ const tableNames = {
   reviewItems: "ReviewItems",
   releasePackets: "ReleasePackets",
   mcpActivity: "McpActivity",
+  copilotCheckpoints: "CopilotCheckpoints",
   auditEvents: "AuditEvents"
 } as const;
 

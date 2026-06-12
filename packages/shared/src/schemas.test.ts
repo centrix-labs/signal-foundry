@@ -7,7 +7,8 @@ const writeTools: ToolName[] = [
   "submit_capability_review",
   "approve_capability",
   "reject_capability",
-  "release_capability"
+  "release_capability",
+  "record_copilot_checkpoint"
 ];
 
 const validWriteInputs: Record<string, Record<string, unknown>> = {
@@ -34,7 +35,17 @@ const validWriteInputs: Record<string, Record<string, unknown>> = {
   submit_capability_review: { proposalId: "prop-001", reviewer: "Alex Kim", dueDate: "2026-06-20" },
   approve_capability: { proposalId: "prop-001", reviewer: "Alex Kim", approvalNotes: "Approved for team use." },
   reject_capability: { proposalId: "prop-001", reviewer: "Alex Kim", reason: "Scope too broad.", nextAction: "Narrow audience." },
-  release_capability: { capabilityId: "cap-001", releasedBy: "Alex Kim", audience: "team", version: "v1.0.0" }
+  release_capability: { capabilityId: "cap-001", releasedBy: "Alex Kim", audience: "team", version: "v1.0.0" },
+  record_copilot_checkpoint: {
+    sessionId: "session-test-001",
+    speaker: "copilot",
+    stage: "discovery",
+    source: "tool_result_summary",
+    sourceTool: "recommend_capabilities_for_role",
+    approvalState: "system_approved",
+    actor: "Signal Foundry",
+    displayText: "Copilot found governed renewal workflow candidates from approved summaries."
+  }
 };
 
 const scope = {
@@ -60,4 +71,24 @@ describe("mutation schema confirmation gate", () => {
       expect(toolSchemas[tool].safeParse({ ...base, confirmed: false }).success).toBe(false);
     });
   }
+});
+
+describe("Copilot checkpoint schema", () => {
+  const validCheckpoint = {
+    ...scope,
+    ...validWriteInputs.record_copilot_checkpoint,
+    confirmed: true
+  };
+
+  it("accepts a valid checkpoint", () => {
+    expect(toolSchemas.record_copilot_checkpoint.safeParse(validCheckpoint).success).toBe(true);
+  });
+
+  it("rejects invalid stage values", () => {
+    expect(toolSchemas.record_copilot_checkpoint.safeParse({ ...validCheckpoint, stage: "made_up" }).success).toBe(false);
+  });
+
+  it("rejects overlong display text", () => {
+    expect(toolSchemas.record_copilot_checkpoint.safeParse({ ...validCheckpoint, displayText: "x".repeat(421) }).success).toBe(false);
+  });
 });

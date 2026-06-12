@@ -81,6 +81,7 @@ export const demoRegistry: SignalFoundryRegistry = {
   riskReviews: [],
   reviewItems: [],
   releasePackets: [],
+  copilotCheckpoints: [],
   mcpActivity: [
     {
       id: "act-seed-001",

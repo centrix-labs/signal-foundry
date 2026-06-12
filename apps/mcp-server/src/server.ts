@@ -48,6 +48,7 @@ export function createServer(store = new RegistryStore()) {
         reviewItems: registry.reviewItems,
         releasePackets: registry.releasePackets,
         mcpActivity: registry.mcpActivity,
+        copilotCheckpoints: [...registry.copilotCheckpoints].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
         auditEvents: registry.auditEvents
       }
     });

@@ -15,7 +15,8 @@ const writeActions: McpAction[] = [
   "submit_capability_review",
   "approve_capability",
   "reject_capability",
-  "release_capability"
+  "release_capability",
+  "record_copilot_checkpoint"
 ];
 
 const reviewerActions: McpAction[] = [

@@ -15,6 +15,16 @@ export const capabilityStatusSchema = z.enum([
 ]);
 export const automationLevelSchema = z.enum(["assistive", "semi_automated", "autonomous"]);
 export const audienceScopeSchema = z.enum(["individual", "team", "department", "enterprise", "external"]);
+export const copilotCheckpointSpeakerSchema = z.enum(["operator", "copilot", "foundry", "reviewer"]);
+export const copilotCheckpointStageSchema = z.enum(["discovery", "proposal", "risk", "review", "approval", "release", "refusal"]);
+export const copilotCheckpointSourceSchema = z.enum([
+  "user_intent_summary",
+  "tool_result_summary",
+  "approval_result",
+  "release_result",
+  "refusal_summary"
+]);
+export const copilotCheckpointApprovalStateSchema = z.enum(["system_approved", "human_approved", "rejected_by_policy"]);
 
 export const scopedRequestSchema = z.object({
   tenantId: z.string().min(3),
@@ -101,6 +111,18 @@ export const releaseCapabilityInputSchema = idempotentRequestSchema.extend({
   version: z.string().regex(/^v\d+\.\d+\.\d+$/)
 });
 
+export const recordCopilotCheckpointInputSchema = idempotentRequestSchema.extend({
+  sessionId: z.string().min(8).max(120),
+  speaker: copilotCheckpointSpeakerSchema,
+  stage: copilotCheckpointStageSchema,
+  source: copilotCheckpointSourceSchema,
+  sourceTool: z.string().min(3).max(80).optional(),
+  relatedRecordId: z.string().min(3).max(120).optional(),
+  approvalState: copilotCheckpointApprovalStateSchema,
+  actor: z.string().min(2).max(80),
+  displayText: z.string().min(8).max(420)
+});
+
 export const generateReleasePacketInputSchema = scopedRequestSchema.extend({
   capabilityId: z.string().min(6)
 });
@@ -129,6 +151,7 @@ export const toolSchemas = {
   approve_capability: approveCapabilityInputSchema,
   reject_capability: rejectCapabilityInputSchema,
   release_capability: releaseCapabilityInputSchema,
+  record_copilot_checkpoint: recordCopilotCheckpointInputSchema,
   generate_release_packet: generateReleasePacketInputSchema,
   generate_capability_map: generateCapabilityMapInputSchema,
   list_mcp_activity: listMcpActivityInputSchema

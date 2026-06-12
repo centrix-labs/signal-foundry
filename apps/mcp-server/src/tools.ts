@@ -3,6 +3,8 @@ import {
   type AtlasEdge,
   type AtlasNode,
   type Capability,
+  type CopilotCheckpointApprovalState,
+  type CopilotCheckpointStage,
   type McpAction,
   type SignalFoundryRegistry,
   type ToolName,
@@ -61,6 +63,8 @@ export async function executeTool(store: RegistryStore, action: ToolName, rawInp
       return ok(rejectProposal(store, data, activeActor), correlationId);
     case "release_capability":
       return ok(releaseCapability(store, data, activeActor), correlationId);
+    case "record_copilot_checkpoint":
+      return recordCopilotCheckpoint(store, data, activeActor, correlationId);
     case "generate_release_packet":
       return ok({ releasePacket: registry.releasePackets.find((packet) => packet.capabilityId === data.capabilityId) }, correlationId);
     case "generate_capability_map":
@@ -383,6 +387,112 @@ function releaseCapability(store: RegistryStore, input: any, actor: Actor) {
     addActivity(registry, "release_capability", actor, capability.id, "success", input.correlationId ?? releasePacketId, "Released approved capability and generated packet.");
   });
   return { releasePacketId, status: "released", correlationId: input.correlationId ?? releasePacketId };
+}
+
+function recordCopilotCheckpoint(store: RegistryStore, input: any, actor: Actor, correlationId: string): ToolResult {
+  const checkpointId = makeId("cp", input.idempotencyKey);
+  const existing = store.read().copilotCheckpoints.find((checkpoint) => checkpoint.id === checkpointId);
+  if (existing) {
+    return ok({
+      checkpointId: existing.id,
+      sessionId: existing.sessionId,
+      stage: existing.stage,
+      approvalState: existing.approvalState
+    }, correlationId);
+  }
+  const validationError = validateCheckpointAuthorization(input.approvalState, input.stage, actor.role)
+    ?? validateCheckpointRelatedRecord(input.stage, input.relatedRecordId)
+    ?? validateCheckpointSourceTool(input.sourceTool);
+  if (validationError) {
+    store.write((registry) => {
+      addActivity(registry, "record_copilot_checkpoint", actor, input.relatedRecordId ?? checkpointId, "rejected", correlationId, validationError);
+    });
+    return failure(400, validationError, correlationId);
+  }
+  const displayText = sanitizeCheckpointText(input.displayText);
+  if (!displayText.ok) {
+    store.write((registry) => {
+      addActivity(registry, "record_copilot_checkpoint", actor, input.relatedRecordId ?? checkpointId, "rejected", correlationId, displayText.message);
+    });
+    return failure(400, displayText.message, correlationId);
+  }
+  store.write((registry) => {
+    registry.copilotCheckpoints.unshift({
+      id: checkpointId,
+      tenantId: input.tenantId,
+      projectId: input.projectId,
+      sessionId: input.sessionId,
+      speaker: input.speaker,
+      stage: input.stage,
+      source: input.source,
+      sourceTool: input.sourceTool as McpAction | undefined,
+      relatedRecordId: input.relatedRecordId,
+      approvalState: input.approvalState,
+      actor: sanitizeLabel(input.actor) ?? actor.name,
+      displayText: displayText.text,
+      createdAt: nowIso(),
+      correlationId
+    });
+    addActivity(registry, "record_copilot_checkpoint", actor, checkpointId, "success", correlationId, "Recorded sanitized Copilot checkpoint summary.");
+  });
+  return ok({
+    checkpointId,
+    sessionId: input.sessionId,
+    stage: input.stage,
+    approvalState: input.approvalState
+  }, correlationId);
+}
+
+function validateCheckpointAuthorization(approvalState: CopilotCheckpointApprovalState, stage: CopilotCheckpointStage, role: Actor["role"]) {
+  if (approvalState === "human_approved" && !["reviewer", "admin"].includes(role)) {
+    return "Reviewer role required for human-approved checkpoint.";
+  }
+  if (approvalState === "human_approved" && !["approval", "release"].includes(stage)) {
+    return "Human-approved checkpoints require approval or release stage.";
+  }
+  return undefined;
+}
+
+function validateCheckpointRelatedRecord(stage: CopilotCheckpointStage, relatedRecordId?: string) {
+  if ((stage === "approval" || stage === "release") && !relatedRecordId) {
+    return "Approval and release checkpoints require relatedRecordId.";
+  }
+  return undefined;
+}
+
+function validateCheckpointSourceTool(sourceTool?: string) {
+  if (sourceTool && !toolNames.includes(sourceTool as ToolName)) {
+    return "Checkpoint sourceTool must be a Signal Foundry MCP tool.";
+  }
+  return undefined;
+}
+
+function sanitizeCheckpointText(value: string): { ok: true; text: string } | { ok: false; message: string } {
+  const raw = value.trim();
+  const unsafePatterns = [
+    { pattern: /(^|\n)\s*>[^>\n]{40,}/, label: "quoted raw content" },
+    { pattern: /\b(from|to|subject):\s+/i, label: "email header" },
+    { pattern: /\b(?:user|assistant|copilot|speaker)\s*\d{0,2}\s*(?:\[[^\]]+\])?:/i, label: "transcript dump" },
+    { pattern: /\b\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?\s*[-–]\s*\w+:/i, label: "transcript timestamp" },
+    { pattern: /\b(?:bearer|access_token|refresh_token)\b/i, label: "token text" },
+    { pattern: /\bat\s+\S+\.(?:ts|tsx|js|mjs|cjs):\d+:\d+/i, label: "stack trace" },
+    { pattern: /\b\d{3}-\d{2}-\d{4}\b/, label: "personal identifier" },
+    { pattern: /\b(?:\d[ -]*?){13,16}\b/, label: "payment card pattern" },
+    { pattern: /\b(?:api[-_]?key|client[-_]?secret|password|connectionstring)[=:]\S+/i, label: "secret pattern" },
+    { pattern: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i, label: "email address" }
+  ];
+  const unsafe = unsafePatterns.find(({ pattern }) => pattern.test(raw));
+  if (unsafe) {
+    return { ok: false, message: `Checkpoint rejected: ${unsafe.label} is not allowed.` };
+  }
+  const sanitized = sanitizeAdvisoryText(raw, 420).replace(/^["']|["']$/g, "").trim();
+  if (sanitized.length < 8) {
+    return { ok: false, message: "Checkpoint rejected: sanitized summary is too short." };
+  }
+  if (sanitized !== raw) {
+    return { ok: false, message: "Checkpoint rejected: unsafe personal data or credential-like text is not allowed." };
+  }
+  return { ok: true, text: sanitized };
 }
 
 function generateMap(capabilities: Capability[]) {

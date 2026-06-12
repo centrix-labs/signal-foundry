@@ -44,7 +44,9 @@ export class RegistryStore {
       mkdirSync(dirname(this.registryPath), { recursive: true });
       writeFileSync(this.registryPath, `${JSON.stringify(demoRegistry, null, 2)}\n`);
     }
-    return JSON.parse(readFileSync(this.registryPath, "utf8")) as SignalFoundryRegistry;
+    const registry = JSON.parse(readFileSync(this.registryPath, "utf8")) as SignalFoundryRegistry;
+    registry.copilotCheckpoints ??= [];
+    return registry;
   }
 
   private persist() {

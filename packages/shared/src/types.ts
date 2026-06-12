@@ -22,6 +22,7 @@ export type McpAction =
   | "approve_capability"
   | "reject_capability"
   | "release_capability"
+  | "record_copilot_checkpoint"
   | "generate_release_packet"
   | "generate_capability_map"
   | "list_mcp_activity";
@@ -134,6 +135,33 @@ export interface McpActivity {
   summary: string;
 }
 
+export type CopilotCheckpointSpeaker = "operator" | "copilot" | "foundry" | "reviewer";
+export type CopilotCheckpointStage = "discovery" | "proposal" | "risk" | "review" | "approval" | "release" | "refusal";
+export type CopilotCheckpointSource =
+  | "user_intent_summary"
+  | "tool_result_summary"
+  | "approval_result"
+  | "release_result"
+  | "refusal_summary";
+export type CopilotCheckpointApprovalState = "system_approved" | "human_approved" | "rejected_by_policy";
+
+export interface CopilotCheckpoint {
+  id: string;
+  tenantId: string;
+  projectId: string;
+  sessionId: string;
+  speaker: CopilotCheckpointSpeaker;
+  stage: CopilotCheckpointStage;
+  source: CopilotCheckpointSource;
+  sourceTool?: McpAction;
+  relatedRecordId?: string;
+  approvalState: CopilotCheckpointApprovalState;
+  actor: string;
+  displayText: string;
+  createdAt: string;
+  correlationId: string;
+}
+
 export interface AuditEvent {
   id: string;
   actor: string;
@@ -175,5 +203,6 @@ export interface SignalFoundryRegistry {
   reviewItems: ReviewItem[];
   releasePackets: ReleasePacket[];
   mcpActivity: McpActivity[];
+  copilotCheckpoints: CopilotCheckpoint[];
   auditEvents: AuditEvent[];
 }

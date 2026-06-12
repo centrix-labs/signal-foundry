@@ -20,6 +20,7 @@ describe("Signal Foundry shared fixtures", () => {
   it("keeps demo defaults and all five operating rules explicit", () => {
     expect(demoScope.companyName).toBe("Asteria Dynamics");
     expect(demoRegistry.demoScope).toEqual(demoScope);
+    expect(demoRegistry.copilotCheckpoints).toEqual([]);
     expect(demoOperatingContract).toHaveLength(5);
     expect(demoOperatingContract.join(" ")).toContain("Work IQ");
     expect(demoOperatingContract.join(" ")).toContain("deterministic tool results");

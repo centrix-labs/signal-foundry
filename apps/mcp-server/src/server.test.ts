@@ -187,6 +187,72 @@ describe("Signal Foundry MCP tools", () => {
     expect(store.read().proposals).toHaveLength(seededCount + 1);
   });
 
+  it("records system-approved discovery checkpoints for employees", async () => {
+    const store = testStore();
+    const employee = store.read().actors[0];
+    const result = await executeTool(store, "record_copilot_checkpoint", checkpointBody("idem-cp-discovery"), employee);
+    expect(result.status).toBe(200);
+    expect(result.body.checkpointId).toBe("cp-idem-cp-discovery");
+    expect(store.read().copilotCheckpoints).toHaveLength(1);
+    expect(store.read().copilotCheckpoints[0]?.displayText).toContain("governed renewal workflow candidates");
+    expect(store.read().mcpActivity[0]?.action).toBe("record_copilot_checkpoint");
+  });
+
+  it("keeps repeated checkpoint writes idempotent", async () => {
+    const store = testStore();
+    const employee = store.read().actors[0];
+    const first = await executeTool(store, "record_copilot_checkpoint", checkpointBody("idem-cp-repeat"), employee);
+    const second = await executeTool(store, "record_copilot_checkpoint", checkpointBody("idem-cp-repeat"), employee);
+    expect(first.body.checkpointId).toBe(second.body.checkpointId);
+    expect(store.read().copilotCheckpoints).toHaveLength(1);
+  });
+
+  it("rejects employee human-approved checkpoints", async () => {
+    const store = testStore();
+    const employee = store.read().actors[0];
+    const result = await executeTool(store, "record_copilot_checkpoint", {
+      ...checkpointBody("idem-cp-bad-human"),
+      stage: "approval",
+      source: "approval_result",
+      relatedRecordId: "cap-renewal-brief",
+      approvalState: "human_approved"
+    }, employee);
+    expect(result.status).toBe(400);
+    expect(store.read().copilotCheckpoints).toHaveLength(0);
+    expect(store.read().mcpActivity[0]?.status).toBe("rejected");
+  });
+
+  it("records reviewer human-approved approval checkpoints", async () => {
+    const store = testStore();
+    const reviewer = store.read().actors[1];
+    const result = await executeTool(store, "record_copilot_checkpoint", {
+      ...checkpointBody("idem-cp-human-approval"),
+      stage: "approval",
+      source: "approval_result",
+      relatedRecordId: "cap-renewal-brief",
+      approvalState: "human_approved",
+      actor: "Alex Kim",
+      displayText: "Alex Kim approved Renewal Brief Generator for release preparation."
+    }, reviewer);
+    expect(result.status).toBe(200);
+    expect(store.read().copilotCheckpoints[0]?.approvalState).toBe("human_approved");
+  });
+
+  it("rejects unsafe checkpoint text and logs sanitized activity", async () => {
+    const store = testStore();
+    const employee = store.read().actors[0];
+    const result = await executeTool(store, "record_copilot_checkpoint", {
+      ...checkpointBody("idem-cp-unsafe"),
+      displayText: "From: person@example.com Subject: private customer renewal details"
+    }, employee);
+    const serialized = JSON.stringify(store.read());
+    expect(result.status).toBe(400);
+    expect(store.read().copilotCheckpoints).toHaveLength(0);
+    expect(store.read().mcpActivity[0]?.status).toBe("rejected");
+    expect(serialized).not.toContain("person@example.com");
+    expect(serialized).not.toContain("private customer renewal");
+  });
+
   it("serves health, tool list, and unauthorized rejection over HTTP", async () => {
     const store = testStore();
     const server = createServer(store).listen(0);
@@ -249,6 +315,7 @@ describe("Signal Foundry MCP tools", () => {
       expect(accepted.status).toBe(200);
       expect(body.registry.reviewItems).toHaveLength(1);
       expect(body.registry.proposals[0].id).toBe(proposalId);
+      expect(body.registry.copilotCheckpoints).toEqual([]);
       expect(body.registry.actors).toBeUndefined();
     } finally {
       server.close();
@@ -335,9 +402,12 @@ describe("Signal Foundry MCP tools", () => {
       });
       expect(listed.status).toBe(200);
       const toolList = await listed.json();
-      expect(toolList.result.tools).toHaveLength(12);
+      expect(toolList.result.tools).toHaveLength(13);
       const workContextTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "get_user_work_context");
       expect(workContextTool.annotations.readOnlyHint).toBe(true);
+      const checkpointTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "record_copilot_checkpoint");
+      expect(checkpointTool.annotations?.readOnlyHint).toBeUndefined();
+      expect(checkpointTool.inputSchema.required).toContain("confirmed");
       const submitTool = toolList.result.tools.find((tool: { name: string }) => tool.name === "submit_capability_review");
       expect(submitTool.inputSchema.required).toContain("correlationId");
       expect(submitTool.inputSchema.required).toContain("confirmed");
@@ -383,5 +453,23 @@ function proposalBody(idempotencyKey: string) {
     proposedOutputs: ["Renewal brief"],
     sourceSummary: "Synthetic Work IQ-style summaries only.",
     confirmed: true
+  };
+}
+
+function checkpointBody(idempotencyKey: string) {
+  return {
+    tenantId: demoScope.tenantId,
+    projectId: demoScope.projectId,
+    correlationId: `corr-${idempotencyKey}`,
+    idempotencyKey,
+    confirmed: true,
+    sessionId: "session-renewal-001",
+    speaker: "copilot",
+    stage: "discovery",
+    source: "tool_result_summary",
+    sourceTool: "recommend_capabilities_for_role",
+    approvalState: "system_approved",
+    actor: "Signal Foundry",
+    displayText: "Copilot found governed renewal workflow candidates from approved summaries."
   };
 }

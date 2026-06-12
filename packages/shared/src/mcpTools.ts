@@ -175,6 +175,34 @@ export const mcpToolMetadata: Array<{
     }, ["capabilityId", "releasedBy", "audience", "version"])
   },
   {
+    name: "record_copilot_checkpoint",
+    description: "Write a sanitized Signal Foundry conversation checkpoint for Copilot Mirror. Summary evidence only: never send raw Microsoft 365 content, emails, chats, transcripts, documents, customer records, personal data, secrets, tokens, or stack traces.",
+    inputSchema: mutationSchema({
+      sessionId: {
+        type: "string",
+        minLength: 8,
+        maxLength: 120,
+        description: "Stable Signal Foundry conversation session ID, not a raw Copilot transcript ID."
+      },
+      speaker: { type: "string", enum: ["operator", "copilot", "foundry", "reviewer"] },
+      stage: { type: "string", enum: ["discovery", "proposal", "risk", "review", "approval", "release", "refusal"] },
+      source: {
+        type: "string",
+        enum: ["user_intent_summary", "tool_result_summary", "approval_result", "release_result", "refusal_summary"]
+      },
+      sourceTool: { type: "string", description: "Signal Foundry tool that produced the summarized result, when applicable." },
+      relatedRecordId: { type: "string", description: "Proposal, capability, risk, review, or release packet ID connected to this checkpoint." },
+      approvalState: { type: "string", enum: ["system_approved", "human_approved", "rejected_by_policy"] },
+      actor: { type: "string", minLength: 2, maxLength: 80, description: "Display name or system actor for the checkpoint summary." },
+      displayText: {
+        type: "string",
+        minLength: 8,
+        maxLength: 420,
+        description: "Sanitized summary prose only. Do not quote raw prompts, responses, emails, chats, transcripts, documents, personal data, secrets, tokens, stack traces, or customer records."
+      }
+    }, ["sessionId", "speaker", "stage", "source", "approvalState", "actor", "displayText"])
+  },
+  {
     name: "generate_release_packet",
     description: "Read an audit-safe release packet for a capability. Returns summaries and metadata only.",
     inputSchema: schema({
