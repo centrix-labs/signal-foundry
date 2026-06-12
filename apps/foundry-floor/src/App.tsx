@@ -29,8 +29,6 @@ const judgeStages = [
   { key: "release", label: "Release", body: "A release packet and audit trail prove the workflow." }
 ] as const;
 
-type JudgeStageKey = (typeof judgeStages)[number]["key"];
-
 if (!firstCapability) {
   throw new Error("Foundry Floor requires at least one synthetic capability.");
 }
