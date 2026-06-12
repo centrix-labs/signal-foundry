@@ -456,6 +456,9 @@ End-to-end:
 
 ## Implementation Prompt
 
+Standalone prompt file:
+`docs/submission/live-copilot-checkpoints-implementation-prompt.md`.
+
 Implement live Copilot Mirror checkpoints for Signal Foundry.
 
 Use `docs/submission/live-copilot-checkpoints-spec.md` as the source of truth.

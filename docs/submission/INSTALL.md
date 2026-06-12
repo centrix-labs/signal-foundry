@@ -125,6 +125,8 @@ and Adaptive Card validation.
 - Architecture: `docs/submission/architecture.md`
 - Live Copilot checkpoints spec:
   `docs/submission/live-copilot-checkpoints-spec.md`
+- Live Copilot checkpoints implementation prompt:
+  `docs/submission/live-copilot-checkpoints-implementation-prompt.md`
 - Work IQ + Foundry readiness: `docs/submission/work-iq-foundry-readiness.md`
 - Copilot package map: `evidence/copilot/package-map.md`
 - Copilot evidence runbook:
