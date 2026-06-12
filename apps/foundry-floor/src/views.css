@@ -717,3 +717,34 @@ summary em,
   border-color: oklch(0.68 0.13 78);
   color: oklch(0.45 0.11 70);
 }
+
+/* Light-mode status ink: darker tokens for readability on pale panels */
+.light-mode .status-pill.medium,
+.light-mode .status-pill.pending {
+  background: oklch(0.95 0.045 84);
+  color: oklch(0.47 0.115 70);
+}
+
+.light-mode .status-pill.approved {
+  background: oklch(0.93 0.045 190);
+  color: oklch(0.36 0.09 195);
+}
+
+.light-mode .status-pill.low {
+  background: oklch(0.94 0.05 162);
+  color: oklch(0.4 0.11 162);
+}
+
+.light-mode summary em,
+.light-mode .review-list em,
+.light-mode .risk-score strong {
+  color: oklch(0.5 0.12 70);
+}
+
+.light-mode .decision-banner strong {
+  color: oklch(0.25 0.03 220);
+}
+
+.light-mode .activity-icon {
+  color: oklch(0.42 0.1 190);
+}
