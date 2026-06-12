@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -46,15 +47,21 @@ export function LeftRail({
   filters?: RecordFilters;
   onFiltersChange?: (filters: RecordFilters) => void;
 }) {
-  const items = [
-    ["judge", "Judge Mode"],
-    ["deck", "Judge Deck"],
-    ["floor", "Foundry Floor"],
-    ["atlas", "Signal Atlas"],
-    ["pipeline", "Release Pipeline"],
-    ["review", "Review Queue"],
-    ["mirror", "Copilot Mirror"],
-    ["executive", "Light Executive"]
+  const groups = [
+    ["For judges", [
+      ["judge", "Judge Mode"],
+      ["deck", "Judge Deck"]
+    ]],
+    ["Workspace", [
+      ["floor", "Foundry Floor"],
+      ["review", "Review Queue"],
+      ["mirror", "Copilot Mirror"]
+    ]],
+    ["Insight", [
+      ["atlas", "Signal Atlas"],
+      ["pipeline", "Release Pipeline"],
+      ["executive", "Light Executive"]
+    ]]
   ] as const;
   const roles = [...new Set(records.map((item) => item.role))];
   const departments = [...new Set(records.map((item) => item.department))];
@@ -73,11 +80,16 @@ export function LeftRail({
         </div>
       </div>
       <nav>
-        {items.map(([key, label]) => (
-          <button key={key} type="button" className={activeView === key ? "active" : ""} onClick={() => onView(key)}>
-            <Activity size={16} />
-            {label}
-          </button>
+        {groups.map(([section, items]) => (
+          <Fragment key={section}>
+            <p className="nav-section">{section}</p>
+            {items.map(([key, label]) => (
+              <button key={key} type="button" className={activeView === key ? "active" : ""} onClick={() => onView(key)}>
+                <Activity size={16} />
+                {label}
+              </button>
+            ))}
+          </Fragment>
         ))}
       </nav>
       <div className="context-card">

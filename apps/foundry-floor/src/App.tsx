@@ -2,18 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import type { Capability, CapabilityStatus, McpActivity, ReleasePacket, ReviewItem, RiskReview } from "@signal-foundry/shared";
 import { Check, ChevronRight, ClipboardCheck, FilePlus2, RotateCcw, Scale, ShieldCheck, Sparkles } from "lucide-react";
 import {
-  CapabilityList,
   ExecutiveView,
   LeftRail,
   McpActivityRail,
-  ReleasePacketDrawer,
   ReviewQueue,
-  RiskGate,
   TopBar,
   type RecordFilters
 } from "./panels";
 import { CopilotMirror } from "./CopilotMirror";
 import { JudgeDeck } from "./JudgeDeck";
+import { Workbench } from "./Workbench";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
@@ -355,58 +353,6 @@ function StoryLedger({
   );
 }
 
-function FoundryFloor({
-  records,
-  selected,
-  selectedId,
-  onSelect,
-  activity,
-  packets,
-  reviews,
-  riskReviews,
-  checkpoints = [],
-  onOpenMirror
-}: {
-  records: readonly Capability[];
-  selected: Capability;
-  selectedId: string;
-  onSelect: (id: string) => void;
-  activity: ReturnType<typeof useDashboardData>["mcpActivity"];
-  packets: ReturnType<typeof useDashboardData>["releasePackets"];
-  reviews: ReturnType<typeof useDashboardData>["reviewItems"];
-  riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
-  checkpoints?: ReturnType<typeof useDashboardData>["copilotCheckpoints"];
-  onOpenMirror: () => void;
-}) {
-  return (
-    <div className="floor-grid">
-      <CapabilityList records={records} selectedId={selectedId} onSelect={onSelect} />
-      <div className="floor-center">
-        <ReleasePipeline selected={selected} detailed />
-        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} compact />
-        <section className="panel copilot-proof">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Copilot Mirror</p>
-              <h2>Latest governed interaction</h2>
-            </div>
-            <span className={`status-pill ${checkpoints.length > 0 ? "approved" : "pending"}`}>
-              {checkpoints.length > 0 ? "Live" : "Demo"}
-            </span>
-          </div>
-          <p>{checkpoints[0]?.displayText ?? copilotTurns[2]?.text}</p>
-          <button type="button" className="text-link" onClick={onOpenMirror}>Open mirror <ChevronRight size={14} /></button>
-        </section>
-      </div>
-      <div className="right-stack">
-        <RiskGate selected={selected} riskReviews={riskReviews} />
-        <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
-      </div>
-      <McpActivityRail items={activity} />
-    </div>
-  );
-}
-
 function AtlasView({
   records,
   selectedId,
@@ -578,7 +524,7 @@ function AuthenticatedWorkspace({
           />
         ) : null}
         {activeView === "floor" ? (
-          <FoundryFloor
+          <Workbench
             records={visibleRecords}
             selected={selected}
             selectedId={selectedId}

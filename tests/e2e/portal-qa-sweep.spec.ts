@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const viewCases = [
   { nav: "Judge Mode", evidence: "01-judge-mode", text: "Governed Copilot workflows" },
-  { nav: "Foundry Floor", evidence: "02-foundry-floor", text: "Latest governed interaction" },
+  { nav: "Foundry Floor", evidence: "02-foundry-floor", text: "What happened to this capability" },
   { nav: "Signal Atlas", evidence: "03-signal-atlas", text: "Summary work signals" },
   { nav: "Release Pipeline", evidence: "04-release-pipeline", text: "01 Ingest" },
   { nav: "Review Queue", evidence: "05-review-queue", text: "Human approval required" },
@@ -125,13 +125,14 @@ test("portal QA sweep covers screens, controls, links, motion, and evidence", as
   await expect(page.getByText("Microsoft 365 Copilot proof")).toBeVisible();
   await expect(page.getByText(/Live from approved MCP checkpoints|Demo transcript fallback/)).toBeVisible();
   await page.getByRole("button", { name: /Hide mirror/i }).click();
-  await expect(page.getByText("Latest governed interaction")).toBeVisible();
+  await expect(page.getByText("What happened to this capability")).toBeVisible();
 
   await page.getByRole("button", { name: "Light", exact: true }).click();
   await expect(page.locator(".app-shell")).toHaveClass(/light-mode/);
   await page.getByRole("button", { name: "Dark", exact: true }).click();
   await capture(page, "08-controls-after-clicks");
 
+  await page.getByRole("button", { name: "Signal Atlas" }).click();
   const particles = page.locator(".atlas-flow-particle");
   await expect(particles.first()).toBeVisible();
   await page.emulateMedia({ reducedMotion: "reduce" });

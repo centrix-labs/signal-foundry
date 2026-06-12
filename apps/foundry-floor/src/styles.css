@@ -569,3 +569,18 @@ nav button.active,
   letter-spacing: 0.05em;
   line-height: 1.35;
 }
+
+/* Persona-grouped nav section labels */
+.nav-section {
+  color: var(--steel);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 10px 0 2px;
+}
+.left-rail nav .nav-section:first-child {
+  margin-top: 0;
+}
+.light-mode .nav-section {
+  color: oklch(0.45 0.03 220);
+}

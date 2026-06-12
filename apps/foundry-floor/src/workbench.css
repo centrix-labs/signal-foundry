@@ -1,0 +1,173 @@
+/* Foundry Floor workbench: master-detail, record-scoped */
+.workbench-grid {
+  display: grid;
+  gap: var(--lg, 16px);
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  position: relative;
+}
+
+.workbench-detail {
+  display: grid;
+  gap: var(--md, 12px);
+  align-content: start;
+  min-width: 0;
+}
+
+.workbench-header {
+  display: grid;
+  gap: var(--md, 12px);
+}
+
+.workbench-title {
+  align-items: start;
+  display: flex;
+  gap: var(--md, 12px);
+  justify-content: space-between;
+}
+
+.workbench-title h2 {
+  margin: 2px 0;
+}
+
+.workbench-title small {
+  color: var(--steel);
+}
+
+.workbench-title-actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--md, 12px);
+}
+
+.mini-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stepper-seg {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--steel);
+  font-size: 0.74rem;
+  padding: 4px 11px;
+  transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
+}
+
+.stepper-seg.done {
+  border-color: color-mix(in oklch, var(--teal) 55%, transparent);
+  color: var(--teal);
+}
+
+.stepper-seg.current {
+  background: color-mix(in oklch, var(--amber) 14%, transparent);
+  border-color: color-mix(in oklch, var(--amber) 62%, transparent);
+  color: var(--amber);
+  font-weight: 700;
+}
+
+.mini-stepper .terminal-chip {
+  background: color-mix(in oklch, var(--red) 16%, transparent);
+  border: 1px solid color-mix(in oklch, var(--red) 55%, transparent);
+  border-radius: 999px;
+  color: var(--red);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 11px;
+}
+
+.workbench-copilot-strip {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: var(--md, 12px);
+  padding-top: var(--md, 12px);
+}
+
+.workbench-copilot-strip p {
+  color: oklch(0.85 0.02 210);
+  flex: 1;
+  font-size: 0.85rem;
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workbench-trail .empty-state {
+  color: var(--steel);
+  font-size: 0.85rem;
+}
+
+.workbench-trail .mcp-rail {
+  border: none;
+  padding: 0;
+}
+
+.audit-drawer {
+  background: color-mix(in oklch, var(--graphite) 97%, black);
+  border-inline-start: 1px solid var(--line);
+  bottom: 0;
+  box-shadow: -18px 0 48px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow-y: auto;
+  padding: var(--lg, 16px);
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: min(400px, 92vw);
+  z-index: 40;
+  animation: drawerIn 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.audit-drawer-head {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(28px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-drawer { animation: none; }
+  .stepper-seg { transition: none; }
+}
+
+@media (max-width: 1000px) {
+  .workbench-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Light-mode parity */
+.light-mode .workbench-copilot-strip p {
+  color: oklch(0.32 0.026 220);
+}
+
+.light-mode .audit-drawer {
+  background: oklch(0.97 0.008 205);
+  border-inline-start-color: oklch(0.82 0.026 210);
+  box-shadow: -18px 0 48px rgba(28, 42, 54, 0.18);
+}
+
+.light-mode .stepper-seg {
+  border-color: oklch(0.84 0.026 210);
+  color: oklch(0.45 0.03 220);
+}
+
+.light-mode .stepper-seg.done {
+  border-color: oklch(0.7 0.12 185);
+  color: oklch(0.4 0.1 190);
+}
+
+.light-mode .stepper-seg.current {
+  background: oklch(0.965 0.025 84);
+  border-color: oklch(0.75 0.15 78);
+  color: oklch(0.5 0.12 78);
+}

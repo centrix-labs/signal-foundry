@@ -4,6 +4,7 @@ import { App } from "./App";
 import "./styles.css";
 import "./atlas.css";
 import "./judge.css";
+import "./workbench.css";
 import "./views.css";
 import "./mirror.css";
 import "./login.css";

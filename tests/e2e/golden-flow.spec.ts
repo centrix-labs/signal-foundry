@@ -136,8 +136,12 @@ test("golden flow: propose, score, review, approve, release, verify on Foundry F
   await expect(page.getByText("Live registry synced")).toBeVisible({ timeout: 15000 });
   await page.getByRole("button", { name: "Foundry Floor" }).click();
   await expect(page.getByRole("button", { name: new RegExp(PROPOSAL_TITLE) }).first()).toBeVisible();
-  await expect(page.getByText("MCP Activity")).toBeVisible();
+  await page.getByRole("button", { name: new RegExp(PROPOSAL_TITLE) }).first().click();
+  await expect(page.locator(".workbench-detail .advisory-analysis")).toBeVisible();
+  await page.getByLabel("Open audit trail").click();
+  await expect(page.getByText("MCP Activity").first()).toBeVisible();
   await expect(page.getByText("release_capability").first()).toBeVisible();
+  await page.getByLabel("Close audit trail").click();
   await expect(page.getByLabel("Advisory analysis")).toBeVisible();
   await page.getByRole("button", { name: "Copilot Mirror" }).click();
   await expect(page.getByText("Live from approved MCP checkpoints")).toBeVisible();

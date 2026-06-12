@@ -54,5 +54,5 @@ test("mobile floor can open Copilot Mirror from the live link", async ({ page })
   await expect(page.getByRole("region", { name: "Signal Atlas" })).toBeVisible();
 
   await page.getByRole("button", { name: /Hide mirror/i }).click();
-  await expect(page.getByRole("heading", { name: "Latest governed interaction" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "What happened to this capability" })).toBeVisible();
 });
