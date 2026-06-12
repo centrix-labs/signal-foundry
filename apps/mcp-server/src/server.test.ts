@@ -238,6 +238,40 @@ describe("Signal Foundry MCP tools", () => {
     expect(store.read().copilotCheckpoints[0]?.approvalState).toBe("human_approved");
   });
 
+  it("rejects system-approved release checkpoints", async () => {
+    const store = testStore();
+    const reviewer = store.read().actors[1];
+    const result = await executeTool(store, "record_copilot_checkpoint", {
+      ...checkpointBody("idem-cp-system-release"),
+      stage: "release",
+      source: "release_result",
+      sourceTool: "release_capability",
+      relatedRecordId: "cap-renewal-brief",
+      actor: "Alex Kim",
+      displayText: "Alex Kim released Renewal Brief Generator with approved source summaries."
+    }, reviewer);
+    expect(result.status).toBe(400);
+    expect(JSON.stringify(result.body)).toContain("human-approved");
+    expect(store.read().copilotCheckpoints).toHaveLength(0);
+  });
+
+  it("rejects approval checkpoints for missing related records", async () => {
+    const store = testStore();
+    const reviewer = store.read().actors[1];
+    const result = await executeTool(store, "record_copilot_checkpoint", {
+      ...checkpointBody("idem-cp-missing-related"),
+      stage: "approval",
+      source: "approval_result",
+      relatedRecordId: "cap-missing-related-record",
+      approvalState: "human_approved",
+      actor: "Alex Kim",
+      displayText: "Alex Kim approved a governed renewal workflow for release preparation."
+    }, reviewer);
+    expect(result.status).toBe(400);
+    expect(JSON.stringify(result.body)).toContain("existing related record");
+    expect(store.read().copilotCheckpoints).toHaveLength(0);
+  });
+
   it("rejects unsafe checkpoint text and logs sanitized activity", async () => {
     const store = testStore();
     const employee = store.read().actors[0];

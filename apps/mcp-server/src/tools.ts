@@ -400,8 +400,10 @@ function recordCopilotCheckpoint(store: RegistryStore, input: any, actor: Actor,
       approvalState: existing.approvalState
     }, correlationId);
   }
+  const registry = store.read();
   const validationError = validateCheckpointAuthorization(input.approvalState, input.stage, actor.role)
     ?? validateCheckpointRelatedRecord(input.stage, input.relatedRecordId)
+    ?? validateCheckpointRecordExists(registry, input.stage, input.relatedRecordId)
     ?? validateCheckpointSourceTool(input.sourceTool);
   if (validationError) {
     store.write((registry) => {
@@ -444,6 +446,9 @@ function recordCopilotCheckpoint(store: RegistryStore, input: any, actor: Actor,
 }
 
 function validateCheckpointAuthorization(approvalState: CopilotCheckpointApprovalState, stage: CopilotCheckpointStage, role: Actor["role"]) {
+  if ((stage === "approval" || stage === "release") && approvalState !== "human_approved") {
+    return "Approval and release checkpoints must be human-approved.";
+  }
   if (approvalState === "human_approved" && !["reviewer", "admin"].includes(role)) {
     return "Reviewer role required for human-approved checkpoint.";
   }
@@ -458,6 +463,20 @@ function validateCheckpointRelatedRecord(stage: CopilotCheckpointStage, relatedR
     return "Approval and release checkpoints require relatedRecordId.";
   }
   return undefined;
+}
+
+function validateCheckpointRecordExists(registry: ReturnType<RegistryStore["read"]>, stage: CopilotCheckpointStage, relatedRecordId?: string) {
+  if ((stage !== "approval" && stage !== "release") || !relatedRecordId) {
+    return undefined;
+  }
+  const exists = [
+    ...registry.capabilities,
+    ...registry.proposals,
+    ...registry.reviewItems,
+    ...registry.releasePackets,
+    ...registry.riskReviews
+  ].some((record) => record.id === relatedRecordId);
+  return exists ? undefined : "Approval and release checkpoints require an existing related record.";
 }
 
 function validateCheckpointSourceTool(sourceTool?: string) {
