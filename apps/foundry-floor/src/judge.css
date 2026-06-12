@@ -46,6 +46,7 @@
   justify-content: center;
   min-height: 42px;
   padding: 8px;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .stage-stepper button span {
@@ -61,7 +62,9 @@
 .stage-stepper button.active {
   background: color-mix(in oklch, var(--amber) 14%, var(--graphite-3));
   border-color: color-mix(in oklch, var(--amber) 58%, transparent);
+  box-shadow: 0 10px 24px rgba(183, 122, 22, 0.16);
   color: var(--amber);
+  transform: translateY(-1px);
 }
 
 .judge-grid {
@@ -121,6 +124,10 @@
   display: grid;
   gap: var(--lg, 16px);
   grid-template-columns: minmax(260px, 0.8fr) minmax(340px, 1.1fr) minmax(300px, 0.9fr);
+}
+
+.judge-stage-card {
+  animation: stageFocus 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .judge-stage-card dl {
@@ -188,9 +195,11 @@
 
 /* Advisory comparison: Foundry guidance can inform, but the deterministic gate wins. */
 .advisory-analysis {
-  background: color-mix(in oklch, var(--graphite-2) 75%, transparent);
-  border: 1px solid var(--line);
+  background: color-mix(in oklch, var(--teal) 14%, oklch(0.955 0.026 215));
+  border: 1px solid color-mix(in oklch, var(--teal) 34%, oklch(0.8 0.03 215));
   border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(29, 92, 115, 0.08);
+  color: oklch(0.22 0.034 225);
   display: grid;
   gap: 0.45rem;
   margin: 0.6rem 0;
@@ -198,18 +207,28 @@
 }
 
 .advisory-analysis.muted {
-  opacity: 0.9;
+  opacity: 1;
+}
+
+.advisory-analysis > article,
+.risk-comparison-grid article {
+  background: color-mix(in oklch, oklch(0.985 0.006 205) 64%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 32%, oklch(0.8 0.03 215));
+  color: oklch(0.22 0.034 225);
+  display: grid;
+  gap: 4px;
+  padding: 10px;
 }
 
 .advisory-heading {
   align-items: center;
-  color: var(--teal);
+  color: oklch(0.28 0.09 205);
   display: flex;
   gap: 0.45rem;
 }
 
 .advisory-heading small {
-  color: var(--steel);
+  color: oklch(0.48 0.04 220);
   margin-left: auto;
 }
 
@@ -219,15 +238,14 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.risk-comparison-grid article {
-  background: color-mix(in oklch, var(--graphite-3) 72%, transparent);
-  display: grid;
-  gap: 5px;
-  padding: 10px;
+.advisory-analysis > article strong,
+.risk-comparison-grid strong {
+  color: oklch(0.22 0.034 225);
 }
 
-.risk-comparison-grid strong {
-  color: oklch(0.91 0.026 210);
+.risk-gate .advisory-analysis p {
+  color: oklch(0.34 0.032 220);
+  margin: 0;
 }
 
 .deterministic-wins {
@@ -283,6 +301,11 @@
 }
 
 .advisory-note {
-  color: var(--steel);
+  color: oklch(0.45 0.035 220);
   font-size: 0.78rem;
+}
+
+@keyframes stageFocus {
+  from { opacity: 0.76; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

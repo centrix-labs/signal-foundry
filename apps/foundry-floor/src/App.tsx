@@ -44,6 +44,11 @@ function recordForStage(stageIndex: number, records: readonly Capability[]): Cap
   return records.find((item) => ["proposed", "risk_scored", "in_review"].includes(item.status)) ?? records[0] ?? firstCapability;
 }
 
+function nextStageLabel(stageIndex: number) {
+  const next = stageIndex >= judgeStages.length - 1 ? 0 : stageIndex + 1;
+  return next === 0 ? "Restart story" : `Advance to ${judgeStages[next]?.label ?? "next step"}`;
+}
+
 function useDemoState(baseRecords: readonly Capability[]) {
   const [activeView, setActiveView] = useState<ViewKey>("judge");
   const [selectedId, setSelectedId] = useState(firstCapability.id);
@@ -179,6 +184,7 @@ function JudgeMode({
   const correlationId = latestCorrelation(activity, packet);
   const releaseState = packet ? "Release packet" : "Release packet not yet generated";
   const reviewState = selectedRisk?.requiresHumanReview || review?.status === "pending" ? "Human review required" : "Review state unavailable";
+  const nextActionLabel = nextStageLabel(stageIndex);
 
   return (
     <section className="judge-mode" aria-label="Judge Mode">
@@ -237,7 +243,7 @@ function JudgeMode({
       </div>
 
       <div className="judge-evidence-row">
-        <section className="panel judge-stage-card">
+        <section key={currentStage.key} className="panel judge-stage-card">
           <p className="eyebrow">{currentStage.label}</p>
           <h2>{currentStage.body}</h2>
           <dl>
@@ -248,7 +254,7 @@ function JudgeMode({
           <div className="judge-actions">
             <button type="button" onClick={onReset}><RotateCcw size={15} /> Reset golden scenario</button>
             <button type="button" className="primary" onClick={onAdvance}>
-              {stageIndex === 0 ? "Run live proof" : "Advance story"} <ChevronRight size={15} />
+              {nextActionLabel} <ChevronRight size={15} />
             </button>
           </div>
         </section>
@@ -439,6 +445,7 @@ function AuthenticatedWorkspace({
       && (!filters.department || item.department === filters.department)
       && (!filters.pendingOnly || pendingStatuses.includes(item.status));
   });
+  const nextActionLabel = nextStageLabel(demoStep);
 
   return (
     <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
@@ -463,7 +470,7 @@ function AuthenticatedWorkspace({
             {dashboardData.isLive ? "Live registry synced" : "Sample demo fallback"}
           </span>
           <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>
-          <button type="button" className="primary" onClick={advanceDemo}>Advance story <ChevronRight size={15} /></button>
+          <button type="button" className="primary" onClick={advanceDemo}>{nextActionLabel} <ChevronRight size={15} /></button>
         </div>
         {activeView === "judge" ? (
           <JudgeMode

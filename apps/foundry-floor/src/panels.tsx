@@ -249,16 +249,14 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
   if (!advisory || advisory.status !== "available") {
     return (
       <div className="advisory-analysis comparison muted" aria-label="Advisory analysis">
-        <div>
-          <span>AI advisory</span>
-          <strong>Advisory unavailable — deterministic verdict stands.</strong>
-          <p>Controls remain deterministic.</p>
-        </div>
-        <div>
-          <span>Deterministic gate</span>
-          <strong>{decision}</strong>
-          <p>Deterministic gate is the source of truth.</p>
-        </div>
+        <article>
+          <strong>AI advisory</strong>
+          <p>Unavailable. Deterministic verdict stands.</p>
+        </article>
+        <article>
+          <strong>Deterministic gate</strong>
+          <p>{decision}. Source of truth for release.</p>
+        </article>
         <p className="advisory-note">Controls remain based on the deterministic risk review.</p>
       </div>
     );
@@ -273,14 +271,12 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
       </div>
       <div className="risk-comparison-grid">
         <article className={disagrees ? "advisory-warn" : "advisory-ok"}>
-          <span>Advisory suggested</span>
-          <strong>Suggested: {suggested}</strong>
-          <p>{reason}</p>
+          <strong>AI advisory</strong>
+          <p>Suggested: {suggested}. {reason}</p>
         </article>
         <article className="deterministic-wins">
-          <span>Deterministic gate</span>
-          <strong>Decision: {decision}</strong>
-          <p>Deterministic gate is the source of truth.</p>
+          <strong>Deterministic gate</strong>
+          <p>{decision}. Source of truth for release.</p>
         </article>
       </div>
       {disagrees ? <p className="advisory-arbitration" role="note">Advisory differs from the deterministic gate. Gate wins.</p> : <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>}
