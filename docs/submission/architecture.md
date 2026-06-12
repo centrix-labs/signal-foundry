@@ -55,6 +55,6 @@ flowchart LR
 
 `npm run validate` chains OpenSpec strict validation, typecheck, unit and
 integration tests, the judge-evidence validator, the Copilot package validator
-(hash-pinned v0.1.7), the Work IQ + Foundry readiness gate, and the Adaptive
+(hash-pinned v1.0.0), the Work IQ + Foundry readiness gate, and the Adaptive
 Card check. `npm run test:e2e` runs the Playwright golden flow against a freshly
 reset local stack.

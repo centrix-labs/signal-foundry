@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.27/MicrosoftTeams.schema.json",
   "manifestVersion": "1.27",
-  "version": "0.1.7",
+  "version": "1.0.0",
   "id": "5f7e9d6a-6a0a-4a1b-b8e2-7d9d2efc8f01",
   "developer": {
     "name": "Signal Foundry",

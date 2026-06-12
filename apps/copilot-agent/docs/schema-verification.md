@@ -34,12 +34,12 @@ UNCONFIRMED items (no official doc statement found; handle per the uplift prompt
 ## 2026-06-12 — live checkpoint package
 
 - Copilot package validator updated for
-  `signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
+  `signal-foundry-copilot-v100-live-checkpoints-20260612.zip`.
 - Static MCP tool contract is now 13 tools, adding
   `record_copilot_checkpoint` as a mutation with `idempotencyKey`,
   `confirmed`, `sessionId`, `approvalState`, and sanitized `displayText`.
 - Package SHA-256:
-  `bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183`.
+  `5002df69c73d7590fb386aa2a7e34a1330b687a289f8480715b66640759ea51e`.
 - Current Copilot package validator evidence: 6 files, 13 tools, hash
   `bfd2c4cee02...`.
 

@@ -52,17 +52,17 @@ For direct API calls, send the actor as `x-sf-actor-id` or as
 
 Validated package:
 
-- Package: `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`
-- Version: `0.1.7`
-- SHA-256: `bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183`
+- Package: `evidence/copilot/signal-foundry-copilot-v100-live-checkpoints-20260612.zip`
+- Version: `1.0.0`
+- SHA-256: `5002df69c73d7590fb386aa2a7e34a1330b687a289f8480715b66640759ea51e`
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 
 Upload steps:
 
 1. Open the Microsoft 365 tenant app upload or app catalog flow.
-2. Upload `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
+2. Upload `evidence/copilot/signal-foundry-copilot-v100-live-checkpoints-20260612.zip`.
 3. Confirm the app name is `Signal Foundry`.
-4. Confirm the app version is `0.1.7`.
+4. Confirm the app version is `1.0.0`.
 5. Start Microsoft 365 Copilot Chat and open the Signal Foundry agent.
 6. Use the Asteria Dynamics demo defaults when prompted.
 
