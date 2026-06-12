@@ -338,9 +338,13 @@ summary em,
 .light-mode .judge-copy p:last-child,
 .light-mode .proof-rail article span,
 .light-mode .risk-comparison-grid span,
-.light-mode .node-label span,
 .light-mode .atlas-field-labels {
   color: oklch(0.42 0.026 220);
+}
+
+.light-mode .node-label,
+.light-mode .node-label span {
+  color: oklch(0.12 0.01 220);
 }
 
 .light-mode .atlas-badges span,
