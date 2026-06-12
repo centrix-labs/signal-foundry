@@ -138,10 +138,12 @@ test("portal QA sweep covers screens, controls, links, motion, and evidence", as
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(particles.first()).toBeHidden();
 
-  await page.setViewportSize({ width: 1219, height: 900 });
-  for (const view of viewCases) {
-    await page.getByRole("button", { name: view.nav }).click();
-    await expectNoHorizontalOverflow(page);
+  for (const width of [1219, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const view of viewCases) {
+      await page.getByRole("button", { name: view.nav }).click();
+      await expectNoHorizontalOverflow(page);
+    }
   }
 
   await page.setViewportSize({ width: 390, height: 844 });

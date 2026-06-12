@@ -107,54 +107,61 @@
 }
 
 .node-hit {
-  background: color-mix(in oklch, var(--graphite-3) 74%, black);
-  border: 1px solid color-mix(in oklch, var(--teal) 54%, transparent);
+  background: transparent;
+  border: none;
   border-radius: 999px;
-  display: grid;
+  cursor: pointer;
+  display: block;
   height: 100%;
   padding: 0;
-  place-items: center;
   width: 100%;
 }
 
-.node-dot {
-  background: var(--teal);
-  border-radius: 50%;
-  display: block;
-  height: 42%;
-  width: 42%;
+.node-hit:focus-visible {
+  outline: 0.3px solid var(--teal);
+  outline-offset: 0.2px;
 }
 
-.atlas-node.risk_gate .node-hit {
-  border-color: var(--amber);
+.node-ring {
+  fill: color-mix(in oklch, var(--graphite-3) 74%, black);
+  stroke: color-mix(in oklch, var(--teal) 54%, transparent);
+  stroke-width: 0.35;
 }
 
-.atlas-node.risk_gate .node-dot {
-  background: var(--amber);
+.node-core {
+  fill: var(--teal);
 }
 
-.atlas-node.stage-active .node-hit {
-  box-shadow: 0 0 26px color-mix(in oklch, var(--amber) 52%, transparent);
+.atlas-node.risk_gate .node-ring {
+  stroke: var(--amber);
 }
 
-.atlas-node.workflow.released .node-hit {
-  border-color: color-mix(in oklch, var(--teal) 80%, white);
-  box-shadow: 0 0 18px rgba(0, 209, 194, 0.42);
+.atlas-node.risk_gate .node-core {
+  fill: var(--amber);
 }
 
-.atlas-node.workflow.released .node-dot {
-  background: var(--teal);
+.atlas-node.stage-active .node-ring {
+  filter: drop-shadow(0 0 1.4px color-mix(in oklch, var(--amber) 70%, transparent));
+}
+
+.atlas-node.workflow.released .node-ring {
+  stroke: color-mix(in oklch, var(--teal) 80%, white);
+  filter: drop-shadow(0 0 1px rgba(0, 209, 194, 0.55));
+}
+
+.atlas-node.workflow.released .node-core {
+  fill: var(--teal);
   box-shadow: 0 0 12px rgba(0, 209, 194, 0.72);
 }
 
-.atlas-node.workflow.rejected .node-hit,
-.atlas-node.workflow.blocked .node-hit {
-  border-color: color-mix(in oklch, var(--red) 72%, transparent);
+.atlas-node.workflow.rejected .node-ring,
+.atlas-node.workflow.blocked .node-ring {
+  stroke: color-mix(in oklch, var(--red) 72%, transparent);
 }
 
-.atlas-node.workflow.rejected .node-dot,
-.atlas-node.workflow.blocked .node-dot {
-  background: var(--red);
+.atlas-node.workflow.rejected .node-core,
+.atlas-node.workflow.blocked .node-core {
+  fill: var(--red);
 }
 
 .node-label {

@@ -692,3 +692,26 @@
 .light-mode .ledger-card.done {
   border-color: oklch(0.7 0.12 185);
 }
+
+
+@media (max-width: 1280px) {
+  .judge-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .story-ledger {
+    grid-auto-rows: auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .ledger-card strong {
+    font-size: 0.8rem;
+  }
+  .ledger-card small {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .story-ledger {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

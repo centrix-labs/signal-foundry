@@ -111,10 +111,10 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             const isStageRiskNode = stageKey === "score" && currentNode.id === "gate-risk";
             return (
             <g key={currentNode.id} className={`atlas-node ${currentNode.kind} ${selectedId === currentNode.id ? "selected" : ""} ${currentNode.status ?? ""} ${isStageRiskNode ? "stage-active" : ""}`}>
+              <circle className="node-ring" cx={currentNode.x} cy={currentNode.y} r={2.55} />
+              <circle className="node-core" cx={currentNode.x} cy={currentNode.y} r={1.05} />
               <foreignObject x={currentNode.x - 2.8} y={currentNode.y - 2.8} width="5.6" height="5.6">
-                <button type="button" className="node-hit" onClick={() => onSelect(currentNode.id)} aria-label={`Select ${currentNode.label}`}>
-                  <span className="node-dot" />
-                </button>
+                <button type="button" className="node-hit" onClick={() => onSelect(currentNode.id)} aria-label={`Select ${currentNode.label}`} />
               </foreignObject>
               <foreignObject x={currentNode.x - 8} y={currentNode.y + 3.4} width="16" height="12">
                 <div className="node-label">

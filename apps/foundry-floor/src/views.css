@@ -684,3 +684,9 @@ summary em,
 .review-queue-layout .release-packet {
   align-content: start;
 }
+
+
+/* Light-mode eyebrows: darker teal for readable contrast on pale panels */
+.light-mode .eyebrow {
+  color: oklch(0.46 0.105 192);
+}

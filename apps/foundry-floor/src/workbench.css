@@ -171,3 +171,8 @@
   border-color: oklch(0.75 0.15 78);
   color: oklch(0.5 0.12 78);
 }
+
+/* Grid children must be allowed to shrink below content width */
+.workbench-header > * {
+  min-width: 0;
+}
