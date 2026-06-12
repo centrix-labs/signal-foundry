@@ -230,6 +230,8 @@ nav button.active,
 .operator-badge {
   gap: var(--sm, 8px);
   justify-self: end;
+  max-width: min(100%, 340px);
+  min-width: 0;
 }
 
 .operator-badge > span {
@@ -240,6 +242,23 @@ nav button.active,
   height: 34px;
   place-items: center;
   width: 34px;
+}
+
+.operator-badge > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.operator-badge strong,
+.operator-badge small {
+  display: block;
+  line-height: 1.18;
+}
+
+.operator-badge strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .sign-out-link {

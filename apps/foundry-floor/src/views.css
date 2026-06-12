@@ -440,6 +440,10 @@ summary em,
     justify-self: start;
   }
 
+  .operator-badge {
+    justify-self: start;
+  }
+
   .demo-controls,
   .judge-actions,
   .approval-bar,
