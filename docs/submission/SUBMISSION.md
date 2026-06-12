@@ -49,9 +49,10 @@ trail end to end.
 
 **Our goals:**
 
-1. **Give every employee a governed path from AI idea to released
-   capability** — propose in the flow of work (Copilot Chat), get a
-   transparent risk verdict, and ship with approval instead of around it.
+1. **Give every employee Work IQ-grounded discovery and a governed path from
+   AI idea to released capability** — propose in the flow of work (Copilot
+   Chat), get a transparent risk verdict, and ship with approval instead of
+   around it.
 2. **Make AI reasoning trustworthy enough to govern with** — an LLM
    deliberates, a deterministic rule engine decides, and disagreement is
    displayed rather than hidden; the system never depends on the model being
