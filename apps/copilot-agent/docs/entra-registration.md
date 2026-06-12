@@ -15,7 +15,13 @@ Signal Foundry's deployed MCP/API path is hosted in Azure Container Apps. The cu
 - Supported account types: single tenant.
 - Redirect URI: the Microsoft 365 Copilot plugin OAuth redirect URI supplied by the tenant's Copilot action configuration.
 - API permission model: delegated access for authenticated Copilot users.
-- Exposed API scope: `SignalFoundry.Mcp.Access`
+- Application ID URI: `api://00000000-0000-0000-0000-000000000000`
+- Exposed API scope: `access_as_user` (delegated, user-consentable, token version 2)
+- OAuth client registration Scope field (Teams Developer Portal -> Tools ->
+  OAuth client registration): must be the FULLY QUALIFIED string
+  `api://00000000-0000-0000-0000-000000000000/access_as_user`. A bare
+  `access_as_user` makes Entra resolve the scope against Microsoft Graph and
+  sign-in fails with AADSTS650053.
 - Secret storage: Azure Key Vault `kv-signal-foundry` or Microsoft 365 plugin OAuth vault. Do not commit client secrets.
 
 ## Automation

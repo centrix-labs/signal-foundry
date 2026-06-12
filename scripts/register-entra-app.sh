@@ -49,10 +49,36 @@ fi
 
 az account show --query tenantId -o tsv | grep -Fx "$TENANT_ID" >/dev/null
 
-az ad app create \
+APP_JSON=$(az ad app create \
   --display-name "$APP_NAME" \
   --sign-in-audience AzureADMyOrg \
-  --identifier-uris "$API_URL" \
   --web-redirect-uris "$REDIRECT_URI" \
   --query "{appId:appId,id:id,displayName:displayName}" \
-  -o json
+  -o json)
+echo "$APP_JSON"
+APP_ID=$(echo "$APP_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["appId"])')
+OBJ_ID=$(echo "$APP_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
+SCOPE_ID=$(uuidgen | tr 'A-Z' 'a-z')
+
+# Expose the delegated scope Copilot's OAuth registration requests. Without
+# this, a bare access_as_user scope resolves against Microsoft Graph and
+# sign-in fails with AADSTS650053.
+az rest --method PATCH --url "https://graph.microsoft.com/v1.0/applications/$OBJ_ID" \
+  --headers "Content-Type=application/json" \
+  --body "{
+    \"identifierUris\": [\"api://$APP_ID\"],
+    \"api\": {
+      \"requestedAccessTokenVersion\": 2,
+      \"oauth2PermissionScopes\": [{
+        \"id\": \"$SCOPE_ID\",
+        \"adminConsentDescription\": \"Allows Microsoft 365 Copilot to call the Signal Foundry MCP API as the signed-in user.\",
+        \"adminConsentDisplayName\": \"Access Signal Foundry MCP as the user\",
+        \"userConsentDescription\": \"Allows Copilot to call Signal Foundry on your behalf.\",
+        \"userConsentDisplayName\": \"Access Signal Foundry on your behalf\",
+        \"isEnabled\": true,
+        \"type\": \"User\",
+        \"value\": \"access_as_user\"
+      }]
+    }
+  }"
+echo "OAuth client registration Scope field must be: api://$APP_ID/access_as_user"
