@@ -20,6 +20,7 @@ Start with [docs/submission/JUDGE-GUIDE.md](docs/submission/JUDGE-GUIDE.md) —
 60-second orientation, live URLs, local quickstart, and what to look for.
 Architecture: [docs/submission/architecture.md](docs/submission/architecture.md).
 Install and sideload guide: [docs/submission/INSTALL.md](docs/submission/INSTALL.md).
+Live Copilot checkpoint spec: [docs/submission/live-copilot-checkpoints-spec.md](docs/submission/live-copilot-checkpoints-spec.md).
 
 ```mermaid
 flowchart LR

@@ -1,0 +1,439 @@
+# Live Copilot Checkpoints Implementation Spec
+
+## Goal
+
+Replace the static Copilot Mirror transcript fixtures with live, approved Signal
+Foundry conversation checkpoints written by the Microsoft 365 Copilot
+declarative agent through the deployed MCP server.
+
+The portal must show audit-safe evidence of what happened in the real Copilot
+conversation without scraping, storing, or rendering raw Microsoft 365 Copilot
+chat transcripts.
+
+## Platform Boundary
+
+Signal Foundry should treat Microsoft 365 Copilot Chat as the user-facing
+orchestrator and MCP as the durable evidence boundary.
+
+Microsoft documents declarative agents as custom Microsoft 365 Copilot
+experiences configured with instructions, actions, and knowledge. Plugins allow
+declarative agents to interact with MCP servers or REST APIs, including reads
+and writes to external systems:
+
+- https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent
+- https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-plugins
+
+Do not design this as raw transcript ingestion. Copilot Studio session transcript
+download is a different runtime path:
+
+- https://learn.microsoft.com/en-us/microsoft-copilot-studio/analytics-transcripts-studio
+
+## Success Criteria
+
+- Copilot Mirror bubbles are loaded from live MCP registry state when available.
+- Static `copilotTurns` remain a fallback only when no live checkpoints exist.
+- The Copilot agent writes a checkpoint after meaningful read/write steps.
+- Checkpoints contain sanitized summaries, not raw prompts or raw Microsoft 365
+  content.
+- Approval and release checkpoints are tied to actual successful MCP mutations.
+- Checkpoint records include `tenantId`, `projectId`, `sessionId`,
+  `correlationId`, actor, stage, source tool, approval state, and display text.
+- The MCP server rejects checkpoint text that looks like raw emails, chats,
+  transcripts, secrets, stack traces, or personal data.
+- Playwright proves a checkpoint written through MCP appears in the Copilot
+  Mirror without a page rebuild.
+- Copilot package validation covers the new tool, schema, instructions, and
+  package hash.
+
+## Non-Goals
+
+- Do not export or replay full Microsoft 365 Copilot Chat transcripts.
+- Do not capture raw user prompts.
+- Do not capture raw Copilot responses.
+- Do not store raw Microsoft 365 content, emails, chats, meeting transcripts,
+  files, customer records, secrets, or stack traces.
+- Do not add a browser-extension or DOM-scraping path.
+- Do not bypass the existing confirmation gate for registry mutations.
+
+## User Experience
+
+In the Copilot Mirror:
+
+- If live checkpoints exist, show `Live from approved MCP checkpoints`.
+- If no live checkpoints exist, show `Demo transcript fallback`.
+- Each bubble shows:
+  - speaker: `operator`, `copilot`, `foundry`, or `reviewer`
+  - checkpoint time
+  - sanitized display text
+  - compact evidence line: stage, source tool, correlation ID
+- Approval/release bubbles should use the same light-blue Copilot card language
+  already used for Copilot responses.
+- Failed sanitizer attempts should not render as chat bubbles. They should show
+  only in MCP Activity as rejected/sanitized evidence.
+
+## Data Model
+
+Add these types in `packages/shared/src/types.ts`:
+
+```ts
+export type CopilotCheckpointSpeaker = "operator" | "copilot" | "foundry" | "reviewer";
+export type CopilotCheckpointStage =
+  | "discovery"
+  | "proposal"
+  | "risk"
+  | "review"
+  | "approval"
+  | "release"
+  | "refusal";
+export type CopilotCheckpointSource =
+  | "user_intent_summary"
+  | "tool_result_summary"
+  | "approval_result"
+  | "release_result"
+  | "refusal_summary";
+export type CopilotCheckpointApprovalState =
+  | "system_approved"
+  | "human_approved"
+  | "rejected_by_policy";
+
+export interface CopilotCheckpoint {
+  id: string;
+  tenantId: string;
+  projectId: string;
+  sessionId: string;
+  speaker: CopilotCheckpointSpeaker;
+  stage: CopilotCheckpointStage;
+  source: CopilotCheckpointSource;
+  sourceTool?: McpAction;
+  relatedRecordId?: string;
+  approvalState: CopilotCheckpointApprovalState;
+  actor: string;
+  displayText: string;
+  createdAt: string;
+  correlationId: string;
+}
+```
+
+Extend `SignalFoundryRegistry`:
+
+```ts
+copilotCheckpoints: CopilotCheckpoint[];
+```
+
+## MCP Tool Contract
+
+Add a mutation tool named `record_copilot_checkpoint`.
+
+Schema in `packages/shared/src/schemas.ts`:
+
+```ts
+export const copilotCheckpointSpeakerSchema = z.enum(["operator", "copilot", "foundry", "reviewer"]);
+export const copilotCheckpointStageSchema = z.enum(["discovery", "proposal", "risk", "review", "approval", "release", "refusal"]);
+export const copilotCheckpointSourceSchema = z.enum([
+  "user_intent_summary",
+  "tool_result_summary",
+  "approval_result",
+  "release_result",
+  "refusal_summary"
+]);
+export const copilotCheckpointApprovalStateSchema = z.enum([
+  "system_approved",
+  "human_approved",
+  "rejected_by_policy"
+]);
+
+export const recordCopilotCheckpointInputSchema = idempotentRequestSchema.extend({
+  sessionId: z.string().min(8).max(120),
+  speaker: copilotCheckpointSpeakerSchema,
+  stage: copilotCheckpointStageSchema,
+  source: copilotCheckpointSourceSchema,
+  sourceTool: z.string().min(3).optional(),
+  relatedRecordId: z.string().min(3).max(120).optional(),
+  approvalState: copilotCheckpointApprovalStateSchema,
+  actor: z.string().min(2).max(80),
+  displayText: z.string().min(8).max(420)
+});
+```
+
+Add to `toolSchemas` and `ToolName`.
+
+Metadata in `packages/shared/src/mcpTools.ts`:
+
+- Description must state this records sanitized conversation checkpoints only.
+- It must require `tenantId`, `projectId`, `correlationId`,
+  `idempotencyKey`, `confirmed`, `sessionId`, `speaker`, `stage`, `source`,
+  `approvalState`, `actor`, and `displayText`.
+- Mark it as a mutation, not `readOnlyHint`.
+
+Package impact:
+
+- Static MCP tool count changes from 12 to 13.
+- `scripts/validate-copilot-package.mjs` must expect 13 tools.
+- `apps/copilot-agent/package/actions/mcp-tools.json` must include the tool.
+- `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json`
+  `run_for_functions` must include the new tool in the same order as
+  `mcp-tools.json`.
+
+## Server Behavior
+
+Add a case to `apps/mcp-server/src/tools.ts`:
+
+```ts
+case "record_copilot_checkpoint":
+  return ok(recordCopilotCheckpoint(store, data, activeActor), correlationId);
+```
+
+Implementation requirements:
+
+- Enforce the existing write authorization path.
+- Enforce `confirmed: true` because this writes durable evidence.
+- Generate deterministic ID with `makeId("cp", input.idempotencyKey)`.
+- Deduplicate by ID and return existing checkpoint if present.
+- Sanitize `displayText` before writing.
+- Reject unsafe content with status `400`, `ok:false`, and sanitized error.
+- If `approvalState` is `human_approved`, require `stage` to be `approval` or
+  `release`.
+- If `stage` is `approval`, require `relatedRecordId`.
+- If `stage` is `release`, require `relatedRecordId`.
+- Write a matching MCP activity entry with action
+  `record_copilot_checkpoint`.
+
+Sanitizer requirements:
+
+- Reuse `sanitizeAdvisoryText` as a base, but add a checkpoint-specific guard.
+- Reject likely raw content markers:
+  - long quoted blocks
+  - email headers such as `From:`, `To:`, `Subject:`
+  - transcript speaker/time dumps
+  - access tokens or bearer strings
+  - stack traces
+  - Social Security, credit card, or obvious secret patterns
+- Truncate accepted text to 420 characters.
+- Accepted text must be written as summary prose, not as a quote from the user
+  or Copilot.
+
+## Registry Store
+
+Update registry initialization and persistence:
+
+- `packages/shared/src/fixtures.ts` or equivalent seed fixture:
+  `copilotCheckpoints: []`
+- `data/signal-foundry-seed.json`:
+  add `"copilotCheckpoints": []`
+- Azure Table Storage mapping:
+  add checkpoint entity kind if the store maps collections to table rows.
+- `/registry/snapshot`:
+  include `copilotCheckpoints`.
+
+The snapshot should return latest checkpoints first or the UI should sort them
+client-side by `createdAt`.
+
+## Portal Data Flow
+
+Update `apps/foundry-floor/src/liveData.ts`:
+
+- Extend `RegistrySnapshot` to include `copilotCheckpoints`.
+- Extend `DashboardData` with:
+
+```ts
+copilotCheckpoints: CopilotCheckpoint[];
+```
+
+- When live snapshot exists, merge/sort live checkpoints only.
+- When no live checkpoints exist, return an empty live checkpoint array and let
+  the UI fallback to static demo turns.
+
+Do not merge static demo chat bubbles into live checkpoint data. That would make
+the source ambiguous.
+
+## Copilot Mirror UI
+
+Update `apps/foundry-floor/src/panels.tsx`:
+
+- `CopilotMirror` should accept:
+
+```ts
+turns: CopilotTurn[];
+checkpoints?: readonly CopilotCheckpoint[];
+isLiveCheckpointSource?: boolean;
+```
+
+- Render `checkpoints` when non-empty.
+- Otherwise render `turns`.
+- Add a small source pill:
+  - live: `Live from approved MCP checkpoints`
+  - fallback: `Demo transcript fallback`
+- Keep current content-sized response cards.
+- Do not show raw JSON.
+
+Update `apps/foundry-floor/src/App.tsx`:
+
+```tsx
+<CopilotMirror
+  turns={copilotTurns}
+  checkpoints={dashboardData.copilotCheckpoints}
+  isLiveCheckpointSource={dashboardData.copilotCheckpoints.length > 0}
+  ...
+/>
+```
+
+## Copilot Agent Instructions
+
+Update:
+
+- `apps/copilot-agent/docs/instructions.md`
+- `apps/copilot-agent/package/declarative-agent.azure.json`
+- generated package zip
+
+Instruction additions must fit under the 8,000-character validation limit.
+Use concise language:
+
+```text
+After each meaningful Signal Foundry step, write one sanitized checkpoint with
+record_copilot_checkpoint. A checkpoint is summary evidence only. Never send raw
+emails, chats, transcripts, documents, customer records, secrets, personal data,
+or verbatim user prompts. For read-only steps, summarize the user intent or tool
+result. For approval or release, write the checkpoint only after the successful
+approve_capability or release_capability tool result. Then verify with
+list_mcp_activity before claiming the checkpoint is recorded.
+```
+
+Checkpoint examples:
+
+- Discovery:
+  `User asked for governed Customer Success renewal workflows. Signal Foundry used sanitized Work IQ-style context.`
+- Proposal:
+  `Copilot prepared Renewal Brief Generator as a governed proposal candidate. No raw Microsoft 365 content was used.`
+- Risk:
+  `Risk gate scored Renewal Brief Generator as medium risk. Human review and summary-only controls are required.`
+- Approval:
+  `Alex Kim approved Renewal Brief Generator for release preparation.`
+- Release:
+  `Renewal Brief Generator was released with an audit-safe packet and approved source summaries.`
+- Refusal:
+  `Signal Foundry refused an employee-monitoring request and redirected to workflow-level improvement.`
+
+## Tests
+
+Unit tests:
+
+- Schema accepts a valid checkpoint.
+- Schema rejects raw transcript-length text.
+- Mutation without `confirmed:true` fails.
+- Employee can write a system-approved discovery checkpoint.
+- Reviewer can write a human-approved approval checkpoint.
+- Human-approved checkpoint is rejected unless stage is `approval` or `release`.
+- Unsafe display text is rejected and logged as sanitized MCP activity.
+- Idempotency returns the existing checkpoint.
+
+Server tests:
+
+- `record_copilot_checkpoint` writes to registry.
+- `/registry/snapshot` includes `copilotCheckpoints`.
+- `list_mcp_activity` includes the checkpoint write.
+
+Portal tests:
+
+- With a mocked snapshot containing checkpoints, Copilot Mirror renders live
+  checkpoint bubbles and the live source pill.
+- With no checkpoints, Copilot Mirror renders static fallback turns and fallback
+  source pill.
+- After calling the MCP tool during Playwright setup, the mirror updates after
+  the next polling interval.
+
+Package validation:
+
+- `validate:copilot` expects 13 tools.
+- Package hash is updated.
+- `run_for_functions` includes `record_copilot_checkpoint`.
+- Instructions include the checkpoint boundary.
+- Instructions remain under 8,000 characters.
+
+End-to-end:
+
+- Create proposal.
+- Score risk.
+- Submit review.
+- Approve.
+- Release.
+- Write checkpoints after each step.
+- Open Copilot Mirror.
+- Verify the approval and release bubbles are live checkpoint bubbles, not demo
+  fallback text.
+
+## Acceptance Criteria
+
+- `npm run typecheck` passes.
+- `npm run test` passes.
+- `npm run test:e2e` passes.
+- `npm run validate:copilot` passes.
+- `npm run validate:workiq-foundry` passes.
+- `npm run validate:cards` passes.
+- Live portal shows `Live from approved MCP checkpoints` after a checkpoint is
+  written through the deployed MCP server.
+- Live portal falls back to `Demo transcript fallback` when the checkpoint list
+  is empty.
+- No raw transcript text appears in data files, UI, screenshots, logs, or
+  evidence artifacts.
+- A reviewer-approved checkpoint can be traced to the same `correlationId` as
+  the approval or release MCP activity.
+
+## Rollout Plan
+
+1. Implement shared types, schemas, tool metadata, and static MCP tool JSON.
+2. Implement server write path, sanitizer, persistence, snapshot exposure, and
+   tests.
+3. Implement portal live checkpoint data flow and Copilot Mirror rendering.
+4. Update Copilot agent instructions, package version, zip, and hash validator.
+5. Run full local validation.
+6. Deploy MCP/API first.
+7. Deploy Foundry Floor.
+8. Upload the new Copilot package.
+9. Run live smoke:
+   - use Copilot agent to write one discovery checkpoint
+   - approve/release a capability
+   - confirm the portal mirror shows live approval/release checkpoint bubbles
+
+## Rollback Plan
+
+- Portal rollback: redeploy the previous Static Web App build. The portal will
+  return to static `copilotTurns` fallback.
+- MCP rollback: redeploy the previous container image. Existing checkpoint rows
+  can remain dormant because old code will ignore the unknown collection.
+- Copilot package rollback: upload the prior validated package zip from
+  `evidence/copilot`.
+- Data rollback: do not delete checkpoint records during rollback unless they
+  contain unsafe text. If unsafe text exists, quarantine the affected records and
+  keep a sanitized audit event.
+
+## Implementation Prompt
+
+Implement live Copilot Mirror checkpoints for Signal Foundry.
+
+Use `docs/submission/live-copilot-checkpoints-spec.md` as the source of truth.
+Do not scrape raw Copilot transcripts. Add a `record_copilot_checkpoint` MCP
+mutation that writes only sanitized, approved checkpoint summaries. Extend the
+shared registry with `copilotCheckpoints`, expose them through
+`/registry/snapshot`, and update Foundry Floor so Copilot Mirror renders live
+checkpoints when present and static demo turns only as fallback.
+
+Keep all files under the repo line-count limit. Update schemas, shared types,
+MCP metadata, package action manifests, Copilot instructions, validators, tests,
+and docs. Add tests for sanitizer rejection, idempotency, authorization,
+snapshot exposure, portal fallback, and live portal rendering. Update the
+Copilot package zip/version/hash after the manifest changes.
+
+Run and pass:
+
+```bash
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run typecheck
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:copilot
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:workiq-foundry
+npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:cards
+```
+
+After local validation, deploy MCP/API before deploying the portal. Then upload
+the new Copilot package and run the live smoke that proves a Copilot-driven
+approval/release checkpoint appears in the Copilot Mirror.

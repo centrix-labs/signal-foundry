@@ -123,6 +123,8 @@ and Adaptive Card validation.
 - Judge guide: `docs/submission/JUDGE-GUIDE.md`
 - Submission copy: `docs/submission/SUBMISSION.md`
 - Architecture: `docs/submission/architecture.md`
+- Live Copilot checkpoints spec:
+  `docs/submission/live-copilot-checkpoints-spec.md`
 - Work IQ + Foundry readiness: `docs/submission/work-iq-foundry-readiness.md`
 - Copilot package map: `evidence/copilot/package-map.md`
 - Copilot evidence runbook:
