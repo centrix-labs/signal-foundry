@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Capability, CapabilityStatus, McpActivity, ReleasePacket, ReviewItem, RiskReview } from "@signal-foundry/shared";
-import { Check, ChevronRight, ClipboardCheck, Lock, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, ChevronRight, ClipboardCheck, FilePlus2, RotateCcw, Scale, ShieldCheck, Sparkles } from "lucide-react";
 import {
   CapabilityList,
   ExecutiveView,
@@ -162,7 +162,8 @@ function JudgeMode({
   onStageSelect,
   onReset,
   onOpenMirror,
-  checkpointCount = 0
+  checkpointCount = 0,
+  isLive = false
 }: {
   records: readonly Capability[];
   selected: Capability;
@@ -174,19 +175,15 @@ function JudgeMode({
   riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
   stageIndex: number;
   checkpointCount: number;
+  isLive?: boolean;
   onAdvance: () => void;
   onStageSelect: (stageIndex: number) => void;
   onReset: () => void;
   onOpenMirror: () => void;
 }) {
   const currentStage = judgeStages[stageIndex % judgeStages.length] ?? judgeStages[0];
-  const selectedRisk = getRiskReview(selected, riskReviews);
   const packet = getReleasePacket(selected, packets);
-  const review = getReview(selected, reviews);
-  const requiredControls = selectedRisk?.requiredControls.length;
   const correlationId = latestCorrelation(activity, packet);
-  const releaseState = packet ? "Release packet" : "Release packet not yet generated";
-  const reviewState = selectedRisk?.requiresHumanReview || review?.status === "pending" ? "Human review required" : "Review state unavailable";
   const nextActionLabel = nextStageLabel(stageIndex);
 
   return (
@@ -223,73 +220,138 @@ function JudgeMode({
             judgeMode
           />
         </div>
-        <aside className="proof-rail" aria-label="Source-backed proof cards">
-          <article>
-            <Sparkles size={18} />
-            <span>Copilot grounded</span>
-            <strong>People + Meetings, summary-only</strong>
-            <p className="proof-context">Grounding capabilities enabled in the declarative agent manifest. Raw Microsoft 365 content never leaves Copilot.</p>
-            <small>Declarative agent package v1.0.0</small>
-          </article>
-          <article>
-            <ShieldCheck size={18} />
-            <span>Risk gated</span>
-            <strong>{requiredControls == null ? "Awaiting risk score" : `${requiredControls} required controls`}</strong>
-            <p className="proof-context">The deterministic gate is the source of truth. Advisory AI may disagree — the disagreement is shown, and the gate wins.</p>
-            <small>Deterministic verdict: {selectedRisk ? selectedRisk.riskLevel : selected.riskLevel}</small>
-          </article>
-          <article>
-            <ClipboardCheck size={18} />
-            <span>Audit ready</span>
-            <strong>{releaseState}</strong>
-            <p className="proof-context">One correlation ID links the Copilot turn, MCP activity, audit log, and release packet end to end.</p>
-            <small>{correlationId}</small>
-          </article>
-        </aside>
+        <StoryLedger
+          records={records}
+          riskReviews={riskReviews}
+          reviews={reviews}
+          packets={packets}
+          stageIndex={stageIndex}
+          isLive={isLive}
+          onStageSelect={onStageSelect}
+        />
       </div>
 
-      <div className="judge-evidence-row">
-        <section key={currentStage.key} className="panel judge-stage-card">
-          <p className="eyebrow">{currentStage.label}</p>
-          <h2>{currentStage.body}</h2>
-          <dl>
-            <div><dt>Capability</dt><dd>{selected.title}</dd></div>
-            <div><dt>Review</dt><dd>{reviewState}</dd></div>
-            <div><dt>Correlation</dt><dd>{correlationId}</dd></div>
-          </dl>
-          <div className="judge-actions">
-            <button type="button" onClick={onReset}><RotateCcw size={15} /> Reset golden scenario</button>
-            <button type="button" className="primary" onClick={onAdvance}>
-              {nextActionLabel} <ChevronRight size={15} />
-            </button>
-          </div>
-        </section>
-        <RiskGate selected={selected} riskReviews={riskReviews} compact />
-        <section className="panel copilot-bridge" aria-label="Copilot proof panel">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Copilot Mirror</p>
-              <h2>Copilot calls governed MCP</h2>
-            </div>
-            <button type="button" className="text-link" onClick={onOpenMirror}>Open Copilot proof <ChevronRight size={14} /></button>
-          </div>
-          <ol>
-            <li><Lock size={15} /> User asks Copilot</li>
-            <li><Sparkles size={15} /> Copilot calls Signal Foundry MCP</li>
-            <li><Check size={15} /> Signal Foundry returns governed result</li>
-          </ol>
+      <div className="judge-action-strip">
+        <div className="strip-copy" key={currentStage.key}>
+          <p className="eyebrow">{currentStage.label} — stage {stageIndex + 1} of {judgeStages.length}</p>
+          <strong>{currentStage.body}</strong>
+          <small>{selected.title} / {correlationId}</small>
+        </div>
+        <div className="strip-bridge" aria-label="Copilot proof panel">
           <div className="proof-badges" aria-label="Copilot package proof badges">
             {["People", "Meetings", "OAuth", "Summary-only", "No raw M365 content"].map((badge) => <span key={badge}>{badge}</span>)}
           </div>
-          <p className="proof-context">
+          <button type="button" className="text-link" onClick={onOpenMirror}>
             {checkpointCount > 0
-              ? `${checkpointCount} live Copilot checkpoint${checkpointCount === 1 ? "" : "s"} recorded against the governed MCP — open the proof to replay them.`
-              : "Live Copilot checkpoints appear here the moment the agent calls the governed MCP."}
-          </p>
-        </section>
+              ? `${checkpointCount} live Copilot checkpoint${checkpointCount === 1 ? "" : "s"} — open Copilot proof`
+              : "Open Copilot proof"} <ChevronRight size={14} />
+          </button>
+        </div>
+        <div className="judge-actions">
+          <button type="button" onClick={onReset}><RotateCcw size={15} /> Reset</button>
+          <button type="button" className="primary" onClick={onAdvance}>
+            {nextActionLabel} <ChevronRight size={15} />
+          </button>
+        </div>
       </div>
-      <McpActivityRail items={activity} proofMode />
     </section>
+  );
+}
+
+function StoryLedger({
+  records,
+  riskReviews,
+  reviews,
+  packets,
+  stageIndex,
+  isLive,
+  onStageSelect
+}: {
+  records: readonly Capability[];
+  riskReviews: readonly RiskReview[];
+  reviews: readonly ReviewItem[];
+  packets: readonly ReleasePacket[];
+  stageIndex: number;
+  isLive: boolean;
+  onStageSelect: (stageIndex: number) => void;
+}) {
+  const storyRecord = records.find((item) => ["proposed", "risk_scored", "in_review", "approved_for_release", "released"].includes(item.status)) ?? records[0] ?? firstCapability;
+  const releasedRecord = records.find((item) => item.status === "released" || item.status === "approved_for_release");
+  const risk = riskReviews.find((item) => item.proposalId === storyRecord.id) ?? riskReviews[0];
+  const review = reviews.find((item) => item.proposalId === storyRecord.id) ?? reviews[0];
+  const packet = (releasedRecord ? packets.find((item) => item.capabilityId === releasedRecord.id) : undefined) ?? packets[0];
+  const advisoryLine = risk?.advisory?.status === "available"
+    ? risk.advisory.agreesWithGate === false
+      ? "Advisory disagreed — the gate ruled, and the gate wins"
+      : "Advisory agrees with the deterministic gate"
+    : "Advisory degrades safely — the gate stands alone";
+
+  const entries = [
+    {
+      icon: <Sparkles size={15} />,
+      label: "Discover",
+      done: "People + Meetings grounded, summary-only",
+      pending: "Permission-aware work signals enter the forge",
+      evidence: "Declarative agent package v1.0.0 — no raw M365 content",
+      live: isLive
+    },
+    {
+      icon: <FilePlus2 size={15} />,
+      label: "Propose",
+      done: storyRecord.title,
+      pending: "Copilot drafts a governed proposal",
+      evidence: "Confirmation gate satisfied before the write",
+      live: isLive
+    },
+    {
+      icon: <Scale size={15} />,
+      label: "Score",
+      done: risk ? `${risk.requiredControls.length} controls — verdict ${risk.riskLevel}` : "Deterministic verdict recorded",
+      pending: "The deterministic gate scores the risk",
+      evidence: advisoryLine,
+      live: isLive && Boolean(risk)
+    },
+    {
+      icon: <ShieldCheck size={15} />,
+      label: "Review",
+      done: review && review.status !== "pending" ? `Reviewer decision: ${review.status.replace("_", " ")}` : "Human approval recorded",
+      pending: "No release without a human decision",
+      evidence: review ? `Reviewer: ${review.reviewer}` : "Reviewer required by policy",
+      live: isLive && Boolean(review)
+    },
+    {
+      icon: <ClipboardCheck size={15} />,
+      label: "Release",
+      done: packet ? `${packet.version} released — audit packet sealed` : "Release packet generated",
+      pending: "A release packet seals the audit trail",
+      evidence: packet?.correlationId ?? "One correlation ID links the entire trail",
+      live: isLive && Boolean(packet)
+    }
+  ];
+
+  return (
+    <aside className="story-ledger" aria-label="Story ledger: evidence per stage">
+      {entries.map((entry, index) => {
+        const state = index < stageIndex ? "done" : index === stageIndex ? "current" : "upcoming";
+        return (
+          <button
+            key={entry.label}
+            type="button"
+            className={`ledger-card ${state}`}
+            aria-current={state === "current" ? "step" : undefined}
+            onClick={() => onStageSelect(index)}
+          >
+            <span className="ledger-status" aria-hidden="true">{state === "done" ? <Check size={13} /> : index + 1}</span>
+            <span className="ledger-head">
+              {entry.icon} {entry.label}
+              {entry.live && state !== "upcoming" ? <i className="ledger-live" title="Live registry value" /> : null}
+            </span>
+            <strong>{state === "upcoming" ? entry.pending : entry.done}</strong>
+            <small>{state === "upcoming" ? "Pending" : entry.evidence}</small>
+          </button>
+        );
+      })}
+    </aside>
   );
 }
 
@@ -479,14 +541,16 @@ function AuthenticatedWorkspace({
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
         />
+        {["judge", "floor"].includes(activeView) ? (
         <div className="demo-controls">
-          <span>Checkpoint D / Step {demoStep + 1}: {statusLabels[selected.status]}</span>
+          <span>Stage {demoStep + 1} of {judgeStages.length} — {judgeStages[demoStep]?.label ?? "Discover"} · {statusLabels[selected.status]}</span>
           <span className={`data-source ${dashboardData.isLive ? "live" : "fallback"}`}>
             {dashboardData.isLive ? "Live registry synced" : "Sample demo fallback"}
           </span>
           <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>
           <button type="button" className="primary" onClick={advanceDemo}>{nextActionLabel} <ChevronRight size={15} /></button>
         </div>
+        ) : null}
         {activeView === "judge" ? (
           <JudgeMode
             records={visibleRecords}
@@ -499,6 +563,7 @@ function AuthenticatedWorkspace({
             riskReviews={dashboardData.riskReviews}
             stageIndex={demoStep}
             checkpointCount={dashboardData.copilotCheckpoints.length}
+            isLive={dashboardData.isLive}
             onAdvance={advanceDemo}
             onStageSelect={selectDemoStage}
             onReset={resetDemo}

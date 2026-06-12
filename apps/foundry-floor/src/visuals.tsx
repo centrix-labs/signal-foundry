@@ -99,7 +99,13 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
               </g>
             );
           })}
-          {atlasNodes.map((node) => {
+          {[...atlasNodes]
+            .sort((a, b) => {
+              const paintRank = (item: PositionedNode) =>
+                item.id === selectedId ? 2 : stageKey === "score" && item.id === "gate-risk" ? 1 : 0;
+              return paintRank(a) - paintRank(b);
+            })
+            .map((node) => {
             const record = records.find((item) => item.id === node.id);
             const currentNode = record ? { ...node, label: record.title, riskLevel: record.riskLevel, status: record.status } : node;
             const isStageRiskNode = stageKey === "score" && currentNode.id === "gate-risk";
@@ -110,7 +116,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
                   <span className="node-dot" />
                 </button>
               </foreignObject>
-              <foreignObject x={currentNode.x - 9} y={currentNode.y + 3} width="18" height="13">
+              <foreignObject x={currentNode.x - 8} y={currentNode.y + 3.4} width="16" height="12">
                 <div className="node-label">
                   <strong>{currentNode.label}</strong>
                   {currentNode.volume ? <span>{currentNode.volume}</span> : null}

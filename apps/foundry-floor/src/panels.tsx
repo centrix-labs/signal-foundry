@@ -433,19 +433,68 @@ export function ReviewQueue({
   );
 }
 
+// Mirrors READ_ACTIONS in JudgeDeck.tsx so the executive strip classifies
+// governed writes with the exact same rule the Judge Deck uses. Keep in sync.
+const EXECUTIVE_READ_ACTIONS = new Set([
+  "search_capabilities",
+  "recommend_capabilities_for_role",
+  "get_user_work_context",
+  "generate_release_packet",
+  "generate_capability_map",
+  "list_mcp_activity"
+]);
+
 export function ExecutiveView({
   selected,
   reviews = reviewItems,
   events = auditEvents,
+  activity = mcpActivity,
+  packets = releasePackets,
+  riskReviews = [riskReview],
   onOpenReview
 }: {
   selected: Capability;
   reviews?: readonly ReviewItem[];
   events?: readonly AuditEvent[];
+  activity?: readonly McpActivity[];
+  packets?: readonly ReleasePacket[];
+  riskReviews?: readonly RiskReview[];
   onOpenReview?: () => void;
 }) {
+  const governedWrites = activity.filter((item) => !EXECUTIVE_READ_ACTIONS.has(item.action) && item.status === "success").length;
+  const pendingReviews = reviews.filter((item) => item.status === "pending").length;
+  const latestRisk = riskReviews[0];
+  const advisory = latestRisk?.advisory;
+  const advisoryTone = advisory?.status === "available"
+    ? advisory.agreesWithGate === false ? "disagrees" : "agrees"
+    : "unavailable";
+  const advisoryNote = advisoryTone === "disagrees"
+    ? "Advisory disagrees — gate wins"
+    : advisoryTone === "agrees"
+      ? "Advisory agrees"
+      : "Advisory unavailable";
   return (
     <section className="executive-view">
+      <div className="executive-glance" role="group" aria-label="Governance at a glance">
+        <span className="executive-glance-title">Governance at a glance</span>
+        <div className="executive-glance-metric">
+          <strong>{governedWrites}</strong>
+          <span>Governed writes</span>
+        </div>
+        <div className="executive-glance-metric">
+          <strong>{pendingReviews}</strong>
+          <span>Pending human reviews</span>
+        </div>
+        <div className="executive-glance-metric">
+          <strong>{packets.length}</strong>
+          <span>Released packets</span>
+        </div>
+        <div className="executive-glance-metric">
+          <strong>{latestRisk ? riskLabels[latestRisk.riskLevel] : "Pending"}</strong>
+          <span>Deterministic verdict</span>
+          <em className={`executive-glance-advisory ${advisoryTone}`}>{advisoryNote}</em>
+        </div>
+      </div>
       <div className="executive-hero">
         <p className="eyebrow">Signal Foundry</p>
         <h2>Approved workflow launchpad</h2>
@@ -455,7 +504,7 @@ export function ExecutiveView({
         <div className="panel">
           <ShieldCheck size={24} />
           <strong>Human review blocks release</strong>
-          <span>{reviews.filter((item: ReviewItem) => item.status === "pending").length} pending decisions</span>
+          <span>{pendingReviews} pending decisions</span>
         </div>
         <div className="panel">
           <Sparkles size={24} />

@@ -94,9 +94,12 @@ test("portal QA sweep covers screens, controls, links, motion, and evidence", as
   await page.getByRole("button", { name: /Advance to Propose/i }).first().click();
   await expect(page.locator(".stage-stepper button.active")).toContainText("Propose");
   await expect(page.getByRole("button", { name: /Advance to Score/i }).first()).toBeVisible();
-  await expect(page.locator(".advisory-analysis").first()).toHaveCSS("background-color", "oklch(0.9305 0.04476 210.8)");
+  await expect(page.locator(".ledger-card")).toHaveCount(5);
+  await expect(page.locator(".ledger-card.done")).toHaveCount(1);
+  await expect(page.locator(".ledger-card.current")).toHaveCount(1);
 
   await page.getByRole("button", { name: "Foundry Floor" }).click();
+  await expect(page.locator(".advisory-analysis").first()).toBeVisible();
   await page.getByLabel("Search synthetic records").fill("zzzz-no-match");
   await expect(page.getByText("No records match the current search and filters.")).toBeVisible();
   await page.getByLabel("Search synthetic records").fill("");

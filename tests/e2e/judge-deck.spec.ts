@@ -16,6 +16,10 @@ test("judge deck renders the single-screen evidence scorecard", async ({ page })
   await page.screenshot({ path: "evidence/screenshots/judge-deck-local.png", fullPage: true });
 
   await page.getByRole("button", { name: "Judge Mode" }).click();
-  await expect(page.locator(".proof-rail .proof-context").first()).toBeVisible();
+  await expect(page.locator(".ledger-card")).toHaveCount(5);
+  await expect(page.locator(".ledger-card.current")).toHaveCount(1);
+  await page.locator(".judge-action-strip .judge-actions .primary").click();
+  await expect(page.locator(".ledger-card.done")).toHaveCount(1);
+  await expect(page.locator(".ledger-card.current strong")).not.toHaveText("Permission-aware work signals enter the forge");
   await page.screenshot({ path: "evidence/screenshots/judge-mode-local-refined.png", fullPage: true });
 });
