@@ -73,7 +73,7 @@ function useDemoState(baseRecords: readonly Capability[]) {
       const next = step >= judgeStages.length - 1 ? 0 : step + 1;
       const target = recordForStage(next, records);
       setSelectedId(target.id);
-      setActiveView("judge");
+      setActiveView((view) => (view === "deck" ? view : "judge"));
       return next;
     });
   }
@@ -81,7 +81,7 @@ function useDemoState(baseRecords: readonly Capability[]) {
   function resetDemo() {
     setSelectedId(records[0]?.id ?? firstCapability.id);
     setDemoStep(0);
-    setActiveView("judge");
+    setActiveView((view) => (view === "deck" ? view : "judge"));
     setStatusOverrides({});
     setDecisionState("pending");
   }
@@ -90,7 +90,7 @@ function useDemoState(baseRecords: readonly Capability[]) {
     const boundedStage = Math.max(0, Math.min(stageIndex, judgeStages.length - 1));
     setDemoStep(boundedStage);
     setSelectedId(recordForStage(boundedStage, records).id);
-    setActiveView("judge");
+    setActiveView((view) => (view === "deck" ? view : "judge"));
   }
 
   function setSelectedStatus(status: CapabilityStatus) {
@@ -111,7 +111,7 @@ function useDemoState(baseRecords: readonly Capability[]) {
     setSelectedStatus("released");
     setDecisionState("released");
     setDemoStep(judgeStages.length - 1);
-    setActiveView("judge");
+    setActiveView((view) => (view === "deck" ? view : "judge"));
   }
 
   return {

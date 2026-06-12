@@ -86,6 +86,7 @@ export function LeftRail({
         <small>Production synthetic tenant</small>
         <small>SOC 2 + ISO 27001 controls</small>
       </div>
+      {["floor", "atlas", "pipeline", "review"].includes(activeView) ? (
       <div className="filter-stack">
         <span>Filters</span>
         {roles.map((role) => (
@@ -119,6 +120,7 @@ export function LeftRail({
           Stage: Pending Review
         </button>
       </div>
+      ) : null}
     </aside>
   );
 }

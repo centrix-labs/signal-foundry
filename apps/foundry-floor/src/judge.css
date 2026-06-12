@@ -456,3 +456,39 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Light-mode parity for Judge Deck */
+.light-mode .deck-header,
+.light-mode .deck-card {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
+}
+
+.light-mode .deck-card strong {
+  color: oklch(0.23 0.026 220);
+}
+
+.light-mode .deck-card p,
+.light-mode .deck-card header span,
+.light-mode .deck-header .deck-sub {
+  color: oklch(0.45 0.03 220);
+}
+
+.light-mode .deck-card code {
+  color: oklch(0.42 0.1 190);
+}
+
+.light-mode .deck-meta .deck-link {
+  border-color: oklch(0.72 0.09 190);
+  color: oklch(0.4 0.1 195);
+}
+
+.light-mode .deck-status.demo {
+  background: oklch(0.9 0.012 210);
+  color: oklch(0.42 0.03 220);
+}
+
+.light-mode .proof-rail article .proof-context {
+  color: oklch(0.45 0.03 220);
+}
