@@ -635,3 +635,43 @@ summary em,
     padding-inline-start: 0;
   }
 }
+
+
+/* Review Queue: content-sized cards, decision-first center pane */
+.review-list {
+  align-content: start;
+}
+
+.review-list button {
+  align-items: start;
+}
+
+.review-list button > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+
+.review-list button strong {
+  line-height: 1.25;
+}
+
+.review-list button small {
+  color: var(--steel);
+}
+
+.review-list em {
+  padding-top: 2px;
+}
+
+.decision-pane {
+  align-content: start;
+  display: grid;
+  gap: var(--md, 12px);
+  min-width: 0;
+}
+
+.review-queue-layout .release-packet {
+  align-content: start;
+}

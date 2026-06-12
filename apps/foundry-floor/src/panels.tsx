@@ -422,25 +422,28 @@ export function ReviewQueue({
               <PackageCheck size={22} />
               <span>
                 <strong>{capability.title}</strong>
-                <small>{capability.version} / {capability.department}</small>
+                <small>{capability.version}</small>
+                <small>{capability.department}</small>
               </span>
               <em>{item.status}</em>
             </button>
           );
         })}
       </div>
-      <RiskGate selected={selected} riskReviews={riskReviews} />
+      <div className="decision-pane">
+        <div className={`decision-banner ${decisionState}`}>
+          <strong>{decisionCopy[decisionState].title}</strong>
+          <span>{decisionCopy[decisionState].body}</span>
+        </div>
+        <div className="approval-bar">
+          <button type="button" onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
+          <button type="button" onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
+          <button type="button" className="primary" onClick={onApproveRelease}><Check size={18} /> Approve & Release</button>
+        </div>
+        <RiskGate selected={selected} riskReviews={riskReviews} />
+      </div>
       <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
       <McpActivityRail compact items={activity} />
-      <div className={`decision-banner ${decisionState}`}>
-        <strong>{decisionCopy[decisionState].title}</strong>
-        <span>{decisionCopy[decisionState].body}</span>
-      </div>
-      <div className="approval-bar">
-        <button type="button" onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
-        <button type="button" onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
-        <button type="button" className="primary" onClick={onApproveRelease}><Check size={18} /> Approve & Release</button>
-      </div>
     </section>
   );
 }
