@@ -53,10 +53,18 @@
   border: 1px solid currentColor;
   border-radius: 999px;
   display: grid;
+  flex: 0 0 22px;
   font-size: 0.72rem;
   height: 22px;
   place-items: center;
   width: 22px;
+}
+
+@media (max-width: 1280px) {
+  .stage-stepper button {
+    min-width: 0;
+    padding: 8px 6px;
+  }
 }
 
 .stage-stepper button.active {
