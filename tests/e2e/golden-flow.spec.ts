@@ -92,13 +92,30 @@ test("golden flow: propose, score, review, approve, release, verify on Foundry F
   expect(released.ok()).toBe(true);
   expect((await released.json()).status).toBe("released");
 
+  const checkpoint = await callTool(request, "record_copilot_checkpoint", "actor-alex", {
+    ...scope,
+    correlationId: "corr-e2e-golden-005",
+    idempotencyKey: "idem-e2e-golden-release-checkpoint",
+    confirmed: true,
+    sessionId: "session-e2e-golden",
+    speaker: "reviewer",
+    stage: "release",
+    source: "release_result",
+    sourceTool: "release_capability",
+    relatedRecordId: capabilityId,
+    approvalState: "human_approved",
+    actor: "Alex Kim",
+    displayText: "Alex Kim released E2E Renewal Brief Generator with approved source summaries."
+  });
+  expect(checkpoint.ok()).toBe(true);
+
   const activity = await callTool(request, "list_mcp_activity", "actor-alex", {
     ...scope,
     correlationId: "corr-e2e-golden-006",
     limit: 25
   });
   const actions = ((await activity.json()).activity as Array<{ action: string }>).map((item) => item.action);
-  for (const expected of ["create_capability_proposal", "score_capability_risk", "submit_capability_review", "approve_capability", "release_capability"]) {
+  for (const expected of ["create_capability_proposal", "score_capability_risk", "submit_capability_review", "approve_capability", "release_capability", "record_copilot_checkpoint"]) {
     expect(actions).toContain(expected);
   }
 
@@ -122,6 +139,10 @@ test("golden flow: propose, score, review, approve, release, verify on Foundry F
   await expect(page.getByText("MCP Activity")).toBeVisible();
   await expect(page.getByText("release_capability").first()).toBeVisible();
   await expect(page.getByLabel("Advisory analysis")).toBeVisible();
+  await page.getByRole("button", { name: "Copilot Mirror" }).click();
+  await expect(page.getByText("Live from approved MCP checkpoints")).toBeVisible();
+  await expect(page.getByText("Alex Kim released E2E Renewal Brief Generator")).toBeVisible();
+  await expect(page.getByText("corr-e2e-golden-005")).toBeVisible();
 });
 
 test("unauthorized approval is rejected with a sanitized error", async ({ request }) => {

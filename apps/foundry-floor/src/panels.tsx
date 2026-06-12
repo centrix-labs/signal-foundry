@@ -21,13 +21,11 @@ import {
   reviewItems,
   riskLabels,
   riskReview,
-  statusLabels,
-  type CopilotTurn
+  statusLabels
 } from "./data";
 import { signOutUrl, type StaticWebAppUser } from "./auth";
 import { decisionCopy } from "./decisionText";
 import { proofSentence } from "./proofText";
-import { SignalAtlas } from "./visuals";
 
 export interface RecordFilters {
   role?: string;
@@ -427,55 +425,6 @@ export function ReviewQueue({
         <button type="button" onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
         <button type="button" onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
         <button type="button" className="primary" onClick={onApproveRelease}><Check size={18} /> Approve & Release</button>
-      </div>
-    </section>
-  );
-}
-
-export function CopilotMirror({
-  turns,
-  selected,
-  records = capabilities,
-  selectedId,
-  onSelect,
-  onHide
-}: {
-  turns: CopilotTurn[];
-  selected: Capability;
-  records?: readonly Capability[];
-  selectedId: string;
-  onSelect: (id: string) => void;
-  onHide: () => void;
-}) {
-  return (
-    <section className="mirror-layout">
-      <div className="copilot-chat panel">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Copilot Mirror</p>
-            <h2>Microsoft 365 Copilot proof</h2>
-          </div>
-          <div className="mirror-actions">
-            <span className="status-pill approved">Enterprise mode</span>
-            <button type="button" className="text-link" onClick={onHide}>
-              <X size={15} />
-              Hide mirror
-            </button>
-          </div>
-        </div>
-        {turns.map((turn) => (
-          <article key={`${turn.speaker}-${turn.time}`} className={turn.speaker}>
-            <small>{turn.speaker} / {turn.time}</small>
-            <p>{turn.text}</p>
-          </article>
-        ))}
-        <div className="chat-input">Message Copilot</div>
-      </div>
-      <div className="foundry-mirror">
-        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} compact />
-        <RiskGate selected={selected} />
-        <McpActivityRail compact />
-        <ReleasePacketDrawer selected={selected} />
       </div>
     </section>
   );

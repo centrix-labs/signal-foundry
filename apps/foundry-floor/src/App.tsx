@@ -3,7 +3,6 @@ import type { Capability, CapabilityStatus, McpActivity, ReleasePacket, ReviewIt
 import { Check, ChevronRight, ClipboardCheck, Lock, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import {
   CapabilityList,
-  CopilotMirror,
   ExecutiveView,
   LeftRail,
   McpActivityRail,
@@ -13,6 +12,7 @@ import {
   TopBar,
   type RecordFilters
 } from "./panels";
+import { CopilotMirror } from "./CopilotMirror";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
@@ -522,6 +522,8 @@ function AuthenticatedWorkspace({
         {activeView === "mirror" ? (
           <CopilotMirror
             turns={copilotTurns}
+            checkpoints={dashboardData.copilotCheckpoints}
+            isLiveCheckpointSource={dashboardData.copilotCheckpoints.length > 0}
             selected={selected}
             records={visibleRecords}
             selectedId={selectedId}

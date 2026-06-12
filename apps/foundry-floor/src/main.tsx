@@ -5,6 +5,7 @@ import "./styles.css";
 import "./atlas.css";
 import "./judge.css";
 import "./views.css";
+import "./mirror.css";
 import "./login.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

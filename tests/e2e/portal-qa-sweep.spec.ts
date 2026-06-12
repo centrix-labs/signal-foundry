@@ -120,6 +120,7 @@ test("portal QA sweep covers screens, controls, links, motion, and evidence", as
   await page.getByRole("button", { name: "Judge Mode" }).click();
   await page.getByRole("button", { name: /Open Copilot proof/i }).click();
   await expect(page.getByText("Microsoft 365 Copilot proof")).toBeVisible();
+  await expect(page.getByText(/Live from approved MCP checkpoints|Demo transcript fallback/)).toBeVisible();
   await page.getByRole("button", { name: /Hide mirror/i }).click();
   await expect(page.getByText("Latest governed interaction")).toBeVisible();
 

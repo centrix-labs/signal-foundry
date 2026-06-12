@@ -3,6 +3,7 @@ import type {
   AuditEvent,
   Capability,
   CapabilityProposal,
+  CopilotCheckpoint,
   McpActivity,
   ReleasePacket,
   ReviewItem,
@@ -24,7 +25,7 @@ const demoActorId = (import.meta.env["VITE_SIGNAL_FOUNDRY_DEMO_ACTOR"] as string
 
 type RegistrySnapshot = Pick<
   SignalFoundryRegistry,
-  "capabilities" | "proposals" | "riskReviews" | "reviewItems" | "releasePackets" | "mcpActivity" | "auditEvents"
+  "capabilities" | "proposals" | "riskReviews" | "reviewItems" | "releasePackets" | "mcpActivity" | "copilotCheckpoints" | "auditEvents"
 >;
 
 type SnapshotResponse = {
@@ -38,6 +39,7 @@ export type DashboardData = {
   releasePackets: ReleasePacket[];
   riskReviews: RiskReview[];
   mcpActivity: McpActivity[];
+  copilotCheckpoints: CopilotCheckpoint[];
   auditEvents: AuditEvent[];
   isLive: boolean;
   liveError?: string;
@@ -99,6 +101,7 @@ function buildDashboardData(snapshot: RegistrySnapshot | null, liveError?: strin
       releasePackets: [...sampleReleasePackets],
       riskReviews: [sampleRiskReview],
       mcpActivity: [...sampleMcpActivity],
+      copilotCheckpoints: [],
       auditEvents: [...sampleAuditEvents],
       isLive: false,
       liveError
@@ -115,6 +118,7 @@ function buildDashboardData(snapshot: RegistrySnapshot | null, liveError?: strin
     releasePackets: mergeById(snapshot.releasePackets, sampleReleasePackets),
     riskReviews: mergeById(snapshot.riskReviews, [sampleRiskReview]),
     mcpActivity: mergeById(snapshot.mcpActivity, sampleMcpActivity),
+    copilotCheckpoints: [...(snapshot.copilotCheckpoints ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     auditEvents: mergeById(snapshot.auditEvents, sampleAuditEvents),
     isLive: true,
     liveError,

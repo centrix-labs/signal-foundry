@@ -1,0 +1,21 @@
+.copilot-chat .checkpoint em {
+  border-block-start: 1px solid color-mix(in oklch, currentColor 18%, transparent);
+  color: color-mix(in oklch, currentColor 72%, transparent);
+  display: block;
+  font-size: 0.72rem;
+  font-style: normal;
+  line-height: 1.35;
+  margin-block-start: var(--sm, 8px);
+  overflow-wrap: anywhere;
+  padding-block-start: var(--sm, 8px);
+}
+
+.copilot-chat .reviewer {
+  background: color-mix(in oklch, var(--amber) 14%, var(--graphite-3));
+  border-color: color-mix(in oklch, var(--amber) 34%, var(--line));
+}
+
+.light-mode .copilot-chat .reviewer {
+  background: oklch(0.96 0.026 86);
+  border-color: oklch(0.78 0.08 82);
+}
