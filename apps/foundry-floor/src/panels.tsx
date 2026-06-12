@@ -251,8 +251,8 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
       <div className="advisory-analysis comparison muted" aria-label="Advisory analysis">
         <div>
           <span>AI advisory</span>
-          <strong>Advisory unavailable</strong>
-          <p>Deterministic verdict stands.</p>
+          <strong>Advisory unavailable — deterministic verdict stands.</strong>
+          <p>Controls remain deterministic.</p>
         </div>
         <div>
           <span>Deterministic gate</span>
@@ -273,7 +273,7 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
       </div>
       <div className="risk-comparison-grid">
         <article className={disagrees ? "advisory-warn" : "advisory-ok"}>
-          <span>AI advisory</span>
+          <span>Advisory suggested</span>
           <strong>Suggested: {suggested}</strong>
           <p>{reason}</p>
         </article>
