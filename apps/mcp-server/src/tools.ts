@@ -536,7 +536,12 @@ function getCorrelationId(rawInput: unknown) {
 }
 
 function isConfirmed(rawInput: unknown) {
-  return Boolean(rawInput && typeof rawInput === "object" && "confirmed" in rawInput && rawInput.confirmed === true);
+  if (!rawInput || typeof rawInput !== "object" || !("confirmed" in rawInput)) {
+    return false;
+  }
+  const value = (rawInput as { confirmed: unknown }).confirmed;
+  // LLM clients sometimes send the boolean as a "True"/"true" string.
+  return value === true || (typeof value === "string" && value.trim().toLowerCase() === "true");
 }
 
 function ok(data: object, correlationId: string) {

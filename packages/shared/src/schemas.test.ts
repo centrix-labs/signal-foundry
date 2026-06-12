@@ -92,3 +92,25 @@ describe("Copilot checkpoint schema", () => {
     expect(toolSchemas.record_copilot_checkpoint.safeParse({ ...validCheckpoint, displayText: "x".repeat(421) }).success).toBe(false);
   });
 });
+
+describe("LLM client typing tolerance", () => {
+  const base = { ...scope, ...validWriteInputs["create_capability_proposal"] };
+
+  it("accepts confirmed as the strings 'True' and 'true'", () => {
+    expect(toolSchemas.create_capability_proposal.safeParse({ ...base, confirmed: "True" }).success).toBe(true);
+    expect(toolSchemas.create_capability_proposal.safeParse({ ...base, confirmed: "true" }).success).toBe(true);
+  });
+
+  it("still rejects false-like confirmations", () => {
+    expect(toolSchemas.create_capability_proposal.safeParse({ ...base, confirmed: "False" }).success).toBe(false);
+    expect(toolSchemas.create_capability_proposal.safeParse({ ...base, confirmed: "yes" }).success).toBe(false);
+  });
+
+  it("accepts risk booleans and arrays in string form", () => {
+    const risk = { ...scope, ...validWriteInputs["score_capability_risk"], confirmed: true, usesCustomerData: "False", requiresHumanReview: "True" };
+    expect(toolSchemas.score_capability_risk.safeParse(risk).success).toBe(true);
+    const proposal = { ...base, confirmed: true, inputsRequired: '["Account summary"]', proposedOutputs: '["Renewal brief"]' };
+    expect(toolSchemas.create_capability_proposal.safeParse(proposal).success).toBe(true);
+  });
+});
+

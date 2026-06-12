@@ -1,5 +1,36 @@
 import { z } from "zod";
 
+// LLM clients (Copilot's model) sometimes serialize booleans as "True"/"false",
+// arrays as JSON strings, and numbers as strings. Coerce the representation at
+// the contract boundary without weakening the semantics: only exact true
+// equivalents satisfy the confirmation gate.
+const llmBoolean = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+  return value;
+}, z.boolean());
+
+const llmConfirmed = z.preprocess(
+  (value) => (typeof value === "string" && value.trim().toLowerCase() === "true" ? true : value),
+  z.literal(true)
+);
+
+const llmStringArray = (min: number) =>
+  z.preprocess((value) => {
+    if (typeof value === "string") {
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  }, z.array(z.string().min(2)).min(min));
+
 export const roleSchema = z.enum(["employee", "reviewer", "admin"]);
 export const riskLevelSchema = z.enum(["low", "medium", "high", "blocked"]);
 export const capabilityStatusSchema = z.enum([
@@ -34,7 +65,7 @@ export const scopedRequestSchema = z.object({
 
 export const idempotentRequestSchema = scopedRequestSchema.extend({
   idempotencyKey: z.string().min(8),
-  confirmed: z.literal(true)
+  confirmed: llmConfirmed
 });
 
 export const searchCapabilitiesInputSchema = scopedRequestSchema.extend({
@@ -49,7 +80,7 @@ export const recommendCapabilitiesForRoleInputSchema = scopedRequestSchema.exten
   role: z.string().min(2),
   department: z.string().min(2),
   workSignalSummary: z.string().min(10),
-  maxResults: z.number().int().min(1).max(8).default(5)
+  maxResults: z.coerce.number().int().min(1).max(8).default(5)
 });
 
 export const getUserWorkContextInputSchema = scopedRequestSchema.extend({
@@ -70,8 +101,8 @@ export const createCapabilityProposalInputSchema = idempotentRequestSchema.exten
   department: z.string().min(2),
   owner: z.string().min(2),
   intendedAudience: audienceScopeSchema,
-  inputsRequired: z.array(z.string().min(2)).min(1),
-  proposedOutputs: z.array(z.string().min(2)).min(1),
+  inputsRequired: llmStringArray(1),
+  proposedOutputs: llmStringArray(1),
   sourceSummary: z.string().min(10)
 });
 
@@ -81,8 +112,8 @@ export const scoreCapabilityRiskInputSchema = idempotentRequestSchema.extend({
   externalSharing: riskLevelSchema,
   automationLevel: automationLevelSchema,
   audienceScope: audienceScopeSchema,
-  usesCustomerData: z.boolean(),
-  requiresHumanReview: z.boolean()
+  usesCustomerData: llmBoolean,
+  requiresHumanReview: llmBoolean
 });
 
 export const submitCapabilityReviewInputSchema = idempotentRequestSchema.extend({
@@ -138,7 +169,7 @@ export const generateCapabilityMapInputSchema = scopedRequestSchema.extend({
 });
 
 export const listMcpActivityInputSchema = scopedRequestSchema.extend({
-  limit: z.number().int().min(1).max(100).default(25)
+  limit: z.coerce.number().int().min(1).max(100).default(25)
 });
 
 export const toolSchemas = {
