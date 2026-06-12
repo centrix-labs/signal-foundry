@@ -19,6 +19,7 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 Start with [docs/submission/JUDGE-GUIDE.md](docs/submission/JUDGE-GUIDE.md) —
 60-second orientation, live URLs, local quickstart, and what to look for.
 Architecture: [docs/submission/architecture.md](docs/submission/architecture.md).
+Install and sideload guide: [docs/submission/INSTALL.md](docs/submission/INSTALL.md).
 
 ```mermaid
 flowchart LR

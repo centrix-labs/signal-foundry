@@ -138,8 +138,10 @@ const gates = [
   gate(
     "Foundry Floor visibility",
     includesAll(portalPanels, [
-      "Advisory unavailable — deterministic verdict stands.",
-      "Advisory suggested",
+      "AI advisory",
+      "Unavailable. Deterministic verdict stands.",
+      "Suggested:",
+      "Deterministic gate",
       "Gate wins.",
       "Advisory only — the deterministic risk gate is the source of truth."
     ]),
