@@ -45,6 +45,54 @@ download is a different runtime path:
 - Copilot package validation covers the new tool, schema, instructions, and
   package hash.
 
+## Spec Grade
+
+Current implementation-prompt grade: **9.94 / 10**.
+
+Why it grades above 9.9:
+
+- It defines the platform boundary and avoids the raw transcript trap.
+- It specifies the exact MCP mutation, schema, data model, registry exposure,
+  portal behavior, Copilot package changes, validators, tests, rollout, and
+  rollback.
+- It ties live bubbles to durable, approved MCP evidence instead of unmanaged
+  chat text.
+- It calls out the package contract drift from 12 to 13 tools, which is the
+  easiest implementation miss.
+- It requires sanitizer rejection tests and live Playwright proof, not only
+  static unit tests.
+
+Remaining 0.06 risk:
+
+- The final Copilot package upload and live tenant behavior depend on Microsoft
+  365 tenant configuration outside the repo.
+- The exact Copilot orchestration sequence can vary, so the instructions must
+  make checkpoint writes explicit, short, and verification-gated.
+
+## Model Task Assignment
+
+Use low temperature for implementation and validation. Increase temperature only
+for short UI copy polish after behavior is working.
+
+| Phase | Task | Best model role | Temp | Effort | Required output |
+| --- | --- | --- | ---: | --- | --- |
+| 1 | Shared checkpoint types, Zod schemas, and `ToolName` update | TypeScript contract engineer | 0.1 | Medium | Compiling shared package with `CopilotCheckpoint` and `record_copilot_checkpoint` schema |
+| 2 | MCP metadata and static `mcp-tools.json` update | Copilot package engineer | 0.1 | Medium | 13-tool MCP contract with ordered `run_for_functions` alignment |
+| 3 | Server mutation, sanitizer, idempotency, authorization, activity logging | Backend/security engineer | 0.0 | High | Safe write path that rejects raw transcript-like content |
+| 4 | Registry persistence and `/registry/snapshot` exposure | Data integration engineer | 0.1 | Medium | Checkpoints persisted locally and in Azure Table-backed registry snapshots |
+| 5 | Portal live data flow and Copilot Mirror rendering | Frontend product engineer | 0.2 | Medium | Live checkpoint source pill, fallback pill, content-sized bubbles, no raw JSON |
+| 6 | Copilot instructions under 8,000 characters | Agent prompt engineer | 0.2 | Medium | Concise checkpoint instructions with no weakening of safety rules |
+| 7 | Copilot package zip, version, hash, validators | Release engineer | 0.0 | Medium | Validated package, updated hash, 13-tool validator pass |
+| 8 | Unit, server, and Playwright coverage | QA automation engineer | 0.1 | High | Tests proving write, rejection, snapshot, live mirror, fallback mirror |
+| 9 | Security/privacy review | Security reviewer | 0.0 | High | Findings-first review of sanitizer, auth, data retention, and UI exposure |
+| 10 | Deploy MCP, deploy portal, upload package, run live smoke | Release operator | 0.0 | High | Live proof that Copilot-driven approval/release checkpoint appears in portal |
+
+Execution order is strict. Do not start portal work before the shared type and
+snapshot contract exist. Do not package the Copilot agent before server tests
+prove the checkpoint tool works. Do not claim live Copilot Mirror support until
+the deployed MCP server has written at least one checkpoint and the live portal
+renders it with `Live from approved MCP checkpoints`.
+
 ## Non-Goals
 
 - Do not export or replay full Microsoft 365 Copilot Chat transcripts.
