@@ -117,6 +117,7 @@ test("golden flow: propose, score, review, approve, release, verify on Foundry F
   );
   await page.goto("/");
   await expect(page.getByText("Live registry synced")).toBeVisible({ timeout: 15000 });
+  await page.getByRole("button", { name: "Foundry Floor" }).click();
   await expect(page.getByRole("button", { name: new RegExp(PROPOSAL_TITLE) }).first()).toBeVisible();
   await expect(page.getByText("MCP Activity")).toBeVisible();
   await expect(page.getByText("release_capability").first()).toBeVisible();
