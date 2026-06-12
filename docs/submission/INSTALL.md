@@ -52,17 +52,17 @@ For direct API calls, send the actor as `x-sf-actor-id` or as
 
 Validated package:
 
-- Package: `evidence/copilot/signal-foundry-copilot-v016-latest-agent-20260612.zip`
-- Version: `0.1.6`
-- SHA-256: `60821746a73f6894b41186f516d19f99df67edb171172d2de2d4a93b2c22b950`
+- Package: `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`
+- Version: `0.1.7`
+- SHA-256: `bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183`
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 
 Upload steps:
 
 1. Open the Microsoft 365 tenant app upload or app catalog flow.
-2. Upload `evidence/copilot/signal-foundry-copilot-v016-latest-agent-20260612.zip`.
+2. Upload `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
 3. Confirm the app name is `Signal Foundry`.
-4. Confirm the app version is `0.1.6`.
+4. Confirm the app version is `0.1.7`.
 5. Start Microsoft 365 Copilot Chat and open the Signal Foundry agent.
 6. Use the Asteria Dynamics demo defaults when prompted.
 
@@ -89,6 +89,8 @@ Expected behavior:
 - The agent uses sanitized Work IQ-style summaries only.
 - Mutations require explicit confirmation.
 - Tool results include correlation IDs.
+- The agent writes sanitized checkpoints with `record_copilot_checkpoint` after
+  meaningful Signal Foundry steps.
 - Surveillance or productivity-ranking requests are refused.
 - The Foundry Floor portal shows live registry and MCP activity updates after
   the agent calls the deployed MCP tools.
@@ -112,11 +114,11 @@ and Adaptive Card validation.
 
 - Live: Foundry Floor reads the deployed MCP registry snapshot every 15 seconds.
 - Live: MCP tools write proposals, risk reviews, review items, approvals,
-  releases, audit events, and MCP activity.
+  releases, Copilot checkpoints, audit events, and MCP activity.
+- Live: Copilot Mirror shows approved MCP checkpoint summaries when available
+  and falls back to demo transcript bubbles only when no checkpoints exist.
 - Live: Azure AI Foundry advisory reasoning runs when configured; the
   deterministic risk gate remains the source of truth.
-- Static: the Copilot Mirror chat bubbles in the portal are demo transcript
-  fixtures. They are not a live transcript feed from Microsoft 365 Copilot Chat.
 
 ## Evidence Map
 

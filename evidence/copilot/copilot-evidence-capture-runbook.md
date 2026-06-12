@@ -4,8 +4,8 @@ Date: 2026-06-12
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-v016-latest-agent-20260612.zip`
-- SHA-256: `60821746a73f6894b41186f516d19f99df67edb171172d2de2d4a93b2c22b950`
+- Package: `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`
+- SHA-256: `bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
@@ -13,6 +13,7 @@ Date: 2026-06-12
 - Operating contract: all five demo rules are packaged in the agent instructions.
 - Purpose boundary: the agent refuses unrelated services/lookups and destructive delete/purge/tamper requests.
 - Work context tool: `get_user_work_context` resolves sanitized role, title, department, and team context before personalized recommendations.
+- Checkpoint tool: `record_copilot_checkpoint` records sanitized conversation checkpoints for the live Copilot Mirror.
 - Launch starters: first visible cards are `Presales Use Cases`, `Sales Rep Use Cases`, and `CS Leader Use Cases`.
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 - Portal: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
@@ -87,6 +88,7 @@ Expected evidence:
 
 - Copilot reports only actual returned IDs, status, and correlation ID from the Signal Foundry tool.
 - Copilot does not claim registry state changed unless the tool returned `ok: true`.
+- Copilot writes a sanitized checkpoint after successful meaningful steps and verifies it with `list_mcp_activity`.
 
 7. Use the verification prompt:
 
@@ -148,7 +150,7 @@ runbook step a human can complete in one sitting.
 
 1. Existing tenant: `npm install -g @microsoft/m365agentstoolkit-cli`, then
    `atk auth login` (interactive — requires the user) and
-   `atk install --file-path evidence/copilot/signal-foundry-copilot-v016-latest-agent-20260612.zip`.
+   `atk install --file-path evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
    Custom app upload must be enabled by the tenant admin.
 2. If blocked: join the Microsoft 365 Developer Program, provision an instant
    sandbox tenant, enable custom app upload in the Teams admin center, then

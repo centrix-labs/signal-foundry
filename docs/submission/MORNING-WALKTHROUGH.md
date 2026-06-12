@@ -23,9 +23,9 @@ npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate
 Expected, in order:
 - OpenSpec strict validation passes
 - Typecheck: no errors across 4 workspaces
-- Tests: **28 passed** (mcp-server) and **24 passed** (shared)
+- Tests: **33 passed** (mcp-server) and **48 passed** (shared)
 - `Evidence validation pass: 51 files, 4 scenarios`
-- `Copilot package validation pass: 6 files, 12 tools, 0189b098cddf...`
+- `Copilot package validation pass: 6 files, 13 tools, bfd2c4cee02...`
 - `Work IQ + Foundry readiness: ready`
 - `Adaptive card check pass: 4 cards across 4 action manifests.`
 
@@ -90,17 +90,22 @@ curl -s -X POST $MCP/tools/approve_capability -H "x-sf-actor-id: actor-alex" -H 
 # 5. Release -> expect status "released"   (use capabilityId from step 4)
 curl -s -X POST $MCP/tools/release_capability -H "x-sf-actor-id: actor-alex" -H "Content-Type: application/json" -d "{$SCOPE,\"correlationId\":\"corr-walk-005\",\"idempotencyKey\":\"idem-walk-release\",\"confirmed\":true,\"capabilityId\":\"CAPABILITY_ID\",\"releasedBy\":\"Alex Kim\",\"audience\":\"team\",\"version\":\"v1.0.0\"}"
 
-# 6. Unauthorized (employee tries to approve) -> expect HTTP 403, ok:false,
+# 6. Record release checkpoint -> expect ok:true and checkpointId "cp-..."
+curl -s -X POST $MCP/tools/record_copilot_checkpoint -H "x-sf-actor-id: actor-alex" -H "Content-Type: application/json" -d "{$SCOPE,\"correlationId\":\"corr-walk-005\",\"idempotencyKey\":\"idem-walk-release-checkpoint\",\"confirmed\":true,\"sessionId\":\"session-walkthrough\",\"speaker\":\"reviewer\",\"stage\":\"release\",\"source\":\"release_result\",\"sourceTool\":\"release_capability\",\"relatedRecordId\":\"CAPABILITY_ID\",\"approvalState\":\"human_approved\",\"actor\":\"Alex Kim\",\"displayText\":\"Alex Kim released Walkthrough Renewal Brief with approved source summaries.\"}"
+
+# 7. Unauthorized (employee tries to approve) -> expect HTTP 403, ok:false,
 #    sanitized message, no stack/token/bearer anywhere in the body
 curl -si -X POST $MCP/tools/approve_capability -H "x-sf-actor-id: actor-priya" -H "Content-Type: application/json" -d "{$SCOPE,\"correlationId\":\"corr-walk-006\",\"idempotencyKey\":\"idem-walk-unauth\",\"confirmed\":true,\"proposalId\":\"PROPOSAL_ID\",\"reviewer\":\"Priya Shah\",\"approvalNotes\":\"Self-approval attempt.\"}" | head -1
 
-# 7. Confirmation gate -> repeat step 1 with \"confirmed\":true removed
+# 8. Confirmation gate -> repeat step 1 with \"confirmed\":true removed
 #    -> expect 400 "Explicit confirmation required before mutation."
 ```
 
 UI checks after the flow: released card in the capability list and pipeline,
 Release Packet drawer with version/owner/reviewer/correlation ID, MCP Activity
-Rail showing all five actions plus the rejected attempt, Signal Atlas updated.
+Rail showing all five workflow actions, the checkpoint write, and the rejected
+attempt, Signal Atlas updated, and Copilot Mirror showing `Live from approved
+MCP checkpoints`.
 When finished: `Ctrl+C` the dev servers, then `npm run reset` again.
 
 ## Phase 3 — Deployed smoke (3 min)

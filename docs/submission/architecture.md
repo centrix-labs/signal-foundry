@@ -7,7 +7,7 @@ flowchart LR
     end
 
     subgraph ACA["Azure Container Apps"]
-        MCP["External MCP server (TypeScript)\n12 tools - Zod contracts\nJSON-RPC + REST - correlation IDs\nidempotency - sanitized errors"]
+        MCP["External MCP server (TypeScript)\n13 tools - Zod contracts\nJSON-RPC + REST - correlation IDs\nidempotency - sanitized errors"]
         GATE["Deterministic risk gate\nsource of truth"]
         ADV["Advisory reasoning client\n6s timeout - degrade to unavailable"]
     end
@@ -53,8 +53,8 @@ flowchart LR
 
 ## Verification
 
-`npm run validate` chains OpenSpec strict validation, typecheck, 52 unit and
+`npm run validate` chains OpenSpec strict validation, typecheck, unit and
 integration tests, the judge-evidence validator, the Copilot package validator
-(hash-pinned v0.1.5), the Work IQ + Foundry readiness gate, and the Adaptive
+(hash-pinned v0.1.7), the Work IQ + Foundry readiness gate, and the Adaptive
 Card check. `npm run test:e2e` runs the Playwright golden flow against a freshly
 reset local stack.

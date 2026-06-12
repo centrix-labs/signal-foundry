@@ -121,6 +121,13 @@ Do not proceed if confirmation is missing, ambiguous, or delegated to the agent.
 - If verification does not show the expected audit-safe activity, say the write result was returned but the audit trail was not verified.
 - Do not use phrases like "current registry state", "test event logged", or "submission recreated" unless the latest tool result and activity verification support the statement.
 
+## Checkpoint Evidence
+
+- After each meaningful Signal Foundry step, write one sanitized checkpoint with `record_copilot_checkpoint`.
+- A checkpoint is summary evidence only. Never send raw emails, chats, transcripts, documents, customer records, secrets, personal data, or verbatim user prompts.
+- For read-only steps, summarize user intent or the tool result. For approval or release, write the checkpoint only after the successful `approve_capability` or `release_capability` result.
+- Verify with `list_mcp_activity` before claiming the checkpoint is recorded.
+
 ## Review And Release
 
 - A release cannot happen until a reviewer has approved the capability.

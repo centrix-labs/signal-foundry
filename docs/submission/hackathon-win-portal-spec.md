@@ -260,7 +260,7 @@ Goal: Lock the known-good Copilot package and current portal state before UI cha
 Tasks:
 
 - Commit or intentionally checkpoint current Copilot package work.
-- Ensure current package is `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`.
+- Ensure current package is `evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
 - Update stale references to older Copilot package versions, especially `docs/submission/JUDGE-GUIDE.md`.
 - Record current validation baseline in the final PR or commit summary.
 
@@ -673,28 +673,28 @@ npx impeccable --json /Users/mattgraves/Development/hackathon-enterprise/apps/fo
 
 Current package to upload:
 
-`/Users/mattgraves/Development/hackathon-enterprise/evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`
+`/Users/mattgraves/Development/hackathon-enterprise/evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip`
 
 Windows upload path:
 
-`C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip`
+`C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip`
 
 Expected SHA-256:
 
-`0189B098CDDFC99F0459E9C41ACF345D64F44CEBBA1C6A5CADA9B6751B019F0E`
+`BFD2C4CEE02DB1C01BE308B1C9CCE729EDA688DA8D280C55DAED6FB1E1E17183`
 
 ### Pre-Upload Checks
 
 1. Confirm package hash on Windows:
 
    ```powershell
-   Get-FileHash -Algorithm SHA256 -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip"
+   Get-FileHash -Algorithm SHA256 -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip"
    ```
 
 2. Confirm package contents:
 
    ```powershell
-   tar -tf "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip"
+   tar -tf "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip"
    ```
 
    Required entries:
@@ -709,11 +709,11 @@ Expected SHA-256:
 3. Confirm manifest version is newer than prior upload:
 
    ```powershell
-   Expand-Archive -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip" -DestinationPath "$env:TEMP\sf-v015" -Force
-   (Get-Content -Raw "$env:TEMP\sf-v015\manifest.json" | ConvertFrom-Json).version
+   Expand-Archive -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip" -DestinationPath "$env:TEMP\sf-v017" -Force
+   (Get-Content -Raw "$env:TEMP\sf-v017\manifest.json" | ConvertFrom-Json).version
    ```
 
-   Expected: `0.1.5`.
+   Expected: `0.1.7`.
 
 ### Upload Option A: Microsoft 365 Agents Toolkit CLI
 
@@ -727,13 +727,13 @@ atk auth login
 Upload:
 
 ```powershell
-atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip"
+atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip"
 ```
 
 If installing for shared scope is enabled for the tenant:
 
 ```powershell
-atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v015-light-avatar-20260611.zip" --scope Shared
+atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v017-live-checkpoints-20260612.zip" --scope Shared
 ```
 
 ### Upload Option B: Teams Client Custom App Upload
@@ -745,7 +745,7 @@ Use this if the tenant allows custom app upload:
 3. Select `Manage your apps`.
 4. Select `Upload an app`.
 5. Select `Upload a custom app`.
-6. Choose `signal-foundry-copilot-v015-light-avatar-20260611.zip`.
+6. Choose `signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
 7. Add the app.
 8. Open Microsoft 365 Copilot Chat and look for `Signal Foundry`.
 
@@ -786,7 +786,9 @@ Before final upload, verify:
 - `actions[0].file` points to `actions/signal-foundry-mcp.azure.json`.
 - MCP action uses `RemoteMCPServer`.
 - MCP action uses `OAuthPluginVault` auth.
-- Tool description includes all 12 tools.
+- Tool description includes all 13 tools.
+- Tool description includes `record_copilot_checkpoint` for sanitized Copilot
+  Mirror evidence.
 
 ### Post-Upload Smoke Test
 

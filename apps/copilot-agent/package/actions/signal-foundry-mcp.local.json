@@ -3,7 +3,7 @@
   "name_for_human": "Signal Foundry",
   "namespace": "SignalFoundry",
   "description_for_human": "Govern Copilot workflow proposals, risk review, approval, release, and audit evidence.",
-  "description_for_model": "Use Signal Foundry to search approved Copilot capabilities, recommend role-relevant workflow ideas from permission-aware Work IQ summaries, resolve sanitized user work context, create proposals, score risk, submit review, approve or reject proposals, release approved capabilities, generate release packets, generate capability maps, and list audit-safe MCP activity. Demo default company is Asteria Dynamics with tenantId tenant-asteria-dynamics and projectId revenue-ops-launchpad. Work IQ inputs must be sanitized summaries only, never raw Microsoft 365 content or personal data. Do not use it for employee monitoring or productivity scoring. Never claim a registry write, audit event, or correlation ID exists unless a tool returned ok:true for that operation. Do not use it for weather, news, sports, stock prices, generic web search, unrelated services, or destructive delete, purge, or tamper operations. Refuse out-of-scope requests and redirect to governed Signal Foundry workflows. Use get_user_work_context to personalize opening recommendations from sanitized role, title, department, and team context only.",
+  "description_for_model": "Use Signal Foundry to search approved Copilot capabilities, recommend role-relevant workflow ideas from permission-aware Work IQ summaries, resolve sanitized user work context, create proposals, score risk, submit review, approve or reject proposals, release approved capabilities, generate release packets, generate capability maps, and list audit-safe MCP activity. Demo default company is Asteria Dynamics with tenantId tenant-asteria-dynamics and projectId revenue-ops-launchpad. Work IQ inputs must be sanitized summaries only, never raw Microsoft 365 content or personal data. Do not use it for employee monitoring or productivity scoring. Never claim a registry write, audit event, or correlation ID exists unless a tool returned ok:true for that operation. Do not use it for weather, news, sports, stock prices, generic web search, unrelated services, or destructive delete, purge, or tamper operations. Refuse out-of-scope requests and redirect to governed Signal Foundry workflows. Use get_user_work_context to personalize opening recommendations from sanitized role, title, department, and team context only. Use record_copilot_checkpoint only for sanitized checkpoint summaries after meaningful Signal Foundry steps; never raw Copilot or Microsoft 365 content.",
   "capabilities": {
     "conversation_starters": [
       {
@@ -328,6 +328,23 @@
       }
     },
     {
+      "name": "record_copilot_checkpoint",
+      "description": "Record a sanitized Signal Foundry conversation checkpoint for Copilot Mirror. Requires confirmed:true and idempotencyKey. Never send raw Microsoft 365 content, emails, chats, transcripts, customer records, secrets, tokens, personal data, or stack traces.",
+      "capabilities": {
+        "confirmation": {
+          "type": "AdaptiveCard",
+          "title": "Record checkpoint",
+          "body": "Record this sanitized Signal Foundry checkpoint summary?"
+        },
+        "security_info": {
+          "data_handling": [
+            "DataTransform",
+            "ResourceStateUpdate"
+          ]
+        }
+      }
+    },
+    {
       "name": "generate_release_packet",
       "description": "Generate an audit-safe release packet for judges and reviewers.",
       "capabilities": {
@@ -465,6 +482,7 @@
         "approve_capability",
         "reject_capability",
         "release_capability",
+        "record_copilot_checkpoint",
         "generate_release_packet",
         "generate_capability_map",
         "list_mcp_activity"

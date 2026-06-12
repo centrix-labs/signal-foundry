@@ -5,9 +5,9 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v016-latest-agent-20260612.zip");
+const packagePath = join(repoRoot, "evidence/copilot/signal-foundry-copilot-v017-live-checkpoints-20260612.zip");
 const runbookPath = join(repoRoot, "evidence/copilot/copilot-evidence-capture-runbook.md");
-const expectedHash = "60821746a73f6894b41186f516d19f99df67edb171172d2de2d4a93b2c22b950";
+const expectedHash = "bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183";
 const expectedMcpUrl = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp";
 const expectedPortal = "https://red-coast-0b0c14e0f.7.azurestaticapps.net";
 const maxInstructionsLength = 8000;
@@ -61,7 +61,7 @@ assertCondition(!entries.some((entry) => entry.includes("__MACOSX") || entry.sta
 
 const manifest = readZipJson("manifest.json");
 assertCondition(manifest.manifestVersion === "1.27", "Teams manifest version must remain 1.27");
-assertCondition(manifest.version === "0.1.6", "Teams app package version must be newer than the installed 0.1.5 title");
+assertCondition(manifest.version === "0.1.7", "Teams app package version must be newer than the installed 0.1.6 title");
 assertCondition(manifest.name?.short === "Signal Foundry", "Manifest short name must be Signal Foundry");
 assertCondition(manifest.copilotAgents?.declarativeAgents?.[0]?.id === "signalFoundryAgent", "Manifest declarative agent ID mismatch");
 assertCondition(manifest.copilotAgents.declarativeAgents[0].file === "declarative-agent.azure.json", "Manifest must point at Azure declarative agent");
@@ -104,6 +104,8 @@ assertIncludesAll(declarativeAgent.instructions, [
   "Never ask the user to paste raw emails",
   "Never invent proposal IDs",
   "get_user_work_context",
+  "record_copilot_checkpoint",
+  "A checkpoint is summary evidence only",
   "I see you're a <jobTitle> working with <department>.",
   "Refusal Boundary"
 ], "Declarative agent instructions");
@@ -126,8 +128,9 @@ assertIncludesAll(actionManifest.description_for_model, [
 
 const toolDescription = readZipJson("mcp-tools.json");
 const tools = toolDescription.tools ?? [];
-assertCondition(tools.length === 12, "MCP tool description must include 12 tools");
+assertCondition(tools.length === 13, "MCP tool description must include 13 tools");
 assertCondition(tools.some((tool) => tool.name === "get_user_work_context" && tool.annotations?.readOnlyHint === true), "MCP tool description must include read-only get_user_work_context");
+assertCondition(tools.some((tool) => tool.name === "record_copilot_checkpoint" && !tool.annotations?.readOnlyHint), "MCP tool description must include mutation record_copilot_checkpoint");
 assertCondition(JSON.stringify(actionManifest.runtimes[0].run_for_functions ?? []) === JSON.stringify(tools.map((tool) => tool.name)), "MCP runtime run_for_functions must list every static MCP tool in order");
 for (const tool of tools) {
   const required = tool.inputSchema?.required ?? [];
@@ -139,6 +142,9 @@ for (const tool of tools) {
     assertCondition(required.includes("confirmed"), `${tool.name} mutation missing confirmation requirement`);
   }
 }
+const checkpointTool = tools.find((tool) => tool.name === "record_copilot_checkpoint");
+assertCondition(checkpointTool?.inputSchema?.required?.includes("sessionId"), "record_copilot_checkpoint missing sessionId requirement");
+assertCondition(checkpointTool?.inputSchema?.required?.includes("displayText"), "record_copilot_checkpoint missing displayText requirement");
 
 const runbook = readFileSync(runbookPath, "utf8");
 assertIncludesAll(runbook, [

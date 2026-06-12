@@ -28,8 +28,20 @@ UNCONFIRMED items (no official doc statement found; handle per the uplift prompt
 
 - `npm run validate` green end to end after fixing the stale `~/Documents` repo root in
   `scripts/validate-copilot-package.mjs` (repo moved to `~/Development`).
-- Test floor: 24 (18 mcp-server, 6 shared). Evidence validator: 46 files, 4 scenarios.
-  Copilot package validator: 6 files, 12 tools, hash `fd6248675f57...`.
+- Historical test floor before live checkpoints: 24 tests. Evidence validator:
+  46 files, 4 scenarios.
+
+## 2026-06-12 — live checkpoint package
+
+- Copilot package validator updated for
+  `signal-foundry-copilot-v017-live-checkpoints-20260612.zip`.
+- Static MCP tool contract is now 13 tools, adding
+  `record_copilot_checkpoint` as a mutation with `idempotencyKey`,
+  `confirmed`, `sessionId`, `approvalState`, and sanitized `displayText`.
+- Package SHA-256:
+  `bfd2c4cee02db1c01be308b1c9cce729eda688da8d280c55daed6fb1e1e17183`.
+- Current Copilot package validator evidence: 6 files, 13 tools, hash
+  `bfd2c4cee02...`.
 
 ## 2026-06-10 — declarative agent capabilities (v1.6 vs v1.7)
 
