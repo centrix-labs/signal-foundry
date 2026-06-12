@@ -240,8 +240,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--sm, 8px);
-  left: 16px;
+  justify-content: flex-end;
+  left: auto;
+  max-width: 48%;
   position: absolute;
+  right: 16px;
   z-index: 2;
 }
 

@@ -13,6 +13,7 @@ import {
   type RecordFilters
 } from "./panels";
 import { CopilotMirror } from "./CopilotMirror";
+import { JudgeDeck } from "./JudgeDeck";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
@@ -160,7 +161,8 @@ function JudgeMode({
   onAdvance,
   onStageSelect,
   onReset,
-  onOpenMirror
+  onOpenMirror,
+  checkpointCount = 0
 }: {
   records: readonly Capability[];
   selected: Capability;
@@ -171,6 +173,7 @@ function JudgeMode({
   reviews: ReturnType<typeof useDashboardData>["reviewItems"];
   riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
   stageIndex: number;
+  checkpointCount: number;
   onAdvance: () => void;
   onStageSelect: (stageIndex: number) => void;
   onReset: () => void;
@@ -225,18 +228,21 @@ function JudgeMode({
             <Sparkles size={18} />
             <span>Copilot grounded</span>
             <strong>People + Meetings, summary-only</strong>
-            <small>Declarative agent package</small>
+            <p className="proof-context">Grounding capabilities enabled in the declarative agent manifest. Raw Microsoft 365 content never leaves Copilot.</p>
+            <small>Declarative agent package v1.0.0</small>
           </article>
           <article>
             <ShieldCheck size={18} />
             <span>Risk gated</span>
-            <strong>{requiredControls == null ? "Controls unavailable" : `${requiredControls} required controls`}</strong>
+            <strong>{requiredControls == null ? "Awaiting risk score" : `${requiredControls} required controls`}</strong>
+            <p className="proof-context">The deterministic gate is the source of truth. Advisory AI may disagree — the disagreement is shown, and the gate wins.</p>
             <small>Deterministic verdict: {selectedRisk ? selectedRisk.riskLevel : selected.riskLevel}</small>
           </article>
           <article>
             <ClipboardCheck size={18} />
             <span>Audit ready</span>
             <strong>{releaseState}</strong>
+            <p className="proof-context">One correlation ID links the Copilot turn, MCP activity, audit log, and release packet end to end.</p>
             <small>{correlationId}</small>
           </article>
         </aside>
@@ -275,6 +281,11 @@ function JudgeMode({
           <div className="proof-badges" aria-label="Copilot package proof badges">
             {["People", "Meetings", "OAuth", "Summary-only", "No raw M365 content"].map((badge) => <span key={badge}>{badge}</span>)}
           </div>
+          <p className="proof-context">
+            {checkpointCount > 0
+              ? `${checkpointCount} live Copilot checkpoint${checkpointCount === 1 ? "" : "s"} recorded against the governed MCP — open the proof to replay them.`
+              : "Live Copilot checkpoints appear here the moment the agent calls the governed MCP."}
+          </p>
         </section>
       </div>
       <McpActivityRail items={activity} proofMode />
@@ -291,6 +302,7 @@ function FoundryFloor({
   packets,
   reviews,
   riskReviews,
+  checkpoints = [],
   onOpenMirror
 }: {
   records: readonly Capability[];
@@ -301,6 +313,7 @@ function FoundryFloor({
   packets: ReturnType<typeof useDashboardData>["releasePackets"];
   reviews: ReturnType<typeof useDashboardData>["reviewItems"];
   riskReviews: ReturnType<typeof useDashboardData>["riskReviews"];
+  checkpoints?: ReturnType<typeof useDashboardData>["copilotCheckpoints"];
   onOpenMirror: () => void;
 }) {
   return (
@@ -315,9 +328,11 @@ function FoundryFloor({
               <p className="eyebrow">Copilot Mirror</p>
               <h2>Latest governed interaction</h2>
             </div>
-            <span className="status-pill approved">Live</span>
+            <span className={`status-pill ${checkpoints.length > 0 ? "approved" : "pending"}`}>
+              {checkpoints.length > 0 ? "Live" : "Demo"}
+            </span>
           </div>
-          <p>{copilotTurns[2]?.text}</p>
+          <p>{checkpoints[0]?.displayText ?? copilotTurns[2]?.text}</p>
           <button type="button" className="text-link" onClick={onOpenMirror}>Open mirror <ChevronRight size={14} /></button>
         </section>
       </div>
@@ -483,9 +498,17 @@ function AuthenticatedWorkspace({
             reviews={dashboardData.reviewItems}
             riskReviews={dashboardData.riskReviews}
             stageIndex={demoStep}
+            checkpointCount={dashboardData.copilotCheckpoints.length}
             onAdvance={advanceDemo}
             onStageSelect={selectDemoStage}
             onReset={resetDemo}
+            onOpenMirror={() => setActiveView("mirror")}
+          />
+        ) : null}
+        {activeView === "deck" ? (
+          <JudgeDeck
+            data={dashboardData}
+            onOpenStory={() => setActiveView("judge")}
             onOpenMirror={() => setActiveView("mirror")}
           />
         ) : null}
@@ -499,6 +522,7 @@ function AuthenticatedWorkspace({
             packets={dashboardData.releasePackets}
             reviews={dashboardData.reviewItems}
             riskReviews={dashboardData.riskReviews}
+            checkpoints={dashboardData.copilotCheckpoints}
             onOpenMirror={() => setActiveView("mirror")}
           />
         ) : null}

@@ -48,6 +48,7 @@ export function LeftRail({
 }) {
   const items = [
     ["judge", "Judge Mode"],
+    ["deck", "Judge Deck"],
     ["floor", "Foundry Floor"],
     ["atlas", "Signal Atlas"],
     ["pipeline", "Release Pipeline"],

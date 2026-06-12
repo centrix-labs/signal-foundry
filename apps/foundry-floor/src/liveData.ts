@@ -20,7 +20,7 @@ import {
 } from "./data";
 
 const defaultApiBase = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io";
-const apiBase = ((import.meta.env["VITE_SIGNAL_FOUNDRY_API_BASE"] as string | undefined) ?? defaultApiBase).replace(/\/$/, "");
+export const apiBase = ((import.meta.env["VITE_SIGNAL_FOUNDRY_API_BASE"] as string | undefined) ?? defaultApiBase).replace(/\/$/, "");
 const demoActorId = (import.meta.env["VITE_SIGNAL_FOUNDRY_DEMO_ACTOR"] as string | undefined) ?? "actor-alex";
 
 type RegistrySnapshot = Pick<
