@@ -50,6 +50,39 @@ For direct API calls, send the actor as `x-sf-actor-id` or as
 
 ## Copilot Agent Sideload
 
+### Tenant prerequisites
+
+- Custom app upload (sideloading) enabled for your user in the Teams admin
+  center.
+- A Microsoft 365 Copilot license or tenant metered usage: the agent declares
+  People and Meetings grounding capabilities, and any capability beyond
+  WebSearch requires one of the two (declarative agent manifest licensing
+  note, verified 2026-06-10).
+- Rights to create an Entra app registration and a Teams Developer Portal
+  OAuth client registration (one-time, below).
+
+### One-time Entra + OAuth setup
+
+The MCP action authenticates with `OAuthPluginVault`. Two registrations must
+agree, or sign-in fails:
+
+1. Entra app registration `Signal Foundry MCP API` must expose a delegated
+   scope. Run `bash scripts/register-entra-app.sh --apply` (creates the app,
+   sets `api://<appId>` as the Application ID URI, and exposes
+   `access_as_user` with v2 tokens), or follow
+   `apps/copilot-agent/docs/entra-registration.md`.
+2. Teams Developer Portal -> Tools -> OAuth client registration: client ID and
+   secret from that app, and the Scope field set to the FULLY QUALIFIED
+   string `api://<appId>/access_as_user`. A bare `access_as_user` resolves
+   against Microsoft Graph and sign-in fails with `AADSTS650053`.
+3. Put the resulting OAuth registration ID in the action manifest's
+   `runtimes[0].auth.reference_id` before packaging (already set in the
+   validated package for the demo tenant).
+
+Expect a one-time consent dialog ("Access Signal Foundry on your behalf") on
+first use, and a confirmation prompt on first plugin invocation — both are
+correct behavior, not errors.
+
 Validated package:
 
 - Package: `evidence/copilot/signal-foundry-copilot-v101-guided-chat-20260612.zip`
@@ -57,14 +90,22 @@ Validated package:
 - SHA-256: `a1e6ca2c1d1fed705791e8ac090f6251b8b6a188adec1cb33caa6fcd3e5b3f30`
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 
-Upload steps:
+Upload steps (CLI path):
 
-1. Open the Microsoft 365 tenant app upload or app catalog flow.
-2. Upload `evidence/copilot/signal-foundry-copilot-v101-guided-chat-20260612.zip`.
-3. Confirm the app name is `Signal Foundry`.
-4. Confirm the app version is `1.0.1`.
-5. Start Microsoft 365 Copilot Chat and open the Signal Foundry agent.
-6. Use the Asteria Dynamics demo defaults when prompted.
+```bash
+npm install -g @microsoft/m365agentstoolkit-cli
+atk auth login           # interactive Microsoft sign-in
+atk install --file-path evidence/copilot/signal-foundry-copilot-v101-guided-chat-20260612.zip
+```
+
+Or via the portal: open the Microsoft 365 tenant app upload / app catalog flow
+and upload the same zip. Either way:
+
+1. Confirm the app name is `Signal Foundry` and the version is `1.0.1`
+   (an existing 1.0.x install is upgraded in place).
+2. Start Microsoft 365 Copilot Chat and open the Signal Foundry agent.
+3. Use the Asteria Dynamics demo defaults when prompted; say `menu` for the
+   guided journey, or click the Guided Tour conversation starter.
 
 Smoke prompts:
 
