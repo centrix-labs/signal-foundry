@@ -44,6 +44,8 @@ download is a different runtime path:
   Mirror without a page rebuild.
 - Copilot package validation covers the new tool, schema, instructions, and
   package hash.
+- Package evidence docs record the 13-tool validator result so stale 12-tool
+  evidence cannot survive the implementation.
 
 ## Spec Grade
 
@@ -59,6 +61,8 @@ Why it grades above 9.9:
   chat text.
 - It calls out the package contract drift from 12 to 13 tools, which is the
   easiest implementation miss.
+- It names the exact storage adapter and package evidence files that must move
+  with the schema, reducing implementation inference.
 - It requires sanitizer rejection tests and live Playwright proof, not only
   static unit tests.
 
@@ -205,6 +209,19 @@ export const recordCopilotCheckpointInputSchema = idempotentRequestSchema.extend
 
 Add to `toolSchemas` and `ToolName`.
 
+Authorization:
+
+- Add `record_copilot_checkpoint` to `writeActions` in
+  `apps/mcp-server/src/auth.ts`.
+- Do not add it to `reviewerActions`; employee actors must be able to write
+  `system_approved` discovery/proposal/risk/refusal checkpoints.
+- Enforce reviewer/admin role inside the checkpoint mutation when
+  `approvalState` is `human_approved`.
+- `confirmed:true` on a checkpoint means the agent confirms the summary is
+  sanitized and derived from an already-permitted Signal Foundry step. It does
+  not replace explicit user confirmation required by proposal, risk, review,
+  approval, release, or rejection mutations.
+
 Metadata in `packages/shared/src/mcpTools.ts`:
 
 - Description must state this records sanitized conversation checkpoints only.
@@ -221,6 +238,11 @@ Package impact:
 - `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json`
   `run_for_functions` must include the new tool in the same order as
   `mcp-tools.json`.
+- `apps/copilot-agent/package/actions/signal-foundry-mcp.local.json` must stay
+  aligned with the same `mcp-tools.json` contract.
+- REST OpenAPI fallback files should be changed only if the active package
+  action references them or validators require parity. If left unchanged, add a
+  short note in the final report explaining that the deployed package uses MCP.
 
 ## Server Behavior
 
@@ -235,6 +257,9 @@ Implementation requirements:
 
 - Enforce the existing write authorization path.
 - Enforce `confirmed: true` because this writes durable evidence.
+- Permit `system_approved` checkpoints from authenticated employee, reviewer, or
+  admin actors.
+- Require reviewer/admin actor role for `human_approved` checkpoints.
 - Generate deterministic ID with `makeId("cp", input.idempotencyKey)`.
 - Deduplicate by ID and return existing checkpoint if present.
 - Sanitize `displayText` before writing.
@@ -269,7 +294,8 @@ Update registry initialization and persistence:
 - `data/signal-foundry-seed.json`:
   add `"copilotCheckpoints": []`
 - Azure Table Storage mapping:
-  add checkpoint entity kind if the store maps collections to table rows.
+  update `apps/mcp-server/src/tableStorageAdapter.ts` `tableNames` with
+  `copilotCheckpoints: "CopilotCheckpoints"`.
 - `/registry/snapshot`:
   include `copilotCheckpoints`.
 
@@ -331,7 +357,13 @@ Update:
 
 - `apps/copilot-agent/docs/instructions.md`
 - `apps/copilot-agent/package/declarative-agent.azure.json`
+- `apps/copilot-agent/package/declarative-agent.local.json`
 - generated package zip
+
+After package validation, update
+`apps/copilot-agent/docs/schema-verification.md` with the new validator result,
+tool count, and package hash. This file currently records baseline package
+evidence and must not remain on the old 12-tool count.
 
 Instruction additions must fit under the 8,000-character validation limit.
 Use concise language:
@@ -369,6 +401,7 @@ Unit tests:
 - Schema rejects raw transcript-length text.
 - Mutation without `confirmed:true` fails.
 - Employee can write a system-approved discovery checkpoint.
+- Employee cannot write a human-approved approval or release checkpoint.
 - Reviewer can write a human-approved approval checkpoint.
 - Human-approved checkpoint is rejected unless stage is `approval` or `release`.
 - Unsafe display text is rejected and logged as sanitized MCP activity.
@@ -393,6 +426,8 @@ Package validation:
 
 - `validate:copilot` expects 13 tools.
 - Package hash is updated.
+- `apps/copilot-agent/docs/schema-verification.md` records the new 13-tool
+  validator evidence and package hash.
 - `run_for_functions` includes `record_copilot_checkpoint`.
 - Instructions include the checkpoint boundary.
 - Instructions remain under 8,000 characters.
@@ -439,6 +474,10 @@ End-to-end:
 8. Upload the new Copilot package.
 9. Run live smoke:
    - use Copilot agent to write one discovery checkpoint
+   - if tenant upload is blocked, use the deployed MCP endpoint with demo bearer
+     actor `actor-priya` only as a fallback smoke for a `system_approved`
+     discovery checkpoint, then label the evidence as MCP smoke rather than
+     Copilot tenant smoke
    - approve/release a capability
    - confirm the portal mirror shows live approval/release checkpoint bubbles
 

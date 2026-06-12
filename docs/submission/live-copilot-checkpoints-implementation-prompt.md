@@ -23,6 +23,17 @@ declarative agent through MCP.
 The result must show real MCP-backed checkpoint bubbles in Foundry Floor while
 preserving the demo fallback when no live checkpoints exist.
 
+Repo facts already verified for this prompt:
+
+- `apps/mcp-server/src/auth.ts` has explicit `writeActions` and
+  `reviewerActions` lists.
+- `apps/mcp-server/src/tableStorageAdapter.ts` has an explicit `tableNames`
+  map.
+- The Copilot package contains local and Azure MCP action manifests, local and
+  Azure declarative-agent JSON files, and REST OpenAPI fallback files.
+- `apps/copilot-agent/docs/schema-verification.md` records package validator
+  evidence and currently must be moved from 12 tools to 13 tools.
+
 ## Non-Negotiables
 
 - Do not scrape, export, replay, or store raw Microsoft 365 Copilot Chat
@@ -106,14 +117,18 @@ Regenerate or update:
 
 - `apps/copilot-agent/package/actions/mcp-tools.json`
 - `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json`
-- `apps/copilot-agent/package/actions/signal-foundry-mcp.local.json` if local
-  package contract is kept in sync
+- `apps/copilot-agent/package/actions/signal-foundry-mcp.local.json`
 
 Required package contract:
 
 - Static MCP tool count becomes 13.
 - `run_for_functions` includes `record_copilot_checkpoint`.
 - Tool order in `run_for_functions` matches `mcp-tools.json`.
+- Keep both `signal-foundry-mcp.azure.json` and
+  `signal-foundry-mcp.local.json` aligned to the same tool list.
+- Do not update REST OpenAPI fallback contracts unless an active package action
+  or validator requires parity. If they stay unchanged, report that the live
+  package path uses Remote MCP.
 
 Update `scripts/validate-copilot-package.mjs`:
 
@@ -121,6 +136,7 @@ Update `scripts/validate-copilot-package.mjs`:
 - Require `record_copilot_checkpoint`.
 - Require mutation fields `idempotencyKey` and `confirmed`.
 - Require the package instructions to include the checkpoint boundary.
+- Print or assert the new 13-tool count so stale 12-tool evidence is obvious.
 
 ### 3. Server Mutation
 
@@ -133,6 +149,14 @@ Behavior:
 
 - Use existing authorization path.
 - Reject missing confirmation.
+- Interpret checkpoint `confirmed:true` as confirmation that the checkpoint is a
+  sanitized summary from an already-permitted Signal Foundry step. It must not
+  bypass explicit confirmation for proposal, risk, review, approval, rejection,
+  or release mutations.
+- Update `apps/mcp-server/src/auth.ts`:
+  - add `record_copilot_checkpoint` to `writeActions`
+  - do not add it to `reviewerActions`
+  - keep normal authenticated actor checks
 - Generate ID with `makeId("cp", input.idempotencyKey)`.
 - Deduplicate by ID.
 - Reject unsafe `displayText`.
@@ -145,6 +169,10 @@ Validation rules:
 
 - `approvalState: "human_approved"` is allowed only for `approval` or
   `release`.
+- `system_approved` checkpoints are allowed for authenticated employee,
+  reviewer, or admin actors.
+- `human_approved` checkpoints require reviewer or admin actor role inside the
+  checkpoint mutation.
 - `approval` and `release` stages require `relatedRecordId`.
 - Reject unsafe content with `400`, `ok:false`, sanitized error, and rejected
   activity.
@@ -177,8 +205,9 @@ Add:
 Update registry persistence:
 
 - Local file store reads/writes checkpoint array.
-- Azure Table-backed store persists checkpoint records if collection-to-table
-  mapping exists.
+- Update `apps/mcp-server/src/tableStorageAdapter.ts` `tableNames` with
+  `copilotCheckpoints: "CopilotCheckpoints"` so Azure Table-backed persistence
+  stores the collection.
 - `/registry/snapshot` includes `copilotCheckpoints`.
 
 Sort checkpoints newest-first in snapshot or client data flow.
@@ -229,7 +258,7 @@ Update:
 
 - `apps/copilot-agent/docs/instructions.md`
 - `apps/copilot-agent/package/declarative-agent.azure.json`
-- local manifest/instructions only if repo pattern requires sync
+- `apps/copilot-agent/package/declarative-agent.local.json`
 
 Instruction text must stay below the 8,000-character limit and must not weaken
 existing safety rules.
@@ -253,6 +282,8 @@ Update the Copilot package zip:
 - include updated instructions
 - include existing icons
 - update validator hash
+- update `apps/copilot-agent/docs/schema-verification.md` with the new
+  validator result, 13-tool count, and package hash
 
 ### 8. Tests
 
@@ -262,6 +293,7 @@ Add or update tests for:
 - schema rejects invalid enum/overlong text
 - mutation without `confirmed:true` fails
 - employee can write system-approved discovery checkpoint
+- employee cannot write human-approved approval/release checkpoint
 - reviewer can write human-approved approval checkpoint
 - human-approved checkpoint rejected for non-approval/release stages
 - approval/release checkpoints require `relatedRecordId`
@@ -273,6 +305,7 @@ Add or update tests for:
 - Playwright writes a checkpoint through MCP and sees the mirror update after
   polling
 - validators expect 13 tools and updated package hash
+- schema verification docs no longer contain stale 12-tool package evidence
 
 ### 9. Validation
 
@@ -316,8 +349,13 @@ Only after local validation passes:
 3. Deploy Foundry Floor second.
 4. Upload the new Copilot package.
 5. Use the Copilot agent to write a discovery checkpoint.
-6. Approve or release a capability and write the approval/release checkpoint.
-7. Open the live portal and verify:
+6. If tenant package upload is blocked, use the deployed MCP endpoint with demo
+   bearer actor `actor-priya` only as a fallback smoke for a `system_approved`
+   discovery checkpoint, and label that evidence as MCP smoke rather than
+   Copilot tenant smoke.
+7. Approve or release a capability and write the approval/release checkpoint
+   using reviewer actor `actor-alex`.
+8. Open the live portal and verify:
    - Copilot Mirror shows `Live from approved MCP checkpoints`
    - approval/release checkpoint bubbles are visible
    - bubbles include correlation IDs
