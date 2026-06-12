@@ -61,9 +61,14 @@
 }
 
 @media (max-width: 1280px) {
+  .judge-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .stage-stepper button {
     min-width: 0;
+    overflow: hidden;
     padding: 8px 6px;
+    white-space: nowrap;
   }
 }
 
