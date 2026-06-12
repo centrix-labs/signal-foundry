@@ -57,7 +57,7 @@
       "value": "2024-10-21"
     },
     "containerImage": {
-      "value": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:checkpoint-f"
+      "value": "acrsignalfoundry.azurecr.io/signal-foundry-mcp:live-checkpoints-559072f"
     },
     "containerPort": {
       "value": 7071
