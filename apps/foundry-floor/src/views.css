@@ -194,9 +194,20 @@ summary em,
   justify-self: end;
 }
 
-.copilot-chat .copilot,
+.copilot-chat .copilot {
+  background: color-mix(in oklch, var(--teal) 14%, oklch(0.955 0.026 215));
+  border-color: color-mix(in oklch, var(--teal) 34%, oklch(0.8 0.03 215));
+  box-shadow: 0 10px 26px rgba(29, 92, 115, 0.08);
+  color: oklch(0.22 0.034 225);
+}
+
+.copilot-chat .copilot small {
+  color: oklch(0.48 0.04 220);
+}
+
 .copilot-chat .foundry {
-  background: color-mix(in oklch, var(--graphite-3) 70%, transparent);
+  background: color-mix(in oklch, var(--teal) 10%, var(--graphite-3));
+  border-color: color-mix(in oklch, var(--teal) 35%, var(--line));
 }
 
 .chat-input {
@@ -335,6 +346,21 @@ summary em,
 .light-mode .theme-switch button.active {
   background: oklch(0.86 0.072 185);
   color: oklch(0.2 0.032 215);
+}
+
+.light-mode .copilot-chat .copilot {
+  background: oklch(0.94 0.028 220);
+  border-color: oklch(0.78 0.055 215);
+  color: oklch(0.22 0.035 225);
+}
+
+.light-mode .copilot-chat .copilot small {
+  color: oklch(0.48 0.04 220);
+}
+
+.light-mode .copilot-chat .foundry {
+  background: oklch(0.955 0.02 190);
+  border-color: oklch(0.76 0.055 190);
 }
 
 .executive-view {
