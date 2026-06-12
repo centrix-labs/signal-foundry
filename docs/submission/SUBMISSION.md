@@ -53,9 +53,9 @@ trail end to end.
    AI idea to released capability** — propose in the flow of work (Copilot
    Chat), get a transparent risk verdict, and ship with approval instead of
    around it.
-2. **Make AI reasoning trustworthy enough to govern with** — the Azure AI
-   Foundry / Azure OpenAI advisory path deliberates, a deterministic rule
-   engine decides, and disagreement is displayed rather than hidden; the
+2. **Make AI reasoning trustworthy enough to govern with** — the
+   Azure AI Foundry / Azure OpenAI advisory path deliberates, a deterministic
+   rule engine decides, and disagreement is displayed rather than hidden; the
    system never depends on the model being right or even available.
 3. **Keep people safe by structure, not policy** — raw Microsoft 365 content
    never reaches the MCP server by contract (schema-enforced, length-capped,
