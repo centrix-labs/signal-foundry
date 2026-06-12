@@ -1,7 +1,25 @@
 {
+  "allowConfigFileUpdates": true,
+  "branch": null,
+  "buildProperties": null,
+  "contentDistributionEndpoint": "https://content-eus2.infrastructure.7.azurestaticapps.net",
+  "customDomains": [],
+  "databaseConnections": [],
   "defaultHostname": "red-coast-0b0c14e0f.7.azurestaticapps.net",
+  "enterpriseGradeCdnStatus": "Disabled",
+  "id": "/subscriptions/YOUR-AZURE-SUBSCRIPTION-ID/resourceGroups/rg-signal-foundry-hackathon/providers/Microsoft.Web/staticSites/swa-signal-foundry",
+  "identity": null,
+  "keyVaultReferenceIdentity": "SystemAssigned",
+  "kind": null,
+  "linkedBackends": [],
   "location": "East US 2",
+  "name": "swa-signal-foundry",
+  "privateEndpointConnections": [],
+  "provider": "SwaCli",
+  "publicNetworkAccess": null,
+  "repositoryToken": null,
   "repositoryUrl": null,
+  "resourceGroup": "rg-signal-foundry-hackathon",
   "sku": {
     "capabilities": null,
     "capacity": null,
@@ -11,5 +29,18 @@
     "size": null,
     "skuCapacity": null,
     "tier": "Free"
-  }
+  },
+  "stagingEnvironmentPolicy": "Enabled",
+  "tags": {
+    "app": "signal-foundry",
+    "checkpoint": "F",
+    "costGuard": "scale-to-zero",
+    "costPosture": "consumption-scale-to-zero",
+    "environment": "hackathon",
+    "expectedSubscription": "YOUR-AZURE-SUBSCRIPTION-ID",
+    "owner": "azure-devops-worker"
+  },
+  "templateProperties": null,
+  "type": "Microsoft.Web/staticSites",
+  "userProvidedFunctionApps": null
 }

@@ -33,8 +33,8 @@ Date: 2026-06-11
 - Deterministic risk gate: passed; medium sensitivity plus customer data scored `medium`.
 - Azure AI Foundry advisory: passed with `advisory.status: available`, model `gpt-4.1-mini-2025-04-14`, deterministic gate still source of truth.
 - Azure Table registry mirror: passed for `Actors`, `Capabilities`, and `McpActivity` table rows.
-- Static Web Apps load: passed with HTTP 200 for the existing deployed portal.
-- Static Web Apps redeploy: not completed on 2026-06-11 because the local SWA native deploy client exited with an unknown exception after backend deployment. Re-run SWA deploy from an environment where the native client runs cleanly before claiming the latest frontend bundle is live.
+- Static Web Apps load: passed with HTTP 200 for the deployed portal.
+- Static Web Apps redeploy: completed on 2026-06-12 with bundle `index-BZvVwgts.js` and stylesheet `index-DXxZPcki.css`; live bundle contains the Judge Mode portal flow.
 - Log Analytics sample: captured sanitized audit event with correlation ID only.
 - Budget: resource-group cost budget created with redacted evidence.
 - Key Vault: Static Web Apps deployment token stored; evidence contains metadata only.
