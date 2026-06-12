@@ -23,25 +23,43 @@ layer every enterprise agent needs.
   specifically — only claim this track if GitHub Copilot was actually part of
   the development workflow.
 
+## Keywords
+
+Microsoft 365 Copilot, Declarative Agent, Model Context Protocol, MCP, Azure
+AI Foundry, Work IQ, AI Governance, Human-in-the-Loop, Risk Scoring, Reasoning
+Agents, Adaptive Cards, Azure Container Apps, Microsoft Entra ID, Audit Trail,
+Responsible AI, Enterprise Agents
+
 ## Problem
 
-This hackathon has 135 Enterprise Agents entries. Every enterprise will face
-exactly that flood: hundreds of employee AI ideas with no governed path from
-idea to approved, reusable workflow. Ungoverned agents ship surveillance
-features, leak raw content, and skip human review. Signal Foundry is how the
-other 134 agents get risk-scored, approved, and released.
+Enterprise AI adoption is outpacing enterprise AI governance. Employees
+everywhere are discovering Copilot workflows that could transform their roles —
+but organizations have no governed path from idea to approved, reusable
+capability. The result is the worst of both worlds: good ideas die in email
+threads because nobody knows how to get them approved, while shadow AI ships
+ungoverned — leaking raw content, drifting into employee surveillance, skipping
+review entirely, and leaving no audit trail when compliance comes asking. IT
+can't say yes safely, so it says no slowly, and the business routes around it.
+
+Signal Foundry closes that gap: a governed pipeline that turns raw work signals
+and employee AI ideas into risk-scored, human-approved, audit-safe Copilot
+workflows — so the organization can say yes, fast, with evidence.
 
 ## Solution
 
-Employees discover and propose Copilot workflows in Microsoft 365 Copilot Chat.
-Signal Foundry's declarative agent — grounded in permission-aware People and
-Meetings work context — calls an external MCP server that risk-scores every
-proposal deterministically, attaches an Azure AI Foundry / Azure OpenAI advisory
-deliberation when configured, and routes it to a human reviewer. Nothing
-releases without explicit approval. The Foundry Floor command center shows the
-Signal Atlas, Review Queue, Risk Gate with advisory arbitration or fallback
-state, Release Packets, and a sanitized MCP activity trail with correlation IDs
-end to end.
+Employees discover and propose Copilot workflows directly in Microsoft 365
+Copilot Chat. Signal Foundry's declarative agent — grounded in permission-aware
+People and Meetings work context (Work IQ) — calls an external MCP server with
+13 governed tools. Every proposal is risk-scored by a deterministic,
+explainable gate; an Azure AI Foundry model adds a multi-step advisory
+deliberation (signal → concern → suggested control), and when the model and the
+gate disagree, the disagreement is shown and the gate wins — reasoning with
+guardrails, with deterministic outcomes proven byte-identical whether the model
+is up or down. Nothing releases without explicit human reviewer approval. Every
+interaction is recorded as a live Copilot checkpoint with correlation IDs, and
+the Foundry Floor command center visualizes it all: the animated Signal Atlas,
+Review Queue, Risk Gate with advisory arbitration or fallback state, audit-safe
+Release Packets, and a sanitized MCP activity trail end to end.
 
 ## AI value
 
@@ -64,29 +82,3 @@ external TypeScript MCP server (Express, Zod, JSON-RPC + REST), Azure AI
 Foundry / Azure OpenAI advisory reasoning, Azure Container Apps, Azure Static
 Web Apps, Azure Table Storage, Azure Key Vault, Application Insights,
 Microsoft Entra ID, React + Vite frontend, Vitest + Playwright test harness.
-
-## Links
-
-- Live Foundry Floor: https://red-coast-0b0c14e0f.7.azurestaticapps.net
-- Live MCP server: https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io
-- Code repository: https://github.com/centrix-labs/signal-foundry
-- Demo video: ADD YOUTUBE/VIMEO URL BEFORE SUBMITTING
-- Architecture diagram: docs/submission/architecture.md (rendered in README)
-- Cover image: docs/submission/signal-foundry-cover.png (1672x941, 16:9 — upload
-  as the Innovation Studios project image; it visualizes the product story: raw
-  signals forged through the amber risk gate into approved teal workflows)
-- Avatar / thumbnail: docs/submission/signal-foundry-avatar.png (1254x1254,
-  1:1 — use for any square project icon, team avatar, or small-tile slot)
-- Light cover variant: docs/submission/signal-foundry-cover-light.png
-  (1672x941, 16:9 — for slide decks, the executive one-pager, and
-  print-adjacent surfaces; same composition as the dark cover)
-- Light avatar variant: docs/submission/signal-foundry-avatar-light.png
-  (1254x1254, 1:1 — square icon for light surfaces; simplified for
-  small-size legibility)
-
-## Judge quickstart
-
-See docs/submission/JUDGE-GUIDE.md — clone, `npm install`, `npm run validate`
-(52 tests + evidence/package/Work IQ/Foundry/card validators), `npm run
-test:e2e` (golden flow against the live local stack), `npm run dev:all` for the
-interactive demo.
