@@ -290,7 +290,7 @@ function StoryLedger({
       label: "Discover",
       done: "People + Meetings grounded, summary-only",
       pending: "Permission-aware work signals enter the forge",
-      evidence: "Declarative agent package v1.0.1 — no raw M365 content",
+      evidence: "Declarative agent package v1.0.2 — no raw M365 content",
       live: isLive
     },
     {

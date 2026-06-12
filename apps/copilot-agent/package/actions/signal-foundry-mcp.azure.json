@@ -217,7 +217,7 @@
                   {
                     "type": "TextBlock",
                     "$when": "${advisory.agreesWithGate == false}",
-                    "text": "Advisory suggested ${advisory.suggestedRiskLevel} — deterministic gate ruled ${riskLevel}. Gate wins.",
+                    "text": "Advisory suggested ${advisory.suggestedRiskLevel} \u2014 deterministic gate ruled ${riskLevel}. Gate wins.",
                     "color": "Warning",
                     "weight": "Bolder",
                     "wrap": true
@@ -239,13 +239,13 @@
               {
                 "type": "TextBlock",
                 "$when": "${advisory.status != 'available'}",
-                "text": "Advisory unavailable — deterministic verdict stands.",
+                "text": "Advisory unavailable \u2014 deterministic verdict stands.",
                 "isSubtle": true,
                 "wrap": true
               },
               {
                 "type": "TextBlock",
-                "text": "Advisory only — the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
+                "text": "Advisory only \u2014 the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
                 "isSubtle": true,
                 "size": "Small",
                 "wrap": true
@@ -463,7 +463,7 @@
       "type": "RemoteMCPServer",
       "auth": {
         "type": "OAuthPluginVault",
-        "reference_id": "N2FmZGRiZDMtZjM0ZS00N2YzLThmNTQtNWMwOTBkZjY2NjNhIyM5OTUyODk0ZS02OGFlLTQwOTItYTE3ZC0xYzBmNDFjYTZlYjk="
+        "reference_id": "N2FmZGRiZDMtZjM0ZS00N2YzLThmNTQtNWMwOTBkZjY2NjNhIyM3NDgzYjE3ZS0wZTIzLTQ3MzAtYmRmOC04NjRhMTQzYWJjMDE="
       },
       "run_for_functions": [
         "search_capabilities",
