@@ -33,3 +33,42 @@ Use `scripts/register-entra-app.sh --plan` to print the intended registration. U
 - Delete the Entra app registration created for Signal Foundry.
 - Remove any OAuthPluginVault reference from the Copilot package.
 - Remove temporary Key Vault secrets after sideload testing.
+
+
+## Verified working configuration (2026-06-13, live end-to-end)
+
+OAuth client registration (Teams Developer Portal -> Tools -> OAuth client
+registration) — every field as proven in production:
+
+| Field | Value |
+| --- | --- |
+| Base URL | `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io` (the API base — NOT the identity provider) |
+| Client ID | the Entra app's Application (client) ID |
+| Client secret | a current secret VALUE from the app (not the secret ID) |
+| Authorization endpoint | `https://login.microsoftonline.com/<tenantId>/oauth2/v2.0/authorize` |
+| Token exchange endpoint | `https://login.microsoftonline.com/<tenantId>/oauth2/v2.0/token` |
+| Scope | `api://<appId>/access_as_user` (fully qualified) |
+| Restrict usage by app | Any Teams app, or the CATALOG app id printed by `atk install` (not the manifest id) |
+
+Entra app requirements (script `register-entra-app.sh --apply` covers these):
+Application ID URI `api://<appId>`, delegated scope `access_as_user`, token
+version 2, and BOTH web redirect URIs:
+`https://teams.microsoft.com/api/platform/v1.0/oAuthConsentRedirect` and
+`https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect`.
+
+Server requirements: `GET /` on the Base URL must return 2xx (the routing
+provisioner probes it), and the `/mcp` endpoint must implement the full
+streamable handshake: `initialize` (echo the client's protocolVersion),
+`notifications/*` -> 202, `ping`, `tools/list`, `tools/call`.
+
+## Troubleshooting map (each observed live)
+
+| Symptom | Cause |
+| --- | --- |
+| AADSTS650053 scope on resource 00000003-... | Scope field is bare; Entra resolves it against Microsoft Graph. Use the full `api://.../access_as_user` string |
+| AADSTS50011 redirect mismatch | `oAuthRedirect` missing from the app's web redirect URIs |
+| No sign-in prompt, no server traffic | Base URL points at the identity provider instead of the API, or app restriction names the manifest id instead of the catalog id |
+| Sign-in popup blank, then "window was closed" | Browser opened the popup in a different profile/container; the auth code cannot reach the opener. Use Edge/Chrome default profile or Teams desktop |
+| "Something went wrong" + RoutingAdded request id | Base URL root returned 404 to the provisioning probe |
+| Tool returns no ok:true, registry unchanged, nothing logged | Confirmation sent as string "True" (fixed: coerced server-side) or MCP handshake incomplete (fixed) |
+| Release fails "Invalid tool input." | Model omitted the semantic `version` (fixed: defaults to v1.0.0) |
