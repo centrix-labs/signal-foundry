@@ -117,6 +117,20 @@ export function JudgeDeck({
         </div>
       </div>
 
+      <div className="deck-hero">
+        <div className="deck-hero-claim">
+          <p className="eyebrow">The proof nobody else has</p>
+          <h2>Unplug the model. Same verdict.</h2>
+          <p>The deterministic gate is byte-identical whether the AI is up, degraded, or unplugged — proven by an automated test, not promised on a slide.</p>
+          <span className="deck-hero-proof"><ShieldCheck size={14} /> advisory.test.ts — “never changes the deterministic verdict”</span>
+        </div>
+        <div className="deck-hero-stats" aria-label="Headline metrics">
+          <div><strong>0</strong><span>raw M365 bytes reach the server</span></div>
+          <div><strong>{writes}</strong><span>governed writes, all confirmed</span></div>
+          <div><strong>{data.mcpActivity.length}</strong><span>audit-linked records</span></div>
+        </div>
+      </div>
+
       <div className="deck-grid">
         <DeckCard
           icon={<Gauge size={14} />}

@@ -10,6 +10,7 @@ import {
   Lock,
   PackageCheck,
   ShieldCheck,
+  ShieldX,
   Sparkles,
   X
 } from "lucide-react";
@@ -237,12 +238,29 @@ export function RiskGate({ selected, riskReviews = [riskReview], compact = false
         </div>
         <span className={`status-pill ${selected.riskLevel}`}>{riskLabels[selected.riskLevel]}</span>
       </div>
-      <div className="risk-score">
-        <strong>{isBlocked ? "0" : selectedRisk.requiredControls.length}</strong>
-        <span>{isBlocked ? "blocked controls" : "required controls"}</span>
-      </div>
-      <p>{isBlocked ? "Monitoring-style requests are refused. Convert the ask into a workflow-level capability before review." : selectedRisk.rationale}</p>
-      {!isBlocked && <AdvisoryAnalysis review={selectedRisk} decision={reviewDecision} />}
+      {isBlocked ? (
+        <div className="refusal-banner" role="alert">
+          <div className="refusal-head">
+            <span className="refusal-mark" aria-hidden="true"><ShieldX size={20} /></span>
+            <div>
+              <strong>Refused — anti-surveillance boundary</strong>
+              <small>Enforced by design. No reviewer can override it.</small>
+            </div>
+          </div>
+          <p className="refusal-request"><span>Attempted ask</span>“Rank my team by productivity and flag the bottom performers.”</p>
+          <p className="refusal-reason">Signal Foundry refuses monitoring or ranking of people — blocked at the agent instructions and again at the deterministic gate, before a human ever sees it.</p>
+          <p className="refusal-protected"><Check size={14} /> Protected: employee activity was never scored, stored, or released.</p>
+        </div>
+      ) : (
+        <>
+          <div className="risk-score">
+            <strong>{selectedRisk.requiredControls.length}</strong>
+            <span>required controls</span>
+          </div>
+          <p>{selectedRisk.rationale}</p>
+          <AdvisoryAnalysis review={selectedRisk} decision={reviewDecision} />
+        </>
+      )}
       <div className="checklist">
         {controlChecks.map((check) => (
           <details key={check.label} open={check.status !== "passed"}>
