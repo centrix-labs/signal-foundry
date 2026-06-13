@@ -21,7 +21,7 @@ if [[ -n "${AZURE_SPEECH_KEY:-}" ]]; then
     echo "  ${s}.mp3"
   done
 elif [[ -n "${ELEVENLABS_API_KEY:-}" ]]; then
-  VOICE="${ELEVENLABS_VOICE_ID:-pNInz6obpgDQGcFmaJgB}"  # Adam; override as desired
+  VOICE="${ELEVENLABS_VOICE_ID:-REDACTED-VOICE-ID}"  # demo voice (verified working via API 2026-06-13); override with ELEVENLABS_VOICE_ID
   echo "Synthesizing with ElevenLabs (voice ${VOICE})..."
   for s in "${SEGS[@]}"; do
     # ElevenLabs takes plain text; strip SSML tags, keep sentence flow.

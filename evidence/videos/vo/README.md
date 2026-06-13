@@ -39,3 +39,14 @@ precisely so each beat lands on its visual.
 Default is Azure `en-US-AndrewMultilingualNeural` (warm male) / ElevenLabs
 "Adam". Swap the `<voice name="...">` in each .ssml (Azure) or `ELEVENLABS_VOICE_ID`
 to retune. `en-US-AvaNeural` (Azure) is a strong warm female alternative.
+
+## Demo voice (saved for the morning re-synth)
+
+ElevenLabs Voice ID `REDACTED-VOICE-ID` is the chosen demo voice and is now
+the script default (verified accessible via the API on 2026-06-13). To regenerate
+the narration in this voice tomorrow:
+
+```bash
+export ELEVENLABS_API_KEY=...   # from your temp file, not committed
+bash evidence/videos/vo/synthesize-vo.sh   # uses the saved voice ID automatically
+```
