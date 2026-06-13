@@ -10,6 +10,7 @@ import {
   type PositionedNode,
   type Stage
 } from "./data";
+import type { StoryState } from "./story";
 
 type AtlasProps = {
   records?: readonly Capability[];
@@ -19,6 +20,10 @@ type AtlasProps = {
   judgeMode?: boolean;
   stageKey?: string;
   isLive?: boolean;
+  /** Guided-Story choreography. Judge Mode only; ignored in free-explore. */
+  story?: StoryState;
+  /** Title for the travelling hero proposal node (focal record). */
+  heroLabel?: string;
 };
 
 // Structural lanes (signals, roles, the forge, the gate) are fixed; the approved-
@@ -130,7 +135,86 @@ function renderNodeLabel(node: PositionedNode) {
   );
 }
 
-export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false }: AtlasProps) {
+// Lane anchors for the Guided Story hero node. These mirror the x-positions of
+// the fixed backdrop nodes in data.ts (forge 52, gate 67, workflow 82) so the
+// hero lines up with the structural graph as it travels.
+const STORY_FORGE = { x: 52, y: 49 };
+const STORY_GATE = { x: 67, y: 49 };
+const STORY_WORKFLOW = { x: 82, y: 49 };
+const STORY_ROLE = { x: 32, y: 34 };
+
+function storyEdgePath(key: StoryState["activeEdges"][number]): string {
+  switch (key) {
+    case "role-forge":
+      return pathFor({ ...STORY_ROLE, id: "s", label: "", kind: "role" }, { ...STORY_FORGE, id: "f", label: "", kind: "department" });
+    case "forge-gate":
+      return pathFor({ ...STORY_FORGE, id: "f", label: "", kind: "department" }, { ...STORY_GATE, id: "g", label: "", kind: "risk_gate" });
+    case "gate-workflow":
+      return pathFor({ ...STORY_GATE, id: "g", label: "", kind: "risk_gate" }, { ...STORY_WORKFLOW, id: "w", label: "", kind: "workflow" });
+    default:
+      return "";
+  }
+}
+
+/**
+ * The travelling hero proposal plus its draw-on connector. Each is keyed on the
+ * stage so one-shot animations (draw-on, seal pop) replay on every advance; the
+ * hero group itself is NOT keyed so it transitions its transform smoothly from
+ * one lane to the next (the "it travels" beat).
+ */
+function StoryLayer({ story, stageKey, heroLabel }: { story: StoryState; stageKey?: string; heroLabel?: string }) {
+  const { heroPos, variant, heroVisible } = story;
+  return (
+    <g className="story-layer" aria-hidden="true">
+      {story.activeEdges.map((edge) => (
+        <path
+          key={`${edge}-${stageKey}`}
+          className={`story-edge ${edge} ${story.gateFiring && edge === "forge-gate" ? "firing" : ""}`}
+          d={storyEdgePath(edge)}
+          pathLength={1}
+        />
+      ))}
+      {heroVisible ? (
+        <g
+          className={`story-hero story-hero-${variant}`}
+          style={{ transform: `translate(${heroPos.x}px, ${heroPos.y}px)` }}
+        >
+          {/* arrive / seal one-shots replay via the stage key */}
+          <g key={`hero-fx-${stageKey}`} className="story-hero-fx" pointerEvents="none">
+            <circle className="story-hero-burst" r={3.4} />
+          </g>
+          {variant === "sealed" ? (
+            <g key={`seal-${stageKey}`} className="story-seal-pop" pointerEvents="none">
+              <rect className="story-packet" x={-1.2} y={-1.2} width={2.4} height={2.4} rx={0.5} />
+            </g>
+          ) : null}
+          {variant === "hold" ? (
+            <g className="story-hold-marker" pointerEvents="none">
+              {/* shield outline — human hold */}
+              <path className="story-shield" d="M0 -3.1 L2.4 -2 L2.4 0.4 Q2.4 2.4 0 3.4 Q-2.4 2.4 -2.4 0.4 L-2.4 -2 Z" />
+            </g>
+          ) : null}
+          <circle className="story-hero-ring" r={2.7} />
+          <circle className="story-hero-core" r={1.15} />
+          {heroLabel ? (
+            <g className="story-hero-label" pointerEvents="none">
+              <rect className="story-hero-label-bg" x={-9} y={3.4} width={18} height={3.4} rx={0.8} />
+              <text className="story-hero-label-text" x={0} y={5.7} textAnchor="middle">
+                {heroLabel.length > 22 ? `${heroLabel.slice(0, 21)}…` : heroLabel}
+              </text>
+            </g>
+          ) : null}
+        </g>
+      ) : null}
+    </g>
+  );
+}
+
+export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false, story, heroLabel }: AtlasProps) {
+  // The Guided Story choreography only ever runs inside Judge Mode. In every
+  // other surface (free-explore "atlas", workbench) `storyState` is undefined so
+  // the live workflow lane and drag-to-pan stay exactly as before.
+  const storyState = judgeMode ? story : undefined;
   const useLiveWorkflows = isLive && records.length > 0;
   const workflowNodes = useLiveWorkflows ? liveWorkflowNodes(records) : SEEDED_WORKFLOW_NODES;
   const displayNodes: PositionedNode[] = [...STRUCTURAL_NODES, ...workflowNodes];
@@ -189,7 +273,11 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
   }
 
   return (
-    <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""}`} aria-label="Signal Atlas">
+    <section
+      className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""} ${storyState ? `story-mode story-${storyState.variant}` : ""}`}
+      data-stage={storyState ? stageKey : undefined}
+      aria-label="Signal Atlas"
+    >
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Signal Atlas</p>
@@ -301,6 +389,9 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             </g>
             );
           })}
+          {storyState ? (
+            <StoryLayer story={storyState} stageKey={stageKey} heroLabel={heroLabel} />
+          ) : null}
           </g>
         </svg>
         {judgeMode ? (

@@ -15,6 +15,15 @@ import { Workbench } from "./Workbench";
 import { ArchitectureView } from "./Architecture";
 import { Walkthrough, WALKTHROUGH_SEEN_KEY } from "./Walkthrough";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
+import {
+  AutoPlayControl,
+  InlineReasoning,
+  pickScoreRisk,
+  prefersReducedMotion,
+  proofBadgesForStage,
+  storyStateForStage,
+  useAutoPlay
+} from "./story";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
 import { getStaticWebAppUser, type StaticWebAppUser } from "./auth";
@@ -154,7 +163,8 @@ function JudgeMode({
   onReset,
   onOpenMirror,
   checkpointCount = 0,
-  isLive = false
+  isLive = false,
+  autoPlay
 }: {
   records: readonly Capability[];
   selected: Capability;
@@ -171,11 +181,29 @@ function JudgeMode({
   onStageSelect: (stageIndex: number) => void;
   onReset: () => void;
   onOpenMirror: () => void;
+  autoPlay: {
+    playing: boolean;
+    atEnd: boolean;
+    reducedMotion: boolean;
+    onPlay: () => void;
+    onPause: () => void;
+    onReplay: () => void;
+  };
 }) {
   const currentStage = judgeStages[stageIndex % judgeStages.length] ?? judgeStages[0];
+  const stageKey = currentStage.key;
   const packet = getReleasePacket(selected, packets);
   const correlationId = latestCorrelation(activity, packet);
   const nextActionLabel = nextStageLabel(stageIndex);
+
+  // The focal record is the live selected capability; its risk review drives the
+  // story node, reasoning, and proof-badge counts. At Score we may swap to the
+  // disagreement record so the model-vs-gate drama always lands.
+  const focalRisk = riskReviews.find((item) => item.proposalId === selected.id);
+  const scoreRisk = pickScoreRisk(focalRisk, riskReviews);
+  const activeRisk = stageKey === "score" ? scoreRisk : focalRisk;
+  const story = storyStateForStage(stageKey, selected);
+  const badges = proofBadgesForStage(stageKey, activeRisk, packet);
 
   return (
     <section className="judge-mode" aria-label="Judge Mode">
@@ -186,18 +214,21 @@ function JudgeMode({
           <p>Governed Copilot workflows from idea to approved release.</p>
         </div>
         <div className="stage-stepper" data-tour="stage-stepper" aria-label="Judge Mode stages">
-          {judgeStages.map((stage, index) => (
-            <button
-              key={stage.key}
-              type="button"
-              className={currentStage.key === stage.key ? "active" : ""}
-              aria-current={currentStage.key === stage.key ? "step" : undefined}
-              onClick={() => onStageSelect(index)}
-            >
-              <span>{index + 1}</span>
-              {stage.label}
-            </button>
-          ))}
+          {judgeStages.map((stage, index) => {
+            const state = index < stageIndex ? "done" : index === stageIndex ? "active" : "upcoming";
+            return (
+              <button
+                key={stage.key}
+                type="button"
+                className={`${state} ${index <= stageIndex ? "filled" : ""}`}
+                aria-current={state === "active" ? "step" : undefined}
+                onClick={() => onStageSelect(index)}
+              >
+                <span aria-hidden="true">{state === "done" ? <Check size={13} /> : index + 1}</span>
+                {stage.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -210,7 +241,12 @@ function JudgeMode({
             stageKey={currentStage.key}
             judgeMode
             isLive={isLive}
+            story={story}
+            heroLabel={selected.title}
           />
+          {stageKey === "score" ? (
+            <InlineReasoning risk={activeRisk} stageKey={stageKey} />
+          ) : null}
         </div>
         <StoryLedger
           records={records}
@@ -228,10 +264,13 @@ function JudgeMode({
           <p className="eyebrow">{currentStage.label} — stage {stageIndex + 1} of {judgeStages.length}</p>
           <strong>{currentStage.body}</strong>
           <small>{selected.title} / {correlationId}</small>
+          <span className="illustrative-stat" title="Illustrative figure, not a measured metric">
+            ~3,400 shadow-AI workflows ungoverned — illustrative for this tenant
+          </span>
         </div>
         <div className="strip-bridge" aria-label="Copilot proof panel">
-          <div className="proof-badges" aria-label="Copilot package proof badges">
-            {["People", "Meetings", "OAuth", "Summary-only", "No raw M365 content"].map((badge) => <span key={badge}>{badge}</span>)}
+          <div className="proof-badges" key={stageKey} aria-label="Stage proof badges">
+            {badges.map((badge) => <span key={badge}>{badge}</span>)}
           </div>
           <button type="button" className="text-link" onClick={onOpenMirror}>
             {checkpointCount > 0
@@ -240,6 +279,14 @@ function JudgeMode({
           </button>
         </div>
         <div className="judge-actions" data-tour="advance">
+          <AutoPlayControl
+            playing={autoPlay.playing}
+            atEnd={autoPlay.atEnd}
+            reducedMotion={autoPlay.reducedMotion}
+            onPlay={autoPlay.onPlay}
+            onPause={autoPlay.onPause}
+            onReplay={autoPlay.onReplay}
+          />
           <button type="button" onClick={onReset}><RotateCcw size={15} /> Reset</button>
           <button type="button" className="primary" onClick={onAdvance}>
             {nextActionLabel} <ChevronRight size={15} />
@@ -453,6 +500,49 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
     approveRelease
   } = useDemoState(dashboardData.records);
 
+  // Auto-play drives the Guided Story for screen recording. Manual interaction
+  // (Reset / Advance / stage select) cancels it; reduced-motion disables it.
+  const [autoPlaying, setAutoPlaying] = useState(false);
+  const reducedMotion = useMemo(() => prefersReducedMotion(), []);
+
+  useAutoPlay({
+    playing: autoPlaying,
+    stageIndex: demoStep,
+    onAdvance: advanceDemo,
+    onStop: () => setAutoPlaying(false)
+  });
+
+  const stopAutoPlay = () => setAutoPlaying(false);
+  const manualAdvance = () => {
+    setAutoPlaying(false);
+    advanceDemo();
+  };
+  const manualReset = () => {
+    setAutoPlaying(false);
+    resetDemo();
+  };
+  const manualStageSelect = (stage: number) => {
+    setAutoPlaying(false);
+    selectDemoStage(stage);
+  };
+  const startAutoPlay = () => {
+    if (reducedMotion) {
+      return;
+    }
+    // From the end, Play means restart the arc.
+    if (demoStep >= judgeStages.length - 1) {
+      resetDemo();
+    }
+    setAutoPlaying(true);
+  };
+  const replayAutoPlay = () => {
+    if (reducedMotion) {
+      return;
+    }
+    resetDemo();
+    setAutoPlaying(true);
+  };
+
   const pendingStatuses: readonly string[] = ["proposed", "risk_scored", "in_review"];
   const query = searchQuery.trim().toLowerCase();
   const visibleRecords = records.filter((item) => {
@@ -488,8 +578,8 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           <span className={`data-source ${dashboardData.isLive ? "live" : "fallback"}`}>
             {dashboardData.isLive ? "Live registry synced" : "Sample demo fallback"}
           </span>
-          <button type="button" onClick={resetDemo}><RotateCcw size={15} /> Reset golden scenario</button>
-          <button type="button" className="primary" onClick={advanceDemo}>{nextActionLabel} <ChevronRight size={15} /></button>
+          <button type="button" onClick={manualReset}><RotateCcw size={15} /> Reset golden scenario</button>
+          <button type="button" className="primary" onClick={manualAdvance}>{nextActionLabel} <ChevronRight size={15} /></button>
         </div>
         ) : null}
         {activeView === "judge" ? (
@@ -505,10 +595,21 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
             stageIndex={demoStep}
             checkpointCount={dashboardData.copilotCheckpoints.length}
             isLive={dashboardData.isLive}
-            onAdvance={advanceDemo}
-            onStageSelect={selectDemoStage}
-            onReset={resetDemo}
-            onOpenMirror={() => setActiveView("mirror")}
+            onAdvance={manualAdvance}
+            onStageSelect={manualStageSelect}
+            onReset={manualReset}
+            onOpenMirror={() => {
+              stopAutoPlay();
+              setActiveView("mirror");
+            }}
+            autoPlay={{
+              playing: autoPlaying,
+              atEnd: demoStep >= judgeStages.length - 1,
+              reducedMotion,
+              onPlay: startAutoPlay,
+              onPause: stopAutoPlay,
+              onReplay: replayAutoPlay
+            }}
           />
         ) : null}
         {activeView === "deck" ? (

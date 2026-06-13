@@ -57,7 +57,9 @@
   font-size: 0.72rem;
   height: 22px;
   place-items: center;
+  position: relative;
   width: 22px;
+  z-index: 1;
 }
 
 @media (max-width: 1280px) {
@@ -78,6 +80,65 @@
   box-shadow: 0 10px 24px rgba(183, 122, 22, 0.16);
   color: var(--amber);
   transform: translateY(-1px);
+}
+
+/* Cumulative progress: completed stages read DONE (teal fill + check), the
+   current one is emphasized (amber, handled above), upcoming ones are muted. */
+.stage-stepper button.done {
+  border-color: color-mix(in oklch, var(--teal) 48%, transparent);
+  color: color-mix(in oklch, var(--teal) 88%, white);
+}
+
+.stage-stepper button.done span {
+  background: color-mix(in oklch, var(--teal) 22%, transparent);
+  border-color: color-mix(in oklch, var(--teal) 70%, transparent);
+  color: var(--teal);
+  animation: ledgerPop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.stage-stepper button.upcoming {
+  opacity: 0.5;
+}
+
+/* A connector that fills forward across the rail as stages complete. */
+.stage-stepper button {
+  position: relative;
+}
+
+.stage-stepper button.filled::after {
+  background: color-mix(in oklch, var(--teal) 70%, transparent);
+  border-radius: 999px;
+  content: "";
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  right: -50%;
+  top: 50%;
+  transform: translateY(-50%) scaleX(1);
+  transform-origin: left center;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+  animation: connectorFill 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stage-stepper button.active.filled::after,
+.stage-stepper button:last-child::after {
+  display: none;
+}
+
+@keyframes connectorFill {
+  from { transform: translateY(-50%) scaleX(0); }
+  to { transform: translateY(-50%) scaleX(1); }
+}
+
+.light-mode .stage-stepper button.done {
+  color: oklch(0.4 0.1 190);
+}
+
+.light-mode .stage-stepper button.done span {
+  background: oklch(0.93 0.045 190);
+  border-color: oklch(0.62 0.11 190);
+  color: oklch(0.36 0.09 195);
 }
 
 .judge-grid {
@@ -415,6 +476,118 @@
 .advisory-note {
   color: oklch(0.45 0.035 220);
   font-size: 0.78rem;
+}
+
+/* Inline reasoning at Score: the rubric moment, rendered beneath the Atlas. */
+.story-reasoning {
+  animation: stageFocus 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: color-mix(in oklch, var(--teal) 12%, oklch(0.955 0.026 215));
+  border: 1px solid color-mix(in oklch, var(--teal) 32%, oklch(0.8 0.03 215));
+  border-radius: 10px;
+  color: oklch(0.22 0.034 225);
+  display: grid;
+  gap: 0.5rem;
+  margin-top: var(--md, 12px);
+  padding: 0.7rem 0.85rem;
+}
+
+.story-reasoning-head {
+  align-items: center;
+  display: flex;
+  gap: var(--sm, 8px);
+}
+
+.story-reasoning-head .eyebrow {
+  color: oklch(0.32 0.06 220);
+}
+
+.story-reasoning-head small {
+  color: oklch(0.4 0.12 195);
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.story-reasoning-verdict {
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+}
+
+.story-reasoning-verdict.disagree {
+  background: color-mix(in oklch, var(--amber) 16%, transparent);
+  border: 1px solid color-mix(in oklch, var(--amber) 48%, transparent);
+  color: oklch(0.42 0.11 70);
+}
+
+.story-reasoning-verdict.agree {
+  background: color-mix(in oklch, var(--teal) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 40%, transparent);
+  color: oklch(0.36 0.08 195);
+}
+
+.story-reasoning-fallback {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.story-reasoning-fallback strong {
+  color: oklch(0.32 0.09 200);
+  font-size: 0.92rem;
+}
+
+.story-reasoning-fallback p {
+  color: oklch(0.34 0.04 220);
+  font-size: 0.84rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Auto-play control in the action strip. */
+.autoplay-btn {
+  align-items: center;
+  background: color-mix(in oklch, var(--teal) 16%, var(--panel));
+  border: 1px solid color-mix(in oklch, var(--teal) 50%, transparent);
+  border-radius: 7px;
+  color: var(--teal);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 6px;
+  padding: 10px 14px;
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.autoplay-btn.is-playing {
+  background: color-mix(in oklch, var(--amber) 16%, var(--panel));
+  border-color: color-mix(in oklch, var(--amber) 52%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--amber) 14%, transparent);
+  color: var(--amber);
+}
+
+.light-mode .autoplay-btn {
+  background: oklch(0.93 0.045 190);
+  border-color: oklch(0.62 0.11 190);
+  color: oklch(0.36 0.09 195);
+}
+
+.light-mode .autoplay-btn.is-playing {
+  background: oklch(0.965 0.06 84);
+  border-color: oklch(0.75 0.15 78);
+  color: oklch(0.45 0.13 70);
+}
+
+/* Illustrative stat — clearly labeled, never presented as a real metric. */
+.illustrative-stat {
+  align-self: start;
+  background: color-mix(in oklch, var(--steel) 16%, transparent);
+  border: 1px dashed color-mix(in oklch, var(--steel) 45%, transparent);
+  border-radius: 6px;
+  color: var(--steel);
+  font-size: 0.72rem;
+  margin-top: 4px;
+  padding: 3px 8px;
+  white-space: normal;
 }
 
 @keyframes stageFocus {

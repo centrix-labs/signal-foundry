@@ -385,6 +385,162 @@
   50% { opacity: 1; stroke-width: 0.92; }
 }
 
+/* -------------------------------------------------------------------------
+   Guided Story choreography (Judge Mode only). One hero proposal node travels
+   across the lanes; story edges draw on; the gate fires; a human-hold marker
+   appears; the node seals into the workflow lane. Free-explore atlas (no
+   .story-mode class) is untouched.
+   ------------------------------------------------------------------------- */
+
+/* Discover: ghost the seeded workflow lane so it reads as "not built yet". */
+.story-mode.story-hidden .atlas-node.workflow {
+  opacity: 0.28;
+  transition: opacity 320ms ease;
+}
+
+/* Discover: subtle scan shimmer over the signal nodes. */
+.story-mode.story-hidden .atlas-node.signal .node-ring {
+  animation: signalScan 2.4s ease-in-out infinite;
+}
+
+@keyframes signalScan {
+  0%, 100% { stroke-opacity: 0.5; }
+  50% { stroke-opacity: 1; filter: drop-shadow(0 0 1.2px color-mix(in oklch, var(--teal) 60%, transparent)); }
+}
+
+/* Story edges: draw-on via dash offset, replayed by their stage key. */
+.story-edge {
+  fill: none;
+  opacity: 0.95;
+  stroke: var(--teal);
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: storyDraw 380ms cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
+}
+
+.story-edge.forge-gate.firing,
+.story-edge.gate-workflow {
+  stroke: var(--amber);
+}
+
+.story-edge.gate-workflow {
+  stroke: var(--teal);
+}
+
+@keyframes storyDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* The hero node group transforms (translates) between lanes — this is the
+   "it travels" beat. Not keyed, so the transform transitions smoothly. */
+.story-hero {
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.story-hero-ring {
+  fill: color-mix(in oklch, var(--graphite-3) 70%, black);
+  stroke: color-mix(in oklch, var(--teal) 80%, white);
+  stroke-width: 0.55;
+  filter: drop-shadow(0 0 1.6px color-mix(in oklch, var(--teal) 70%, transparent));
+}
+
+.story-hero-core {
+  fill: var(--teal);
+}
+
+/* Gate variant: hero tints amber while it sits at the firing gate. */
+.story-hero-gate .story-hero-ring {
+  stroke: color-mix(in oklch, var(--amber) 86%, white);
+  filter: drop-shadow(0 0 2px color-mix(in oklch, var(--amber) 78%, transparent));
+}
+
+.story-hero-gate .story-hero-core {
+  fill: var(--amber);
+}
+
+/* Hold variant: violet, clearly distinct from teal/amber — human in the loop. */
+.story-hero-hold .story-hero-ring {
+  stroke: oklch(0.7 0.18 300);
+  filter: drop-shadow(0 0 2px oklch(0.7 0.18 300 / 0.7));
+}
+
+.story-hero-hold .story-hero-core {
+  fill: oklch(0.7 0.18 300);
+}
+
+.story-shield {
+  fill: oklch(0.62 0.2 300 / 0.28);
+  stroke: oklch(0.74 0.18 300);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Sealed variant: released teal ring/glow. */
+.story-hero-sealed .story-hero-ring {
+  stroke: color-mix(in oklch, var(--teal) 88%, white);
+  filter: drop-shadow(0 0 2.4px color-mix(in oklch, var(--teal) 82%, transparent));
+}
+
+.story-packet {
+  fill: var(--teal);
+  stroke: oklch(0.97 0.05 200);
+  stroke-width: 0.18;
+}
+
+.story-seal-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sealPop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes sealPop {
+  0% { opacity: 0; transform: scale(0.2); }
+  60% { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Arrival burst replays on every stage change (one-shot via the stage key). */
+.story-hero-burst {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: heroBurst 620ms cubic-bezier(0.2, 0.7, 0.3, 1) 1;
+}
+
+.story-hero-gate .story-hero-burst { stroke: var(--amber); }
+.story-hero-hold .story-hero-burst { stroke: oklch(0.72 0.18 300); }
+
+@keyframes heroBurst {
+  0% { opacity: 0.85; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.8); }
+}
+
+.story-hero-label-bg {
+  fill: color-mix(in oklch, var(--graphite) 94%, transparent);
+  stroke: color-mix(in oklch, var(--teal) 45%, transparent);
+  stroke-width: 0.12;
+}
+
+.story-hero-label-text {
+  fill: oklch(0.97 0.012 205);
+  font-size: 1.5px;
+  font-weight: 700;
+}
+
+.light-mode .story-hero-label-bg {
+  fill: color-mix(in oklch, white 92%, var(--graphite));
+  stroke: oklch(0.72 0.09 190);
+}
+
+.light-mode .story-hero-label-text {
+  fill: oklch(0.22 0.03 230);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .atlas-flow-particle {
     display: none;
@@ -393,6 +549,24 @@
   .atlas-node-pulse circle {
     animation: none;
     opacity: 0.4;
+  }
+
+  /* Story: jump to end-state instantly, no travel/draw/seal motion. */
+  .story-hero,
+  .story-edge,
+  .story-seal-pop,
+  .story-hero-burst,
+  .story-mode.story-hidden .atlas-node.signal .node-ring {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .story-edge {
+    stroke-dashoffset: 0;
+  }
+
+  .story-hero-burst {
+    display: none;
   }
 }
 
