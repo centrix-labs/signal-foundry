@@ -583,20 +583,6 @@ summary em,
   gap: var(--sm, 8px);
 }
 
-.audit-table div {
-  border-block-start: 1px solid oklch(0.82 0.022 220);
-  gap: var(--lg, 16px);
-  padding: var(--md, 12px) 0;
-}
-
-.audit-table span,
-.audit-table strong,
-.audit-table small,
-.audit-table em {
-  flex: 1;
-  overflow-wrap: anywhere;
-}
-
 .text-link {
   color: var(--teal);
   padding: 0;
@@ -939,28 +925,24 @@ summary em,
   color: oklch(0.46 0.04 220);
 }
 
-/* Flow-direction arrows between stage cards — aligned to the pipeline-track grid */
-.pipeline-flow-arrows {
-  display: grid;
-  gap: var(--sm, 8px);
-  grid-template-columns: repeat(6, minmax(112px, 1fr));
-  margin-block-start: -10px;
-  pointer-events: none;
-}
-
-.release-pipeline.factory .pipeline-flow-arrows {
-  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
-}
-
-.pipeline-arrow {
+/* Flow-direction chevron in the seam to each card's right, so the left-to-right
+   progression reads off the cards themselves rather than a detached row. */
+.stage-card.flows::after {
   color: var(--steel);
-  font-size: 1.1rem;
+  content: "\203A"; /* › */
+  font-size: 1.15rem;
+  left: 100%;
   line-height: 1;
-  text-align: right;
+  margin-left: calc(var(--sm, 8px) / 2);
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
   user-select: none;
+  z-index: 1;
 }
 
-.light-mode .pipeline-arrow {
+.light-mode .stage-card.flows::after {
   color: oklch(0.56 0.04 220);
 }
 
@@ -1090,6 +1072,18 @@ summary em,
   font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
   font-size: 0.78rem;
   padding: 2px 6px;
+}
+
+/* Record IDs are machine identifiers too — monospace, but unboxed so the
+   correlation pill stays the primary trace key. */
+.audit-record-id {
+  color: var(--steel);
+  font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+  font-size: 0.78rem;
+}
+
+.light-mode .audit-record-id {
+  color: oklch(0.46 0.04 220);
 }
 
 .light-mode .audit-corr-id {

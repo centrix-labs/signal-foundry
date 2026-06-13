@@ -71,8 +71,7 @@ summary:focus-visible {
 .demo-controls,
 .atlas-legend,
 .approval-bar,
-.artifact-list div,
-.audit-table div {
+.artifact-list div {
   align-items: center;
   display: flex;
 }

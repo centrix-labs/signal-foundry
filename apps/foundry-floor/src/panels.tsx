@@ -508,6 +508,31 @@ const EXECUTIVE_READ_ACTIONS = new Set([
   "list_mcp_activity"
 ]);
 
+// Raw MCP tool / event names are precise but read as machine identifiers on an
+// executive surface. Translate the known ones to plain language and humanise the
+// rest; the canonical name stays available in a tooltip for auditors.
+const AUDIT_ACTION_LABELS: Record<string, string> = {
+  create_capability_proposal: "Created proposal",
+  "proposal.created": "Created proposal",
+  submit_capability_review: "Submitted for review",
+  score_capability_risk: "Scored risk",
+  "risk.scored": "Scored risk",
+  approve_capability: "Approved capability",
+  "review.approved": "Approved review",
+  "review.changes_requested": "Requested changes",
+  generate_release_packet: "Generated release packet",
+  "mcp.rejected": "Blocked at boundary"
+};
+
+function auditActionLabel(action: string): string {
+  const known = AUDIT_ACTION_LABELS[action];
+  if (known) {
+    return known;
+  }
+  const spaced = action.replace(/[_.]+/g, " ").trim();
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
 export function ExecutiveView({
   selected,
   reviews = reviewItems,
@@ -606,8 +631,8 @@ export function ExecutiveView({
             {events.map((event, index) => (
               <tr key={event.id} className={index % 2 === 0 ? "audit-row-even" : "audit-row-odd"}>
                 <td>{event.actor}</td>
-                <td><strong>{event.action}</strong></td>
-                <td>{event.targetRecord}</td>
+                <td><strong title={event.action}>{auditActionLabel(event.action)}</strong></td>
+                <td><code className="audit-record-id">{event.targetRecord}</code></td>
                 <td><code className="audit-corr-id">{event.correlationId}</code></td>
               </tr>
             ))}

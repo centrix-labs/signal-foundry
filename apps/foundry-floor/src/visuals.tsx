@@ -456,11 +456,14 @@ type PipelineProps = {
   detailed?: boolean;
 };
 
-function StageCard({ stage, index }: { stage: Stage; index: number }) {
+function StageCard({ stage, index, isLast }: { stage: Stage; index: number; isLast: boolean }) {
   const isGate = stage.key === "gate" || stage.key === "risk";
   const activeClass = isGate ? "active" : "";
+  // Non-final cards carry a chevron in the seam to their right (see .stage-card.flows::after)
+  // so the left-to-right flow direction reads off the cards themselves, not a separate row.
+  const flowClass = isLast ? "" : "flows";
   return (
-    <div className={`stage-card ${stage.tone} ${activeClass}`} style={{ animationDelay: `${index * 80}ms` }}>
+    <div className={`stage-card ${stage.tone} ${activeClass} ${flowClass}`} style={{ animationDelay: `${index * 80}ms` }}>
       {isGate ? <span className="stage-gate-label">{stage.label}</span> : <span>{stage.label}</span>}
       <strong>{stage.count}</strong>
       <small>{stage.sublabel}</small>
@@ -484,17 +487,8 @@ export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
       </div>
       <div className="pipeline-track">
         {stages.map((stage, index) => (
-          <StageCard key={stage.key} stage={stage} index={index} />
+          <StageCard key={stage.key} stage={stage} index={index} isLast={index === stages.length - 1} />
         ))}
-      </div>
-      <div className="pipeline-flow-arrows" aria-hidden="true">
-        {stages.map((_, index) =>
-          index < stages.length - 1 ? (
-            <span key={index} className="pipeline-arrow">›</span>
-          ) : (
-            <span key={index} />
-          )
-        )}
       </div>
       <div className="signal-trace" aria-hidden="true">
         {stages.map((stage, index) => {
