@@ -39,6 +39,14 @@ export function createServer(store = new RegistryStore()) {
     next();
   });
 
+  app.get("/", (_request, response) => {
+    response.json({
+      ok: true,
+      service: "signal-foundry-mcp",
+      endpoints: ["/health", "/tools", "/mcp", "/openapi.json"]
+    });
+  });
+
   app.get("/health", (_request, response) => {
     response.json({ ok: true, service: "signal-foundry-mcp", status: "healthy" });
   });
