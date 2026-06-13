@@ -260,7 +260,7 @@ Goal: Lock the known-good Copilot package and current portal state before UI cha
 Tasks:
 
 - Commit or intentionally checkpoint current Copilot package work.
-- Ensure current package is `evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip`.
+- Ensure current package is `evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`.
 - Update stale references to older Copilot package versions, especially `docs/submission/JUDGE-GUIDE.md`.
 - Record current validation baseline in the final PR or commit summary.
 
@@ -673,11 +673,11 @@ npx impeccable --json /Users/mattgraves/Development/hackathon-enterprise/apps/fo
 
 Current package to upload:
 
-`/Users/mattgraves/Development/hackathon-enterprise/evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip`
+`/Users/mattgraves/Development/hackathon-enterprise/evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`
 
 Windows upload path:
 
-`C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip`
+`C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip`
 
 Expected SHA-256:
 
@@ -688,13 +688,13 @@ Expected SHA-256:
 1. Confirm package hash on Windows:
 
    ```powershell
-   Get-FileHash -Algorithm SHA256 -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip"
+   Get-FileHash -Algorithm SHA256 -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip"
    ```
 
 2. Confirm package contents:
 
    ```powershell
-   tar -tf "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip"
+   tar -tf "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip"
    ```
 
    Required entries:
@@ -709,11 +709,11 @@ Expected SHA-256:
 3. Confirm manifest version is newer than prior upload:
 
    ```powershell
-   Expand-Archive -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip" -DestinationPath "$env:TEMP\sf-v017" -Force
+   Expand-Archive -Path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip" -DestinationPath "$env:TEMP\sf-v017" -Force
    (Get-Content -Raw "$env:TEMP\sf-v017\manifest.json" | ConvertFrom-Json).version
    ```
 
-   Expected: `1.0.2`.
+   Expected: `1.0.3`.
 
 ### Upload Option A: Microsoft 365 Agents Toolkit CLI
 
@@ -727,13 +727,13 @@ atk auth login
 Upload:
 
 ```powershell
-atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip"
+atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip"
 ```
 
 If installing for shared scope is enabled for the tenant:
 
 ```powershell
-atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v102-oauth-fix-20260612.zip" --scope Shared
+atk install --file-path "C:\Users\demouser\Downloads\SignalFoundry\signal-foundry-copilot-v103-card-polish-20260613.zip" --scope Shared
 ```
 
 ### Upload Option B: Teams Client Custom App Upload
@@ -745,7 +745,7 @@ Use this if the tenant allows custom app upload:
 3. Select `Manage your apps`.
 4. Select `Upload an app`.
 5. Select `Upload a custom app`.
-6. Choose `signal-foundry-copilot-v102-oauth-fix-20260612.zip`.
+6. Choose `signal-foundry-copilot-v103-card-polish-20260613.zip`.
 7. Add the app.
 8. Open Microsoft 365 Copilot Chat and look for `Signal Foundry`.
 

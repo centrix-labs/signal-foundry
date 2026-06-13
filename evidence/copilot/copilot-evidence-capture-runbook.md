@@ -4,8 +4,8 @@ Date: 2026-06-12
 
 ## Current Sideload Package
 
-- Package: `evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip`
-- SHA-256: `af5c6dc5ef8fbc39c7044bb5f8467d0a26b1056d8d503e9bb59eeabd646d623d`
+- Package: `evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`
+- SHA-256: `430efd1a34297a67aac9f6e1b42d50759f0d74ad39b75fa575d5ad3ec120db05`
 - Agent: `Signal Foundry`
 - Demo company: `Asteria Dynamics`
 - Tenant scope: `tenant-asteria-dynamics`
@@ -150,7 +150,7 @@ runbook step a human can complete in one sitting.
 
 1. Existing tenant: `npm install -g @microsoft/m365agentstoolkit-cli`, then
    `atk auth login` (interactive — requires the user) and
-   `atk install --file-path evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip`.
+   `atk install --file-path evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`.
    Custom app upload must be enabled by the tenant admin.
 2. If blocked: join the Microsoft 365 Developer Program, provision an instant
    sandbox tenant, enable custom app upload in the Teams admin center, then

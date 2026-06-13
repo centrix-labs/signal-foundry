@@ -85,9 +85,9 @@ correct behavior, not errors.
 
 Validated package:
 
-- Package: `evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip`
-- Version: `1.0.2`
-- SHA-256: `af5c6dc5ef8fbc39c7044bb5f8467d0a26b1056d8d503e9bb59eeabd646d623d`
+- Package: `evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`
+- Version: `1.0.3`
+- SHA-256: `430efd1a34297a67aac9f6e1b42d50759f0d74ad39b75fa575d5ad3ec120db05`
 - MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
 
 Upload steps (CLI path):
@@ -95,13 +95,13 @@ Upload steps (CLI path):
 ```bash
 npm install -g @microsoft/m365agentstoolkit-cli
 atk auth login           # interactive Microsoft sign-in
-atk install --file-path evidence/copilot/signal-foundry-copilot-v102-oauth-fix-20260612.zip
+atk install --file-path evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip
 ```
 
 Or via the portal: open the Microsoft 365 tenant app upload / app catalog flow
 and upload the same zip. Either way:
 
-1. Confirm the app name is `Signal Foundry` and the version is `1.0.2`
+1. Confirm the app name is `Signal Foundry` and the version is `1.0.3`
    (an existing 1.0.x install is upgraded in place).
 2. Start Microsoft 365 Copilot Chat and open the Signal Foundry agent.
 3. Use the Asteria Dynamics demo defaults when prompted; say `menu` for the

@@ -169,7 +169,7 @@
               },
               {
                 "type": "TextBlock",
-                "text": "Deterministic verdict: ${upper(riskLevel)}",
+                "text": "Deterministic verdict: ${riskLevel}",
                 "weight": "Bolder",
                 "color": "${if(riskLevel == 'low', 'Good', if(riskLevel == 'medium', 'Warning', 'Attention'))}",
                 "wrap": true

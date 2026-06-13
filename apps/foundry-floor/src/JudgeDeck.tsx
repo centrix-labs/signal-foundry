@@ -130,7 +130,7 @@ export function JudgeDeck({
           icon={<MessagesSquare size={14} />}
           label="Copilot surface"
           status={checkpoints.length > 0 ? "live" : "demo"}
-          headline={checkpoints.length > 0 ? `${checkpoints.length} live Copilot checkpoints` : "Sideload-ready agent package v1.0.2"}
+          headline={checkpoints.length > 0 ? `${checkpoints.length} live Copilot checkpoints` : "Sideload-ready agent package v1.0.3"}
           context="Declarative agent in Microsoft 365 Copilot Chat. Every governed turn is recorded as a checkpoint and replayable in the mirror."
           evidence={latestCheckpoint ? `${latestCheckpoint.stage ?? "checkpoint"} / ${latestCheckpoint.correlationId}` : "57/57 Agents Toolkit validation rules"}
         />

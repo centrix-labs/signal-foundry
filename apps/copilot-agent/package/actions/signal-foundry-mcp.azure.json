@@ -187,7 +187,7 @@
               },
               {
                 "type": "TextBlock",
-                "text": "Deterministic verdict: ${upper(riskLevel)}",
+                "text": "Deterministic verdict: ${riskLevel}",
                 "weight": "Bolder",
                 "color": "${if(riskLevel == 'low', 'Good', if(riskLevel == 'medium', 'Warning', 'Attention'))}",
                 "wrap": true
@@ -217,7 +217,7 @@
                   {
                     "type": "TextBlock",
                     "$when": "${advisory.agreesWithGate == false}",
-                    "text": "Advisory suggested ${advisory.suggestedRiskLevel} \u2014 deterministic gate ruled ${riskLevel}. Gate wins.",
+                    "text": "Advisory suggested ${advisory.suggestedRiskLevel} — deterministic gate ruled ${riskLevel}. Gate wins.",
                     "color": "Warning",
                     "weight": "Bolder",
                     "wrap": true
@@ -239,13 +239,13 @@
               {
                 "type": "TextBlock",
                 "$when": "${advisory.status != 'available'}",
-                "text": "Advisory unavailable \u2014 deterministic verdict stands.",
+                "text": "Advisory unavailable — deterministic verdict stands.",
                 "isSubtle": true,
                 "wrap": true
               },
               {
                 "type": "TextBlock",
-                "text": "Advisory only \u2014 the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
+                "text": "Advisory only — the deterministic risk gate is the source of truth. Correlation: ${correlationId}",
                 "isSubtle": true,
                 "size": "Small",
                 "wrap": true
