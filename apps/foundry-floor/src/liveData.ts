@@ -109,21 +109,29 @@ function buildDashboardData(snapshot: RegistrySnapshot | null, liveError?: strin
   }
 
   const proposalRecords = snapshot.proposals.map((proposal) => projectProposal(proposal, snapshot.riskReviews));
-  const records = mergeById(proposalRecords, snapshot.capabilities, sampleCapabilities);
-  const reviewItems = mergeById(withSyntheticReviewItems(snapshot.reviewItems, snapshot.proposals, snapshot.riskReviews), sampleReviewItems);
+  const records = clean(mergeById(proposalRecords, snapshot.capabilities, sampleCapabilities));
+  const reviewItems = clean(mergeById(withSyntheticReviewItems(snapshot.reviewItems, snapshot.proposals, snapshot.riskReviews), sampleReviewItems));
 
   return {
     records,
     reviewItems,
-    releasePackets: mergeById(snapshot.releasePackets, sampleReleasePackets),
-    riskReviews: mergeById(snapshot.riskReviews, [sampleRiskReview]),
-    mcpActivity: mergeById(snapshot.mcpActivity, sampleMcpActivity),
-    copilotCheckpoints: [...(snapshot.copilotCheckpoints ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    auditEvents: mergeById(snapshot.auditEvents, sampleAuditEvents),
+    releasePackets: clean(mergeById(snapshot.releasePackets, sampleReleasePackets)),
+    riskReviews: clean(mergeById(snapshot.riskReviews, [sampleRiskReview])),
+    mcpActivity: clean(mergeById(snapshot.mcpActivity, sampleMcpActivity)),
+    copilotCheckpoints: clean([...(snapshot.copilotCheckpoints ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt))),
+    auditEvents: clean(mergeById(snapshot.auditEvents, sampleAuditEvents)),
     isLive: true,
     liveError,
     refreshedAt
   };
+}
+
+// Smoke-test and probe records created during live validation are demo noise.
+// Filter them out of every collection so the registry reads as a curated demo.
+const DEMO_NOISE = /checkpoint smoke|advisory probe|smoke test/i;
+
+function clean<T>(items: readonly T[]): T[] {
+  return items.filter((item) => !DEMO_NOISE.test(JSON.stringify(item)));
 }
 
 function projectProposal(proposal: CapabilityProposal, riskReviews: RiskReview[]): Capability {
