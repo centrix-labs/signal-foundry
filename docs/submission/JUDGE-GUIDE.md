@@ -41,11 +41,19 @@ curl -s -X POST localhost:7071/admin/reset -H "x-sf-actor-id: actor-dana"
 
 1. **Confirmation gate:** any mutation without `confirmed: true` fails at both
    runtime and schema level (`packages/shared/src/schemas.ts`).
-2. **Advisory arbitration:** score the seeded proposal
+2. **Multi-step reasoning, then the guarantee:** score the seeded proposal
    `prop-autonomous-renewal-outreach` per
-   `apps/copilot-agent/docs/advisory-disagreement-demo.md` — deterministic gate
-   rules high, advisory analysis renders beside it, gate wins on disagreement.
-   With advisory off, deterministic outcomes are byte-identical (tested).
+   `apps/copilot-agent/docs/advisory-disagreement-demo.md`. First read the
+   advisory deliberation — up to five explicit `signal → concern →
+   suggestedControl` steps from the Azure AI Foundry model (`advisory.ts`),
+   rendered in full. Then the deterministic gate issues the verdict of record;
+   on disagreement the model's reasoning informs and the gate guarantees. The
+   gate (`risk.ts`) is intentionally a small, pure, auditable function — that
+   simplicity is the point: it is regulator-explainable, injection-immune, and
+   makes the outcome **byte-identical with advisory on or off**, enforced by
+   `advisory.test.ts` → "never changes the deterministic verdict regardless of
+   advisory outcome." The sophistication lives in the reasoning; the
+   certainty lives in the gate.
 3. **Unauthorized path:** approve as `actor-priya` → sanitized 403, no stack
    traces, rejection logged in the MCP Activity Rail.
 4. **Anti-surveillance:** the agent instructions refuse monitoring/ranking asks

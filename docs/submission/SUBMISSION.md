@@ -23,6 +23,15 @@ Copilot agent, an external MCP server, and a human review console that
 together turn employee AI ideas into risk-scored, human-approved, audit-safe
 Copilot workflows.
 
+Two things set it apart, and they are the two things enterprises cannot get
+anywhere else at once. **First, an AI that reasons about risk out loud** — an
+Azure AI Foundry model walks each proposal through up to five explicit steps,
+naming the input signal, the concern it raises, and the control it suggests,
+before landing a recommended risk level. **Second, a deterministic guarantee on
+top of that reasoning** — the verdict of record is byte-identical whether the
+model is up, degraded, or unplugged entirely. The model reasons; the gate
+guarantees. Proven by automated test, not promised in a slide.
+
 **The problem it solves.** Enterprise AI adoption is outpacing enterprise AI
 governance. Employees everywhere are discovering Copilot workflows that could
 transform their roles — but organizations have no governed path from idea to
@@ -34,18 +43,35 @@ no slowly, and the business routes around it.
 
 **How it works.** Employees discover and propose Copilot workflows directly in
 Microsoft 365 Copilot Chat. Signal Foundry's declarative agent — grounded in
-permission-aware People and Meetings work context (Work IQ) — calls an
-external MCP server with 13 governed tools. Every proposal is risk-scored by a
-deterministic, explainable gate; an Azure AI Foundry model adds a multi-step
-advisory deliberation (signal → concern → suggested control), and when the
-model and the gate disagree, the disagreement is shown and the gate wins —
-reasoning with guardrails, with deterministic outcomes proven byte-identical
-whether the model is up or down. Nothing releases without explicit human
-reviewer approval. Every interaction is recorded as a live Copilot checkpoint
-with correlation IDs, and the Foundry Floor command center visualizes it all:
-the animated Signal Atlas, Review Queue, Risk Gate with advisory arbitration
-or fallback state, audit-safe Release Packets, and a sanitized MCP activity
-trail end to end.
+permission-aware People and Meetings work context (Work IQ) — calls an external
+MCP server with 13 governed tools.
+
+The reasoning is the heart of it. For every proposal, an Azure AI Foundry model
+runs a multi-step risk deliberation you can watch unfold: up to five explicit
+steps, each naming the input signal, the concern it raises, and the specific
+control that would mitigate it, ending in a recommended risk level. That
+reasoning is shown in full — not a black-box score, but an auditable chain a
+compliance officer can read.
+
+A deterministic, explainable gate then issues the verdict of record. Where the
+model and the gate disagree, the disagreement is surfaced rather than hidden:
+the model's reasoning informs, the gate's rule guarantees. And because the gate
+is pure and the advisory path degrades safely to "unavailable" on any timeout
+or error, the verdict is **byte-identical with the model on, off, or unplugged
+— enforced by automated test.** Reasoning you can inspect; an outcome you can
+certify.
+
+This is the gap nothing else in the category closes at once: governed-release
+tools promise an audit trail but show no reasoning; adversarial-verdict agents
+reason but their ruling is itself model-generated, and so non-deterministic at
+the exact moment it claims authority. Signal Foundry gives you both — rich,
+inspectable reasoning and a verdict that is deterministic by construction.
+
+Nothing releases without explicit human reviewer approval. Every interaction is
+recorded as a live Copilot checkpoint with correlation IDs, and the Foundry
+Floor command center visualizes it all: the animated Signal Atlas, Review
+Queue, Risk Gate with advisory arbitration or fallback state, audit-safe
+Release Packets, and a sanitized MCP activity trail end to end.
 
 **Our goals:**
 
@@ -53,10 +79,12 @@ trail end to end.
    AI idea to released capability** — propose in the flow of work (Copilot
    Chat), get a transparent risk verdict, and ship with approval instead of
    around it.
-2. **Make AI reasoning trustworthy enough to govern with** — the
-   Azure AI Foundry / Azure OpenAI advisory path deliberates, a deterministic
-   rule engine decides, and disagreement is displayed rather than hidden; the
-   system never depends on the model being right or even available.
+2. **Make AI reasoning both rich and trustworthy enough to govern with** — the
+   Azure AI Foundry / Azure OpenAI advisory path deliberates in explainable,
+   multi-step reasoning (signal → concern → suggested control), and a
+   deterministic rule engine guarantees the outcome. The reasoning informs, the
+   gate guarantees, and disagreement is displayed rather than hidden — so the
+   verdict is certifiable whether or not the model is right, or even available.
 3. **Keep people safe by structure, not policy** — raw Microsoft 365 content
    never reaches the MCP server by contract (schema-enforced, length-capped,
    sanitized summary fields only), and the agent refuses employee-ranking and
