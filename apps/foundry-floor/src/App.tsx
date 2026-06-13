@@ -15,7 +15,6 @@ import { Workbench } from "./Workbench";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
-import { AccessGate } from "./AccessGate";
 import { getStaticWebAppUser, type StaticWebAppUser } from "./auth";
 import { useDashboardData } from "./liveData";
 
@@ -394,10 +393,9 @@ function PipelineView({ records, selected }: { records: readonly Capability[]; s
 }
 
 export function App() {
-  const [hasAccess, setHasAccess] = useState(() => window.sessionStorage.getItem("signal-foundry-access") === "granted");
   const [authUser, setAuthUser] = useState<StaticWebAppUser | null>(null);
+  const [localUser, setLocalUser] = useState<StaticWebAppUser | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [theme, setTheme] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     let isCurrent = true;
@@ -417,26 +415,18 @@ export function App() {
     };
   }, []);
 
-  if (!hasAccess) {
-    return <AccessGate onUnlock={() => setHasAccess(true)} theme={theme} onThemeChange={setTheme} />;
+  // A real Static Web Apps (Microsoft OAuth) session takes precedence; the local
+  // demo credential is a fallback for environments without the /.auth backend.
+  const user = authUser ?? localUser;
+
+  if (!user) {
+    return <LoginScreen isCheckingAuth={isCheckingAuth} onLocalLogin={setLocalUser} />;
   }
 
-  if (!authUser) {
-    return <LoginScreen theme={theme} onThemeChange={setTheme} isCheckingAuth={isCheckingAuth} />;
-  }
-
-  return <AuthenticatedWorkspace authUser={authUser} theme={theme} onThemeChange={setTheme} />;
+  return <AuthenticatedWorkspace authUser={user} />;
 }
 
-function AuthenticatedWorkspace({
-  authUser,
-  theme,
-  onThemeChange
-}: {
-  authUser: StaticWebAppUser;
-  theme: "dark" | "light";
-  onThemeChange: (theme: "dark" | "light") => void;
-}) {
+function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
   const dashboardData = useDashboardData();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<RecordFilters>({});
@@ -471,7 +461,7 @@ function AuthenticatedWorkspace({
   const nextActionLabel = nextStageLabel(demoStep);
 
   return (
-    <main className={`app-shell ${theme === "light" || activeView === "executive" ? "light-mode" : ""}`}>
+    <main className="app-shell light-mode">
       <LeftRail
         activeView={activeView}
         onView={(view) => setActiveView(view as ViewKey)}
@@ -481,8 +471,6 @@ function AuthenticatedWorkspace({
       />
       <div className="workspace">
         <TopBar
-          theme={theme}
-          onThemeChange={onThemeChange}
           user={authUser}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}

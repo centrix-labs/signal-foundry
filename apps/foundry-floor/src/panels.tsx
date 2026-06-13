@@ -138,14 +138,10 @@ export function LeftRail({
 }
 
 export function TopBar({
-  theme,
-  onThemeChange,
   user,
   searchQuery = "",
   onSearchChange
 }: {
-  theme: "dark" | "light";
-  onThemeChange: (theme: "dark" | "light") => void;
   user?: StaticWebAppUser;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
@@ -181,10 +177,6 @@ export function TopBar({
         </div>
       </div>
       <a className="sign-out-link" href={signOutUrl()}>Sign out</a>
-      <div className="theme-switch" aria-label="Theme">
-        <button type="button" className={theme === "dark" ? "active" : ""} onClick={() => onThemeChange("dark")}>Dark</button>
-        <button type="button" className={theme === "light" ? "active" : ""} onClick={() => onThemeChange("light")}>Light</button>
-      </div>
     </header>
   );
 }

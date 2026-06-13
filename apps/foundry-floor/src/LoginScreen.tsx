@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { ChevronRight, Lock, Mail, Rocket, ShieldCheck } from "lucide-react";
-import { microsoftSignInUrl } from "./auth";
+import { microsoftSignInUrl, verifyLocalCredentials, type StaticWebAppUser } from "./auth";
 
 type LoginScreenProps = {
-  theme: "dark" | "light";
-  onThemeChange: (theme: "dark" | "light") => void;
   isCheckingAuth?: boolean;
+  onLocalLogin?: (user: StaticWebAppUser) => void;
 };
 
 function MicrosoftMark() {
@@ -38,19 +38,37 @@ function SignalMark() {
   );
 }
 
-export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: LoginScreenProps) {
+export function LoginScreen({ isCheckingAuth = false, onLocalLogin }: LoginScreenProps) {
   const signInUrl = microsoftSignInUrl();
   const includeMicrosoftMark = showMicrosoftMark();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  async function submitLocalLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    // No local handler wired up (e.g. production) — fall back to Microsoft OAuth.
+    if (!onLocalLogin) {
+      window.location.assign(signInUrl);
+      return;
+    }
+    setIsVerifying(true);
+    setError("");
+    const user = await verifyLocalCredentials(email, password);
+    setIsVerifying(false);
+    if (user) {
+      onLocalLogin(user);
+      return;
+    }
+    setPassword("");
+    setError("Email or password not recognized.");
+  }
 
   return (
-    <main className={`login-page ${theme === "light" ? "login-light" : ""}`}>
+    <main className="login-page login-light">
       <div className="login-backplate" aria-hidden="true" />
       <div className="login-vignette" aria-hidden="true" />
-
-      <div className="login-theme-switch" aria-label="Theme">
-        <button type="button" className={theme === "dark" ? "active" : ""} onClick={() => onThemeChange("dark")}>Dark</button>
-        <button type="button" className={theme === "light" ? "active" : ""} onClick={() => onThemeChange("light")}>Light</button>
-      </div>
 
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-brand">
@@ -59,18 +77,19 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
         </div>
         <p className="login-tagline"><strong>Forge summary signals.</strong> Build trusted intelligence.</p>
 
-        <form
-          className="login-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            window.location.assign(signInUrl);
-          }}
-        >
+        <form className="login-form" onSubmit={submitLocalLogin}>
           <label className="login-field">
             <span>Email</span>
             <span className="login-input">
               <Mail size={16} />
-              <input type="email" autoComplete="email" placeholder="you@asteria.example" aria-label="Email" />
+              <input
+                type="email"
+                autoComplete="email"
+                placeholder="you@asteria.example"
+                aria-label="Email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
             </span>
           </label>
 
@@ -78,9 +97,18 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
             <span>Password</span>
             <span className="login-input">
               <Lock size={16} />
-              <input type="password" autoComplete="current-password" placeholder="••••••••••••••" aria-label="Password" />
+              <input
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••••••••"
+                aria-label="Password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
             </span>
           </label>
+
+          {error ? <p className="access-error" role="alert">{error}</p> : null}
 
           <div className="login-options">
             <label className="remember-row">
@@ -93,9 +121,9 @@ export function LoginScreen({ theme, onThemeChange, isCheckingAuth = false }: Lo
             <button type="button" className="login-link" onClick={() => window.location.assign(signInUrl)}>Forgot password?</button>
           </div>
 
-          <button type="submit" className="login-primary">
+          <button type="submit" className="login-primary" disabled={isVerifying}>
             <Rocket size={17} />
-            {isCheckingAuth ? "Checking Microsoft session" : "Launch Console"}
+            {isVerifying ? "Signing in" : isCheckingAuth ? "Checking Microsoft session" : "Launch Console"}
             <ChevronRight size={18} />
           </button>
         </form>
