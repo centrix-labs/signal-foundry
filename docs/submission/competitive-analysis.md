@@ -37,6 +37,52 @@ the compliance-officer pack.
 
 ---
 
+## Scorecard — exceed / meet / lack
+
+Honest per-dimension read against the verified rubric. Estimates are deliberately
+conservative — what a tough judge actually assigns, not what we'd hope for.
+
+| Dimension (weight) | Estimate | Read |
+| --- | --- | --- |
+| Reliability & Safety (20) | ~18/20 | Crown jewel. Byte-identical verdict model-on/off, schema-enforced data boundary, anti-surveillance refusal. Near-max. |
+| UX & Presentation (15) | ~13/15 | Now a real strength after this session — Judge Mode, Architecture view, walkthrough, live Atlas. Most governance entries are console-only. |
+| Accuracy & Relevance (20) | ~16/20 | Deployed, grounded, summary-only, 83 tests, passes all 57 Toolkit rules. Strong, not differentiated. |
+| Creativity & Originality (15) | ~11/15 | The two novel properties are real, but the "governance layer" headline blurs with siblings. |
+| Reasoning & Multi-step (20) | ~13/20 | Biggest gap relative to weight. Reasoning is a 5-step advisory chain that is advisory and overrideable; the gate is a weighted sum. Now better framed, still the soft spot. |
+| Community vote (10) | ~5/10 | Abstract problem. Hard to make a Discord crowd cheer for a release packet. Underinvested. |
+
+**Net: solidly top-25%, knocking on top-10%. The build is winning-caliber; the
+score is gated by Reasoning (20%) and Community (10%).**
+
+**Exceed** (where we beat named competitors):
+
+- **Reliability/Safety** beats Crucible — their GO/REVISE/KILL is LLM-generated,
+  non-deterministic; ours is byte-identical, test-proven.
+- **Structural data boundary by Zod contract** beats the Foundry-IQ grounding
+  pack and the compliance officers who only read content.
+- **Demonstrated audit fidelity** beats Governed Release Copilot's claim.
+- **UX/Presentation now exceeds the category** — Architecture view, walkthrough,
+  live blocked node.
+- **Anti-surveillance refusal** as a designed boundary.
+
+**Meet** (table stakes, ~0 marginal score):
+
+- Human-in-the-loop approval.
+- Cited / grounded / no-hallucination.
+- Uses Azure AI Foundry.
+- Risk scoring.
+- Audit trail / correlation IDs.
+- "We built an MCP server."
+
+**Lack** (where rivals land harder):
+
+- **Reasoning depth / perception** — Crucible and Clarity Ops land harder on the
+  20% line; ours is single-pass and subordinate to the gate.
+- **Community vote** — security entries have visceral "stopped a breach" punch.
+- **Positioning collision** with Governed Release Copilot.
+
+---
+
 ## 2. Where Signal Foundry is genuinely ahead
 
 These are defensible, and most map directly to **Reliability & Safety (20%)**.
@@ -87,7 +133,11 @@ These are defensible, and most map directly to **Reliability & Safety (20%)**.
   purpose-built judge surface that walks Discover→Propose→Score→Review→Release in
   one screen, with Signal Atlas visualization, is above the median polish for an
   enterprise governance entry (which usually demos as a chat transcript + a
-  table). This is cheap points on the 15% UX line.
+  table). This is cheap points on the 15% UX line. (Now significantly stronger —
+  this session shipped a tiered Architecture view with hover-traced 90°
+  connectors, a first-run spotlight walkthrough, and a live Atlas that renders
+  Copilot-created proposals including a blocked "Employee Monitoring" node. UX is
+  now a category-exceeding strength — see Scorecard.)
 
 ---
 
@@ -139,7 +189,11 @@ Name the scarier competitors and why they out-score on specific rubric lines.
   rewards. Signal Foundry *has* a multi-step advisory deliberation
   (signal→concern→suggestedControl, up to 5 steps) but currently *buries it* as
   the loser in an arbitration. Clarity Ops makes reasoning the star; Signal
-  Foundry makes it the understudy. Same capability, worse staging.
+  Foundry makes it the understudy. Same capability, worse staging. (Now partly
+  addressed in docs — SUBMISSION.md, the video script, and JUDGE-GUIDE.md have
+  been reframed to LEAD with the 5-step advisory reasoning and position the
+  deterministic gate as the guarantee. Still pending in the video itself — see
+  Scorecard.)
 
 - **The deep-tooling security pack — Autonomous SOC L2, AttackGraph AI, MSP
   Operations Commander, The Threat Whisperer (Reasoning + Accuracy + visceral
@@ -157,7 +211,9 @@ Name the scarier competitors and why they out-score on specific rubric lines.
   "the same idea." The differentiation (byte-identical fallback, structural data
   boundary, anti-surveillance) is real but *not currently the headline* — so the
   collision is more dangerous than it should be. This is a framing risk, not a
-  capability gap.
+  capability gap. (Now partly addressed — the differentiation has been pulled to
+  the front of SUBMISSION.md and JUDGE-GUIDE.md; the collision still needs an
+  explicit one-sentence pre-empt in the video — see Scorecard and §5.)
 
 - **Self-inflicted: the reasoning floor.** `risk.ts` is a transparent weighted
   sum any judge can read in 20 seconds. That's a *virtue* for explainability and
@@ -170,72 +226,47 @@ Name the scarier competitors and why they out-score on specific rubric lines.
 
 ## 5. The winning-move refinements (prioritized, max 8)
 
-Split into cheap framing fixes (do all of these in the next 24h) and expensive
-build (probably skip given the deadline). Each tagged with the rubric line it
-moves.
+Split into two passes: closing the remaining rubric gaps to reach 100% of the
+score this build can earn, then the moves that push the entry to *exceed* its
+category. The docs-side reframing is largely done this session; the highest-ROI
+gap left is the video. Each item is tagged with the rubric line it moves.
 
-### Narrative / positioning (cheap, high ROI — DO THESE)
+### To 100% — close the gaps
 
-1. **Re-stage the advisory deliberation as a STAR reasoning feature, not the
-   loser of an arbitration. [Reasoning 20% — biggest single lever].**
-   You already have multi-step deliberation (signal→concern→suggestedControl, ≤5
-   steps). Lead the demo with it: "watch the agent reason through the proposal in
-   five explainable steps." THEN reveal the gate as the safety backstop. Reframe
-   from "the gate beats the model" to **"the model reasons, the gate guarantees
-   — you get sophisticated reasoning AND a verdict you can trust when the model is
-   wrong or down."** Same code, completely different scorecard impact. This is the
-   #1 move because Reasoning is 20% and currently under-claimed.
+1. **Make the 5-step reasoning visible and the star in the demo. [Reasoning,
+   biggest lever].** The docs now lead with it; the video must too — let the five
+   signal → concern → control steps land one at a time before the gate verdict.
+   Single highest-ROI action left. (Script already rewritten for this.)
 
-2. **Make "advisory disagreement" a hero demo moment, not a footnote.
-   [Reasoning 20% + Creativity 15%].** The seeded
-   `prop-autonomous-renewal-outreach` case where the model and gate *disagree* is
-   your most interesting reasoning artifact — it's literally "multi-step thinking
-   that the system then adjudicates." This is more on-theme than Crucible's single
-   verdict because you show *both* the reasoning and the governance resolving it.
-   Put it at 0:45 in the 2-minute video.
+2. **Add one genuinely iterative reasoning beat — only if tested.** A generate →
+   self-critique → revise control pass on the advisory path turns "single-pass
+   advisory" into "multi-step reasoning" literally. High rubric value, real risk
+   to a stable demo 24h out — only if #1 is already recorded.
 
-3. **Cut table-stakes language from the top of every surface.
-   [Accuracy/Relevance 20% + Presentation 15%].** In SUBMISSION.md and the video,
-   demote "human-in-the-loop," "grounded/cited," "audit trail," "we built an MCP
-   server." Open with the two things only you have: byte-identical fallback and
-   the structural (schema-enforced) data boundary. First 10 seconds decide your
-   score; don't spend them on what 50 others also say.
+3. **Engineer the Community moment. [10%].** You now have it for free: the
+   blocked red node on the live Atlas + the "unplug the model, same verdict" beat.
+   Make both screenshot-able and post them in the Discord vote thread.
 
-4. **Name the byte-identical property in one quotable line and put it on screen.
-   [Reliability & Safety 20%].** e.g. *"Unplug the model. Same verdict. Proven by
-   test, not promised."* Show the test passing on screen for two seconds. This is
-   the single most differentiating, hardest-to-fake claim you own — make it
-   impossible to miss.
+4. **Cut table-stakes language from the top of every surface; lead with the two
+   unique properties.** (Done in SUBMISSION.md — mirror it in the Innovation
+   Studios description field.)
 
-5. **Pre-empt the Crucible / Governed Release Copilot collision explicitly.
-   [Creativity 15% + Accuracy 20%].** One slide or one sentence:
-   *"Unlike LLM-verdict tools, our authority is deterministic and provable;
-   unlike approval-workflow tools, our data boundary is a schema contract, not a
-   policy."* Judges compare adjacent entries; control the comparison before they
-   make it for you.
+### To exceed — win the category
 
-6. **Engineer one Community-vote-friendly moment. [Community vote 10%].** The
-   crowd won't cheer for a release packet. They *will* cheer for the agent
-   visibly *refusing* a creepy "rank my employees by responsiveness" request, or
-   for "unplug the model, verdict unchanged." Script one shareable, screenshot-
-   able beat for Discord. 10% is decided by vibes; manufacture the vibe.
+5. **Re-cut the 2-min video to the new script.** Nothing moves more points. The
+   build is already strong enough; the submission is scored by its framing.
 
-### Build more (expensive — only if you somehow have hours to spare; otherwise SKIP)
+6. **One quotable on-screen line:** *"Unplug the model. Same verdict. Proven by
+   test, not promised."* — with the test going green for 2 seconds.
 
-7. **Add ONE genuinely multi-step reasoning behavior to the advisory path.
-   [Reasoning 20%].** Right now it's a single chat-completion. If — and only if —
-   time allows, make it visibly iterate (e.g., generate concerns → self-critique
-   the highest concern → propose a control), so "multi-step thinking" is literally
-   true at the agent level, not just structurally in the output JSON. High rubric
-   value, but real risk of breaking a stable demo 24h out. **Recommend NOT doing
-   this unless the framing fixes are already done and tested.**
+7. **Pre-empt the collision in one sentence** (in the video and description):
+   name that governed-release tools promise audit and adversarial agents reason
+   non-deterministically — and you're the only one with both inspectable reasoning
+   and a deterministic verdict.
 
-8. **Tighten the deterministic scorer's story (do not rewrite the code).
-   [Reasoning 20% defense].** Don't touch `risk.ts` — it works and it's safe. But
-   add one line in the JUDGE-GUIDE explaining *why* deterministic-and-simple is a
-   deliberate engineering choice ("auditable, regulator-explainable, immune to
-   prompt injection"), so a judge reading the code sees intent, not a thin
-   feature. Pure documentation; near-zero risk.
+8. **Lean the Architecture view + walkthrough into the demo as proof of
+   Presentation polish.** A 5-second hover-trace of the architecture reads as
+   "production system," not "hackathon script."
 
 ---
 
