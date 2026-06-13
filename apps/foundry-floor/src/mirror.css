@@ -1,15 +1,525 @@
-.copilot-chat .checkpoint em {
-  border-block-start: 1px solid color-mix(in oklch, currentColor 18%, transparent);
-  color: color-mix(in oklch, currentColor 72%, transparent);
-  display: block;
+/* ==========================================================================
+   Copilot Mirror — chat thread layout
+   Follows the app's CSS variable system (styles.css + views.css).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Honesty label
+   -------------------------------------------------------------------------- */
+.chat-honesty-label {
+  align-items: center;
+  background: color-mix(in oklch, var(--amber) 8%, var(--graphite-2));
+  border: 1px solid color-mix(in oklch, var(--amber) 26%, var(--line));
+  border-radius: 7px;
+  color: color-mix(in oklch, var(--amber) 85%, white);
+  display: flex;
   font-size: 0.72rem;
-  font-style: normal;
-  line-height: 1.35;
-  margin-block-start: var(--sm, 8px);
-  overflow-wrap: anywhere;
-  padding-block-start: var(--sm, 8px);
+  gap: 6px;
+  line-height: 1.4;
+  margin: 0 0 var(--space-md, 12px);
+  padding: 8px 12px;
 }
 
+.light-mode .chat-honesty-label {
+  background: oklch(0.97 0.022 84);
+  border-color: oklch(0.74 0.1 78);
+  color: oklch(0.44 0.11 72);
+}
+
+/* --------------------------------------------------------------------------
+   Thread container — scrollable column, bubbles stack vertically
+   -------------------------------------------------------------------------- */
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--space-sm, 8px);
+  min-height: 240px;
+  overflow-y: auto;
+  padding: var(--space-xs, 4px) 0;
+}
+
+/* --------------------------------------------------------------------------
+   Row: wraps avatar + bubble-wrap for a single message
+   -------------------------------------------------------------------------- */
+.chat-row {
+  align-items: flex-end;
+  display: flex;
+  gap: 8px;
+}
+
+.chat-row--operator {
+  flex-direction: row-reverse; /* avatar on the right */
+  justify-content: flex-start;
+}
+
+.chat-row--assistant {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+/* --------------------------------------------------------------------------
+   Avatars
+   -------------------------------------------------------------------------- */
+.chat-avatar {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  height: 28px;
+  justify-content: center;
+  letter-spacing: 0.03em;
+  width: 28px;
+}
+
+.chat-avatar--operator {
+  background: color-mix(in oklch, var(--teal) 82%, black);
+  color: oklch(0.13 0.018 220);
+}
+
+.chat-avatar--copilot {
+  background: oklch(0.52 0.18 264);  /* Copilot purple */
+  color: white;
+}
+
+.chat-avatar--foundry {
+  background: color-mix(in oklch, var(--teal) 72%, black);
+  color: oklch(0.13 0.018 220);
+}
+
+/* --------------------------------------------------------------------------
+   Bubble wrappers
+   -------------------------------------------------------------------------- */
+.chat-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 80%;
+}
+
+.chat-bubble-wrap--operator {
+  align-items: flex-end;
+}
+
+.chat-bubble-wrap--assistant {
+  align-items: flex-start;
+}
+
+/* --------------------------------------------------------------------------
+   Bubbles
+   -------------------------------------------------------------------------- */
+.chat-bubble {
+  border-radius: 16px;
+  padding: 10px 14px;
+  position: relative;
+}
+
+.chat-bubble p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.chat-bubble p + p {
+  margin-block-start: 4px;
+}
+
+/* Operator (right, filled accent) */
+.chat-bubble--operator {
+  background: color-mix(in oklch, var(--teal) 82%, oklch(0.16 0.018 220));
+  border-bottom-right-radius: 4px;
+  color: oklch(0.13 0.018 220);
+}
+
+.light-mode .chat-bubble--operator {
+  background: oklch(0.44 0.13 195);
+  color: white;
+}
+
+/* Assistant (left, neutral) */
+.chat-bubble--assistant {
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble--assistant.chat-avatar--copilot {
+  /* copilot variant: faint purple tint */
+  background: color-mix(in oklch, oklch(0.52 0.18 264) 10%, var(--graphite-3));
+  border-color: color-mix(in oklch, oklch(0.52 0.18 264) 28%, var(--line));
+}
+
+.chat-bubble--assistant.chat-avatar--foundry {
+  /* foundry variant: faint teal */
+  background: color-mix(in oklch, var(--teal) 10%, var(--graphite-3));
+  border-color: color-mix(in oklch, var(--teal) 30%, var(--line));
+}
+
+/* Default assistant (no specific class override) */
+.chat-bubble--assistant:not(.chat-avatar--copilot):not(.chat-avatar--foundry) {
+  background: var(--graphite-3);
+}
+
+.light-mode .chat-bubble--assistant {
+  background: oklch(0.98 0.006 205);
+  border-color: oklch(0.82 0.026 210);
+  color: oklch(0.22 0.024 220);
+}
+
+.light-mode .chat-bubble--assistant.chat-avatar--copilot {
+  background: oklch(0.95 0.018 270);
+  border-color: oklch(0.74 0.055 265);
+}
+
+.light-mode .chat-bubble--assistant.chat-avatar--foundry {
+  background: oklch(0.955 0.02 190);
+  border-color: oklch(0.76 0.055 190);
+}
+
+/* --------------------------------------------------------------------------
+   Timestamps + correlation IDs
+   -------------------------------------------------------------------------- */
+.chat-meta {
+  align-items: center;
+  color: var(--steel-dim);
+  display: flex;
+  font-size: 0.68rem;
+  gap: 8px;
+}
+
+.chat-meta--operator {
+  justify-content: flex-end;
+}
+
+.chat-corr-id {
+  color: color-mix(in oklch, var(--steel) 64%, transparent);
+  font-family: ui-monospace, "Cascadia Code", Menlo, monospace;
+  font-size: 0.63rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Evidence inline (live checkpoints) */
+.chat-evidence-inline {
+  color: color-mix(in oklch, currentColor 58%, transparent);
+  font-size: 0.72rem;
+  margin-block-start: 4px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Adaptive-card-style governed payload blocks
+   -------------------------------------------------------------------------- */
+.ac-card {
+  background: color-mix(in oklch, var(--graphite) 72%, black);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-block-start: 10px;
+  padding: 12px 14px;
+}
+
+.ac-card-header {
+  align-items: center;
+  color: var(--steel);
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 600;
+  gap: 5px;
+  letter-spacing: 0.06em;
+  margin-block-end: 8px;
+  text-transform: uppercase;
+}
+
+.ac-card-title {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-block-end: 4px;
+}
+
+.ac-card-subtitle {
+  color: var(--steel);
+  font-size: 0.78rem;
+  margin: 0 0 6px;
+}
+
+.ac-card-body {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 6px 0 0;
+}
+
+.ac-card-subtle {
+  color: color-mix(in oklch, currentColor 65%, transparent);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  margin: 4px 0 0;
+}
+
+/* Risk badge */
+.ac-badge {
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  margin-block-start: 6px;
+  padding: 2px 8px;
+}
+
+.ac-badge.risk-low {
+  background: color-mix(in oklch, var(--green) 16%, transparent);
+  border: 1px solid color-mix(in oklch, var(--green) 36%, transparent);
+  color: var(--green);
+}
+
+.ac-badge.risk-medium {
+  background: color-mix(in oklch, var(--amber) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--amber) 34%, transparent);
+  color: var(--amber);
+}
+
+.ac-badge.risk-high {
+  background: color-mix(in oklch, var(--red) 14%, transparent);
+  border: 1px solid color-mix(in oklch, var(--red) 34%, transparent);
+  color: var(--red);
+}
+
+.ac-badge.risk-blocked {
+  background: color-mix(in oklch, var(--red) 20%, transparent);
+  border: 1px solid color-mix(in oklch, var(--red) 44%, transparent);
+  color: var(--red);
+}
+
+/* Advisory note inside risk-verdict */
+.ac-advisory-note {
+  align-items: flex-start;
+  color: var(--amber);
+  display: flex;
+  font-size: 0.78rem;
+  gap: 4px;
+  line-height: 1.35;
+  margin: 8px 0 0;
+}
+
+/* Controls list */
+.ac-controls-list {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin: 8px 0 0;
+  padding-inline-start: 18px;
+}
+
+.ac-controls-list li + li {
+  margin-block-start: 2px;
+}
+
+/* Fact-set (release packet) */
+.ac-fact-set {
+  column-gap: 16px;
+  display: grid;
+  font-size: 0.78rem;
+  grid-template-columns: auto 1fr;
+  margin: 8px 0 0;
+  row-gap: 4px;
+}
+
+.ac-fact-set dt {
+  color: var(--steel);
+  font-weight: 600;
+}
+
+.ac-fact-set dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Inline code (proposal ID) */
+.ac-card code {
+  background: color-mix(in oklch, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 18%, transparent);
+  border-radius: 3px;
+  font-family: ui-monospace, "Cascadia Code", Menlo, monospace;
+  font-size: 0.8em;
+  padding: 1px 4px;
+}
+
+/* Card variant — recommendation: subtle sparkle tint */
+.ac-recommendation {
+  border-color: color-mix(in oklch, oklch(0.52 0.18 264) 28%, var(--line));
+}
+
+/* Card variant — risk-verdict: amber tint */
+.ac-risk-verdict {
+  border-color: color-mix(in oklch, var(--amber) 30%, var(--line));
+}
+
+/* Card variant — proposal-receipt: teal tint */
+.ac-proposal-receipt {
+  border-color: color-mix(in oklch, var(--teal) 28%, var(--line));
+}
+
+/* Card variant — release-packet: green tint */
+.ac-release-packet {
+  border-color: color-mix(in oklch, var(--green) 30%, var(--line));
+}
+
+/* Light-mode cards */
+.light-mode .ac-card {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
+  color: oklch(0.22 0.024 220);
+}
+
+.light-mode .ac-card-header {
+  color: oklch(0.48 0.03 220);
+}
+
+.light-mode .ac-card-subtitle {
+  color: oklch(0.48 0.03 220);
+}
+
+.light-mode .ac-card-subtle {
+  color: oklch(0.52 0.024 220);
+}
+
+.light-mode .ac-fact-set dt {
+  color: oklch(0.48 0.03 220);
+}
+
+.light-mode .ac-badge.risk-low {
+  background: oklch(0.93 0.045 162);
+  border-color: oklch(0.7 0.1 162);
+  color: oklch(0.4 0.11 162);
+}
+
+.light-mode .ac-badge.risk-medium {
+  background: oklch(0.95 0.045 84);
+  border-color: oklch(0.68 0.13 78);
+  color: oklch(0.47 0.115 70);
+}
+
+.light-mode .ac-badge.risk-high,
+.light-mode .ac-badge.risk-blocked {
+  background: oklch(0.95 0.03 22);
+  border-color: oklch(0.66 0.12 22);
+  color: oklch(0.45 0.14 24);
+}
+
+/* --------------------------------------------------------------------------
+   Composer — inert demo input
+   -------------------------------------------------------------------------- */
+.chat-composer {
+  border-block-start: 1px solid var(--line);
+  display: grid;
+  gap: 8px;
+  margin-block-start: var(--space-md, 12px);
+  padding-block-start: var(--space-md, 12px);
+}
+
+.chat-composer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chat-chip {
+  background: color-mix(in oklch, var(--graphite-3) 80%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--steel);
+  cursor: default;
+  font-size: 0.76rem;
+  opacity: 0.6;
+  padding: 4px 12px;
+}
+
+.chat-chip:disabled {
+  cursor: not-allowed;
+}
+
+.light-mode .chat-chip {
+  background: oklch(0.96 0.006 205);
+  border-color: oklch(0.84 0.026 210);
+  color: oklch(0.44 0.028 220);
+}
+
+.chat-composer-row {
+  align-items: center;
+  background: var(--graphite-2);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  display: flex;
+  gap: 4px;
+  padding: 4px 4px 4px 14px;
+}
+
+.light-mode .chat-composer-row {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
+}
+
+.chat-composer-input {
+  background: transparent;
+  border: none;
+  color: var(--steel);
+  cursor: not-allowed;
+  flex: 1;
+  font-size: 0.85rem;
+  opacity: 0.5;
+  outline: none;
+}
+
+.light-mode .chat-composer-input {
+  color: oklch(0.44 0.028 220);
+}
+
+.chat-send-btn {
+  align-items: center;
+  background: color-mix(in oklch, var(--steel) 12%, transparent);
+  border: none;
+  border-radius: 50%;
+  color: var(--steel);
+  cursor: not-allowed;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  opacity: 0.4;
+  width: 30px;
+}
+
+/* --------------------------------------------------------------------------
+   Bubble entrance animation
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .chat-row {
+    animation: bubbleIn 0.22s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  .chat-row:nth-child(1) { animation-delay: 0ms; }
+  .chat-row:nth-child(2) { animation-delay: 60ms; }
+  .chat-row:nth-child(3) { animation-delay: 120ms; }
+  .chat-row:nth-child(4) { animation-delay: 180ms; }
+  .chat-row:nth-child(5) { animation-delay: 240ms; }
+  .chat-row:nth-child(6) { animation-delay: 300ms; }
+  .chat-row:nth-child(n+7) { animation-delay: 360ms; }
+
+  @keyframes bubbleIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reviewer bubble (carried forward from old mirror.css for compatibility)
+   -------------------------------------------------------------------------- */
 .copilot-chat .reviewer {
   background: color-mix(in oklch, var(--amber) 14%, var(--graphite-3));
   border-color: color-mix(in oklch, var(--amber) 34%, var(--line));
