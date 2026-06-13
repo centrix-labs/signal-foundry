@@ -135,7 +135,23 @@ export const riskReview: RiskReview = {
   ],
   rationale: "Customer renewal context is useful and sensitive. The workflow can release after reviewer approval and source controls pass.",
   createdAt: "2026-06-07T09:22:00.000Z",
-  correlationId: "corr-risk-0427"
+  correlationId: "corr-risk-0427",
+  advisory: {
+    status: "available",
+    model: "Azure AI Foundry · advisory",
+    summary: "Renewal context is useful and bounded to summaries; the residual risk is outreach framing, mitigated by approval and a surveillance block.",
+    steps: [
+      { signal: "Customer renewal context", concern: "Pulls renewal-health and usage summaries — sensitive, though not raw content", suggestedControl: "Restrict to approved summary fields only" },
+      { signal: "Account-team audience", concern: "Intended for the account team; limited blast radius", suggestedControl: "Scope output to the team audience" },
+      { signal: "Assistive automation", concern: "Drafts a brief, but a human still sends the outreach", suggestedControl: "Require reviewer approval before release" },
+      { signal: "Correlation logging", concern: "The audit trail must not leak customer identifiers", suggestedControl: "Retain sanitized correlation IDs only" },
+      { signal: "Renewal-outreach framing", concern: "Could drift toward pressuring or ranking customers", suggestedControl: "Block surveillance and ranking framing" }
+    ],
+    suggestedRiskLevel: "low",
+    agreesWithGate: false,
+    selfCritique: "My first pass understated the outreach-framing risk; I added the surveillance/ranking control and kept the suggestion at low while flagging the framing concern for the gate.",
+    generatedAt: "2026-06-07T09:22:30.000Z"
+  }
 };
 
 export const reviewItems: ReviewItem[] = [

@@ -79,6 +79,7 @@ export interface AdvisoryRiskAnalysis {
   steps?: AdvisoryRiskStep[];
   suggestedRiskLevel?: RiskLevel;
   agreesWithGate?: boolean;
+  selfCritique?: string;
   generatedAt?: string;
 }
 

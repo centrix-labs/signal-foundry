@@ -278,13 +278,34 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
     );
   }
   const disagrees = advisory.agreesWithGate === false;
+  const hasSteps = Boolean(advisory.steps && advisory.steps.length > 0);
   return (
     <div className="advisory-analysis comparison" aria-label="Advisory analysis">
       <div className="advisory-heading">
         <Sparkles size={14} />
-        <strong>Advisory Analysis</strong>
+        <strong>Multi-step reasoning</strong>
         {advisory.model && <small>{advisory.model}</small>}
       </div>
+
+      {hasSteps && (
+        <ol className="advisory-steps reasoning-star" aria-label="The model's step-by-step risk deliberation">
+          {advisory.steps!.map((step, index) => (
+            <li key={`${step.signal}-${step.concern}`} style={{ animationDelay: `${index * 220}ms` }}>
+              <span className="step-num" aria-hidden="true">{index + 1}</span>
+              <div className="step-body">
+                <strong>{step.signal}</strong>
+                <span>{step.concern}</span>
+                <em>→ {step.suggestedControl}</em>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      {advisory.selfCritique && (
+        <p className="advisory-selfcritique"><strong>Self-critique:</strong> {advisory.selfCritique}</p>
+      )}
+
       <div className="risk-comparison-grid">
         <article className={disagrees ? "advisory-warn" : "advisory-ok"}>
           <strong>AI advisory</strong>
@@ -295,19 +316,8 @@ function AdvisoryAnalysis({ review, decision }: { review: RiskReview; decision: 
           <p>{decision}. Source of truth for release.</p>
         </article>
       </div>
-      {disagrees ? <p className="advisory-arbitration" role="note">Advisory differs from the deterministic gate. Gate wins.</p> : <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>}
-      {advisory.steps && advisory.steps.length > 0 && (
-        <ul className="advisory-steps">
-          {advisory.steps.map((step) => (
-            <li key={`${step.signal}-${step.concern}`}>
-              <strong>{step.signal}</strong>
-              <span>{step.concern}</span>
-              <em>{step.suggestedControl}</em>
-            </li>
-          ))}
-        </ul>
-      )}
-      <p className="advisory-note">Advisory only — the deterministic risk gate is the source of truth.</p>
+      {disagrees ? <p className="advisory-arbitration" role="note">Advisory differs from the deterministic gate. The model reasons; the gate guarantees.</p> : <p className="advisory-agreement">Advisory agrees with the deterministic gate ({riskLabels[review.riskLevel]}).</p>}
+      <p className="advisory-note advisory-quote">Unplug the model — the verdict is byte-identical. Proven by test, not promised.</p>
     </div>
   );
 }

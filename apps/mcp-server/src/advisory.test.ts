@@ -39,6 +39,30 @@ function mockFetchReturning(content: unknown): typeof fetch {
     )) as typeof fetch;
 }
 
+function advisoryResponse(content: unknown): Response {
+  return new Response(
+    JSON.stringify({ model: "advisory-model", choices: [{ message: { content: JSON.stringify(content) } }] }),
+    { status: 200 }
+  );
+}
+
+// Returns a fetch mock that yields each queued response in order; once exhausted
+// it throws (which the draft loop treats as an upstream failure).
+function mockFetchSequence(responses: Array<() => Response | Promise<Response>>): { fetchImpl: typeof fetch; calls: () => number } {
+  let index = 0;
+  const fetchImpl = (async () => {
+    const factory = responses[index];
+    index += 1;
+    if (!factory) {
+      throw new Error("network down");
+    }
+    return factory();
+  }) as unknown as typeof fetch;
+  return { fetchImpl, calls: () => index };
+}
+
+const critiqueEnv = { ...foundryEnv, SIGNAL_FOUNDRY_ADVISORY_SELF_CRITIQUE: "on" } as NodeJS.ProcessEnv;
+
 describe("advisory risk analysis", () => {
   it("returns unavailable when advisory mode is off", async () => {
     const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, { SIGNAL_FOUNDRY_ADVISORY_MODE: "off" } as NodeJS.ProcessEnv);
@@ -101,6 +125,97 @@ describe("advisory risk analysis", () => {
     expect(computeAgreement(undefined, "high")).toBeUndefined();
   });
 
+  it("self-critique ON: returns the revised analysis with selfCritique text after two calls", async () => {
+    const draft = {
+      summary: "Draft: autonomous automation is risky.",
+      steps: [{ signal: "automationLevel=autonomous", concern: "No human in the loop", suggestedControl: "Reviewer approval" }],
+      suggestedRiskLevel: "medium"
+    };
+    const revised = {
+      summary: "Revised: autonomous automation plus enterprise audience is risky.",
+      steps: [
+        { signal: "automationLevel=autonomous", concern: "No human in the loop", suggestedControl: "Mandatory reviewer approval" },
+        { signal: "audienceScope=enterprise", concern: "Broad blast radius", suggestedControl: "Staged rollout" }
+      ],
+      suggestedRiskLevel: "high",
+      critique: "Added the enterprise audience signal and strengthened the reviewer control."
+    };
+    const { fetchImpl, calls } = mockFetchSequence([
+      () => advisoryResponse(draft),
+      () => advisoryResponse(revised)
+    ]);
+    const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, critiqueEnv, fetchImpl);
+    expect(calls()).toBe(2);
+    expect(result.status).toBe("available");
+    expect(result.suggestedRiskLevel).toBe("high");
+    expect(result.agreesWithGate).toBe(true);
+    expect(result.steps).toHaveLength(2);
+    expect(result.selfCritique).toBe(
+      "Added the enterprise audience signal and strengthened the reviewer control."
+    );
+  });
+
+  it("self-critique ON: falls back to the draft when the critique call fails", async () => {
+    const draft = {
+      summary: "Draft analysis stands.",
+      steps: [{ signal: "automationLevel=autonomous", concern: "No human in the loop", suggestedControl: "Reviewer approval" }],
+      suggestedRiskLevel: "medium"
+    };
+    const { fetchImpl, calls } = mockFetchSequence([
+      () => advisoryResponse(draft)
+      // second call exhausts the queue -> throws -> falls back to draft
+    ]);
+    const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, critiqueEnv, fetchImpl);
+    expect(calls()).toBe(2);
+    expect(result.status).toBe("available");
+    expect(result.suggestedRiskLevel).toBe("medium");
+    expect(result.steps).toHaveLength(1);
+    expect(result.selfCritique).toBeUndefined();
+  });
+
+  it("self-critique ON: falls back to the draft when the critique payload is malformed", async () => {
+    const draft = {
+      summary: "Draft analysis stands.",
+      steps: [{ signal: "automationLevel=autonomous", concern: "No human in the loop", suggestedControl: "Reviewer approval" }],
+      suggestedRiskLevel: "medium"
+    };
+    const { fetchImpl } = mockFetchSequence([
+      () => advisoryResponse(draft),
+      () => new Response("not json at all", { status: 200 })
+    ]);
+    const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, critiqueEnv, fetchImpl);
+    expect(result.status).toBe("available");
+    expect(result.suggestedRiskLevel).toBe("medium");
+    expect(result.selfCritique).toBeUndefined();
+  });
+
+  it("self-critique ON: still degrades to unavailable when the draft call fails after retry", async () => {
+    let calls = 0;
+    const failingFetch = (async () => {
+      calls += 1;
+      throw new Error("network down");
+    }) as unknown as typeof fetch;
+    const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, critiqueEnv, failingFetch);
+    expect(result).toEqual({ status: "unavailable" });
+    expect(calls).toBe(2);
+  });
+
+  it("self-critique OFF: makes exactly one model call and behaves as today", async () => {
+    const { fetchImpl, calls } = mockFetchSequence([
+      () =>
+        advisoryResponse({
+          summary: "Single pass.",
+          steps: [{ signal: "automationLevel=autonomous", concern: "No human in the loop", suggestedControl: "Reviewer approval" }],
+          suggestedRiskLevel: "medium"
+        })
+    ]);
+    const result = await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, foundryEnv, fetchImpl);
+    expect(calls()).toBe(1);
+    expect(result.status).toBe("available");
+    expect(result.suggestedRiskLevel).toBe("medium");
+    expect(result.selfCritique).toBeUndefined();
+  });
+
   it("never changes the deterministic verdict regardless of advisory outcome", async () => {
     const base = {
       tenantId: "tenant-asteria-dynamics",
@@ -112,6 +227,12 @@ describe("advisory risk analysis", () => {
     } as const;
     const verdictBefore = scoreRisk(base);
     await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, foundryEnv, mockFetchReturning({ summary: "x", steps: [], suggestedRiskLevel: "low" }));
+    // The self-critique path must hold the same invariant: advisory never mutates the gate verdict.
+    const { fetchImpl } = mockFetchSequence([
+      () => advisoryResponse({ summary: "draft", steps: [], suggestedRiskLevel: "low" }),
+      () => advisoryResponse({ summary: "revised", steps: [], suggestedRiskLevel: "blocked", critique: "Escalated." })
+    ]);
+    await generateAdvisoryRiskAnalysis(proposal, riskInput, deterministic, critiqueEnv, fetchImpl);
     const verdictAfter = scoreRisk(base);
     expect(JSON.stringify(verdictAfter)).toBe(JSON.stringify(verdictBefore));
   });
