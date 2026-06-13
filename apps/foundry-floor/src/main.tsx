@@ -8,6 +8,8 @@ import "./workbench.css";
 import "./views.css";
 import "./mirror.css";
 import "./login.css";
+import "./architecture.css";
+import "./walkthrough.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   FileText,
+  HelpCircle,
   Lock,
   PackageCheck,
   ShieldCheck,
@@ -59,6 +60,7 @@ export function LeftRail({
     ]],
     ["Insight", [
       ["atlas", "Signal Atlas"],
+      ["architecture", "Architecture"],
       ["pipeline", "Release Pipeline"],
       ["executive", "Light Executive"]
     ]]
@@ -84,7 +86,7 @@ export function LeftRail({
           <Fragment key={section}>
             <p className="nav-section">{section}</p>
             {items.map(([key, label]) => (
-              <button key={key} type="button" className={activeView === key ? "active" : ""} onClick={() => onView(key)}>
+              <button key={key} type="button" data-tour={`nav-${key}`} className={activeView === key ? "active" : ""} onClick={() => onView(key)}>
                 <Activity size={16} />
                 {label}
               </button>
@@ -140,11 +142,13 @@ export function LeftRail({
 export function TopBar({
   user,
   searchQuery = "",
-  onSearchChange
+  onSearchChange,
+  onStartTour
 }: {
   user?: StaticWebAppUser;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
+  onStartTour?: () => void;
 }) {
   const displayName = user?.userDetails || "Avery M.";
   const initials = displayName
@@ -170,6 +174,11 @@ export function TopBar({
         />
       </label>
       <div className="top-bar-right">
+        {onStartTour ? (
+          <button type="button" className="tour-help-btn" onClick={onStartTour} aria-label="Open the walkthrough">
+            <HelpCircle size={15} /> How to use
+          </button>
+        ) : null}
         <div className="operator-badge">
           <span>{initials}</span>
           <div>

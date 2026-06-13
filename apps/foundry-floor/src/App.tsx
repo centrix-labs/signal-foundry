@@ -12,6 +12,8 @@ import {
 import { CopilotMirror } from "./CopilotMirror";
 import { JudgeDeck } from "./JudgeDeck";
 import { Workbench } from "./Workbench";
+import { ArchitectureView } from "./Architecture";
+import { Walkthrough, WALKTHROUGH_SEEN_KEY } from "./Walkthrough";
 import { ReleasePipeline, SignalAtlas } from "./visuals";
 import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
@@ -191,7 +193,7 @@ function JudgeMode({
           <h1>Signal Foundry</h1>
           <p>Governed Copilot workflows from idea to approved release.</p>
         </div>
-        <div className="stage-stepper" aria-label="Judge Mode stages">
+        <div className="stage-stepper" data-tour="stage-stepper" aria-label="Judge Mode stages">
           {judgeStages.map((stage, index) => (
             <button
               key={stage.key}
@@ -208,7 +210,7 @@ function JudgeMode({
       </div>
 
       <div className="judge-grid">
-        <div className="judge-atlas">
+        <div className="judge-atlas" data-tour="atlas">
           <SignalAtlas
             records={records}
             selectedId={selectedId}
@@ -244,7 +246,7 @@ function JudgeMode({
               : "Open Copilot proof"} <ChevronRight size={14} />
           </button>
         </div>
-        <div className="judge-actions">
+        <div className="judge-actions" data-tour="advance">
           <button type="button" onClick={onReset}><RotateCcw size={15} /> Reset</button>
           <button type="button" className="primary" onClick={onAdvance}>
             {nextActionLabel} <ChevronRight size={15} />
@@ -327,7 +329,7 @@ function StoryLedger({
   ];
 
   return (
-    <aside className="story-ledger" aria-label="Story ledger: evidence per stage">
+    <aside className="story-ledger" data-tour="story-ledger" aria-label="Story ledger: evidence per stage">
       {entries.map((entry, index) => {
         const state = index < stageIndex ? "done" : index === stageIndex ? "current" : "upcoming";
         return (
@@ -430,6 +432,15 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
   const dashboardData = useDashboardData();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<RecordFilters>({});
+  const [showTour, setShowTour] = useState(false);
+
+  // First-time visitors get the walkthrough automatically; afterwards it lives
+  // behind the Help button.
+  useEffect(() => {
+    if (window.localStorage.getItem(WALKTHROUGH_SEEN_KEY) !== "1") {
+      setShowTour(true);
+    }
+  }, []);
   const {
     activeView,
     setActiveView,
@@ -474,6 +485,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           user={authUser}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onStartTour={() => setShowTour(true)}
         />
         {["judge", "floor"].includes(activeView) ? (
         <div className="demo-controls">
@@ -526,6 +538,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           />
         ) : null}
         {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}
+        {activeView === "architecture" ? <ArchitectureView /> : null}
         {activeView === "pipeline" ? <PipelineView records={visibleRecords} selected={selected} /> : null}
         {activeView === "review" ? (
           <ReviewQueue
@@ -563,6 +576,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           />
         ) : null}
       </div>
+      <Walkthrough open={showTour} onClose={() => setShowTour(false)} onRequestView={setActiveView} />
     </main>
   );
 }

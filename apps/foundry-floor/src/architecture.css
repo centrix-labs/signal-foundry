@@ -1,0 +1,209 @@
+.architecture-view {
+  display: grid;
+  gap: var(--space-lg, 16px);
+}
+
+.architecture-head {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg, 16px);
+  justify-content: space-between;
+}
+
+.architecture-head h1 {
+  font-size: 1.5rem;
+  margin: 2px 0 6px;
+}
+
+.architecture-sub {
+  color: var(--steel);
+  font-size: 0.86rem;
+  margin: 0;
+  max-width: 52ch;
+}
+
+.architecture-legend {
+  color: var(--steel);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  gap: 6px;
+}
+
+.architecture-legend span {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.architecture-legend i {
+  border-radius: 2px;
+  display: inline-block;
+  height: 10px;
+  width: 18px;
+}
+
+.arch-legend-flow {
+  background: var(--teal);
+  height: 2px !important;
+}
+
+.arch-legend-node {
+  background: color-mix(in oklch, var(--graphite-3) 60%, var(--teal));
+  border: 1px solid color-mix(in oklch, var(--teal) 40%, transparent);
+}
+
+.architecture-canvas {
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in oklch, var(--teal) 8%, transparent), transparent 42%),
+    color-mix(in oklch, var(--graphite) 88%, black);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.architecture-canvas svg {
+  display: block;
+  width: 100%;
+}
+
+.light-mode .architecture-canvas {
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in oklch, var(--teal) 10%, transparent), transparent 46%),
+    oklch(0.97 0.008 205);
+  border-color: oklch(0.84 0.026 210);
+}
+
+/* Tier bands and headers */
+.arch-tier-band {
+  fill: color-mix(in oklch, var(--steel) 8%, transparent);
+  stroke: color-mix(in oklch, var(--steel) 16%, transparent);
+  stroke-width: 0.12;
+}
+
+.light-mode .arch-tier-band {
+  fill: color-mix(in oklch, var(--steel) 7%, transparent);
+  stroke: oklch(0.86 0.02 210);
+}
+
+.arch-tier-label {
+  fill: var(--steel);
+  font-size: 1.7px;
+  font-weight: 800;
+  letter-spacing: 0.06px;
+  text-transform: uppercase;
+}
+
+/* Connectors */
+.arch-edge {
+  fill: none;
+  stroke: color-mix(in oklch, var(--teal) 52%, var(--steel));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.45;
+  opacity: 0.55;
+  transition: opacity 160ms ease, stroke-width 160ms ease, stroke 160ms ease;
+}
+
+.arch-edge[marker-end] {
+  marker-end: none;
+}
+
+#archArrow path {
+  fill: color-mix(in oklch, var(--teal) 70%, white);
+}
+
+.arch-edge.active {
+  stroke: var(--teal);
+  stroke-width: 0.85;
+  opacity: 1;
+  filter: drop-shadow(0 0 1.2px color-mix(in oklch, var(--teal) 70%, transparent));
+}
+
+.arch-edge.dim {
+  opacity: 0.12;
+}
+
+/* Service nodes */
+.arch-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.arch-node-box {
+  fill: color-mix(in oklch, var(--graphite-3) 82%, black);
+  stroke: color-mix(in oklch, var(--steel) 40%, transparent);
+  stroke-width: 0.18;
+  transition: fill 160ms ease, stroke 160ms ease, opacity 160ms ease;
+}
+
+.light-mode .arch-node-box {
+  fill: oklch(0.99 0.004 205);
+  stroke: oklch(0.8 0.03 210);
+}
+
+.arch-node-title {
+  fill: oklch(0.96 0.012 205);
+  font-size: 1.85px;
+  font-weight: 700;
+}
+
+.arch-node-tech {
+  fill: color-mix(in oklch, var(--steel) 70%, white);
+  font-size: 1.45px;
+  font-weight: 500;
+}
+
+.light-mode .arch-node-title {
+  fill: oklch(0.22 0.03 230);
+}
+
+.light-mode .arch-node-tech {
+  fill: oklch(0.44 0.04 225);
+}
+
+/* Hover / focus highlight states */
+.arch-node.hovered .arch-node-box {
+  fill: color-mix(in oklch, var(--teal) 22%, var(--graphite-3));
+  stroke: var(--teal);
+  stroke-width: 0.4;
+  filter: drop-shadow(0 0 1.6px color-mix(in oklch, var(--teal) 70%, transparent));
+}
+
+.light-mode .arch-node.hovered .arch-node-box {
+  fill: color-mix(in oklch, var(--teal) 18%, white);
+  stroke: color-mix(in oklch, var(--teal) 80%, var(--graphite));
+}
+
+.arch-node.linked .arch-node-box {
+  stroke: color-mix(in oklch, var(--teal) 72%, transparent);
+  stroke-width: 0.34;
+}
+
+.arch-node.hovered .arch-node-title,
+.arch-node.linked .arch-node-title {
+  fill: oklch(0.99 0.01 200);
+}
+
+.light-mode .arch-node.hovered .arch-node-title,
+.light-mode .arch-node.linked .arch-node-title {
+  fill: oklch(0.18 0.04 220);
+}
+
+.arch-node.dim {
+  opacity: 0.32;
+}
+
+.arch-node:focus-visible .arch-node-box {
+  stroke: var(--teal);
+  stroke-width: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-edge,
+  .arch-node-box {
+    transition: none;
+  }
+}
