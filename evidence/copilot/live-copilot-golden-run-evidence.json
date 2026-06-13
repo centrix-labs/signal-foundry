@@ -1,0 +1,77 @@
+{
+  "capturedAt": "2026-06-13T02:07:28Z",
+  "source": "live deployed MCP (Azure Container Apps)",
+  "proposals": 10,
+  "capabilities": 5,
+  "releasePackets": 3,
+  "copilotCheckpoints": 4,
+  "activityTotal": 31,
+  "governedWrites": 25,
+  "reads": 1,
+  "rejections": [
+    {
+      "action": "score_capability_risk",
+      "correlationId": "risk-662311"
+    },
+    {
+      "action": "record_copilot_checkpoint",
+      "correlationId": "corr-live-mqafamsm-negative"
+    },
+    {
+      "action": "record_copilot_checkpoint",
+      "correlationId": "corr-live-20260612041055-001"
+    },
+    {
+      "action": "approve_capability",
+      "correlationId": "corr-1780937823538"
+    },
+    {
+      "action": "approve_capability",
+      "correlationId": "corr-1780937356331"
+    }
+  ],
+  "liveGoldenFlow": [
+    {
+      "time": "2026-06-13T01:29:35.427Z",
+      "action": "release_capability",
+      "status": "success",
+      "correlationId": "rel-331145"
+    },
+    {
+      "time": "2026-06-13T01:27:30.652Z",
+      "action": "approve_capability",
+      "status": "success",
+      "correlationId": "appr-771100"
+    },
+    {
+      "time": "2026-06-13T01:21:22.000Z",
+      "action": "submit_capability_review",
+      "status": "success",
+      "correlationId": "rev-551199"
+    },
+    {
+      "time": "2026-06-13T01:19:04.717Z",
+      "action": "score_capability_risk",
+      "status": "success",
+      "correlationId": "risk-662312"
+    },
+    {
+      "time": "2026-06-13T01:16:05.993Z",
+      "action": "score_capability_risk",
+      "status": "rejected",
+      "correlationId": "risk-662311"
+    },
+    {
+      "time": "2026-06-13T01:12:13.712Z",
+      "action": "create_capability_proposal",
+      "status": "success",
+      "correlationId": "prop-884422"
+    }
+  ],
+  "releasedCapability": {
+    "title": "Incident Summarization Copilot",
+    "status": "released",
+    "version": "v1.0.0",
+    "owner": "Matt Graves"
+  }
+}
