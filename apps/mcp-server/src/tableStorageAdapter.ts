@@ -43,6 +43,38 @@ export class TableStorageRegistryAdapter {
     );
   }
 
+  async loadRegistry(tenantId: string, projectId: string): Promise<Partial<SignalFoundryRegistry> | undefined> {
+    const partition = `${tenantId}:${projectId}`;
+    const loaded: Record<string, unknown[]> = {};
+    let recordCount = 0;
+    for (const [collection, tableName] of Object.entries(tableNames) as Array<[RegistryCollection, string]>) {
+      const client = this.tableClientFor(tableName);
+      const records: unknown[] = [];
+      try {
+        const entities = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${partition}'` } });
+        for await (const entity of entities) {
+          const payload = (entity as { payload?: string }).payload;
+          if (typeof payload === "string") {
+            records.push(JSON.parse(payload));
+          }
+        }
+      } catch (error) {
+        console.log(JSON.stringify({ event: "table_hydrate_skip", table: tableName, code: getErrorCode(error) ?? "unknown" }));
+        return undefined;
+      }
+      loaded[collection] = records;
+      recordCount += records.length;
+    }
+    if (recordCount === 0) {
+      return undefined;
+    }
+    const byTimeDesc = (key: string) => (a: unknown, b: unknown) =>
+      String((b as Record<string, string>)[key] ?? "").localeCompare(String((a as Record<string, string>)[key] ?? ""));
+    (loaded["mcpActivity"] as unknown[]).sort(byTimeDesc("timestamp"));
+    (loaded["copilotCheckpoints"] as unknown[]).sort(byTimeDesc("createdAt"));
+    return loaded as Partial<SignalFoundryRegistry>;
+  }
+
   async upsertRegistry(registry: SignalFoundryRegistry, tenantId: string, projectId: string) {
     for (const [collection, tableName] of Object.entries(tableNames) as Array<[RegistryCollection, string]>) {
       const client = this.tableClientFor(tableName);

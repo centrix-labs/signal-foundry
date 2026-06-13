@@ -18,6 +18,26 @@ export function createServer(store = new RegistryStore()) {
   const app = express();
   app.use(cors({ origin: parseOrigins(process.env["SIGNAL_FOUNDRY_ALLOWED_ORIGINS"]) }));
   app.use(express.json({ limit: "256kb" }));
+  app.use((request, response, next) => {
+    if (request.path === "/health") {
+      next();
+      return;
+    }
+    response.on("finish", () => {
+      const body = request.body as { params?: { name?: string; arguments?: { correlationId?: string } }; correlationId?: string } | undefined;
+      console.log(JSON.stringify({
+        event: "request",
+        method: request.method,
+        path: request.path,
+        tool: body?.params?.name ?? (request.params as { toolName?: string } | undefined)?.toolName,
+        correlationId: body?.params?.arguments?.correlationId ?? body?.correlationId,
+        status: response.statusCode,
+        bearerPresent: Boolean(request.headers.authorization),
+        actorHeaderPresent: Boolean(request.headers["x-sf-actor-id"])
+      }));
+    });
+    next();
+  });
 
   app.get("/health", (_request, response) => {
     response.json({ ok: true, service: "signal-foundry-mcp", status: "healthy" });

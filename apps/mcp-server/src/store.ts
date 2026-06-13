@@ -39,6 +39,32 @@ export class RegistryStore {
     await this.pendingMirror;
   }
 
+  // Container disk is ephemeral; the Table mirror is the durable copy. On boot,
+  // restore from the mirror so deploys never erase live demo evidence.
+  async hydrateFromAzure(tenantId: string, projectId: string) {
+    if (!this.tableAdapter) {
+      return false;
+    }
+    try {
+      const loaded = await this.tableAdapter.loadRegistry(tenantId, projectId);
+      if (!loaded) {
+        return false;
+      }
+      this.registry = { ...this.registry, ...loaded };
+      this.persist();
+      console.log(JSON.stringify({
+        event: "registry_hydrated",
+        proposals: this.registry.proposals.length,
+        activity: this.registry.mcpActivity.length,
+        checkpoints: this.registry.copilotCheckpoints.length
+      }));
+      return true;
+    } catch (error) {
+      console.log(JSON.stringify({ event: "registry_hydrate_failed", code: String(error).slice(0, 80) }));
+      return false;
+    }
+  }
+
   private load() {
     if (!existsSync(this.registryPath)) {
       mkdirSync(dirname(this.registryPath), { recursive: true });
