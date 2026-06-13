@@ -1,9 +1,9 @@
-.architecture-view {
+.arch2 {
   display: grid;
   gap: var(--space-lg, 16px);
 }
 
-.architecture-head {
+.arch2-head {
   align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
@@ -11,199 +11,238 @@
   justify-content: space-between;
 }
 
-.architecture-head h1 {
-  font-size: 1.5rem;
+.arch2-head h1 {
+  font-size: 1.4rem;
   margin: 2px 0 6px;
 }
 
-.architecture-sub {
+.arch2-sub {
   color: var(--steel);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   margin: 0;
-  max-width: 52ch;
+  max-width: 56ch;
 }
 
-.architecture-legend {
+.arch2-legend {
   color: var(--steel);
   display: flex;
   flex-direction: column;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   gap: 6px;
 }
 
-.architecture-legend span {
+.arch2-legend span {
   align-items: center;
   display: inline-flex;
   gap: 8px;
 }
 
-.architecture-legend i {
+.arch2-legend i {
   border-radius: 2px;
   display: inline-block;
-  height: 10px;
-  width: 18px;
+  height: 9px;
+  width: 16px;
 }
 
-.arch-legend-flow {
+.arch2-legend-flow {
   background: var(--teal);
   height: 2px !important;
 }
 
-.arch-legend-node {
-  background: color-mix(in oklch, var(--graphite-3) 60%, var(--teal));
-  border: 1px solid color-mix(in oklch, var(--teal) 40%, transparent);
+.arch2-legend-node {
+  background: color-mix(in oklch, var(--graphite-3) 55%, var(--teal));
+  border: 1px solid color-mix(in oklch, var(--teal) 38%, transparent);
 }
 
-.architecture-canvas {
+/* Canvas */
+.arch2-canvas {
   background:
-    radial-gradient(circle at 50% 40%, color-mix(in oklch, var(--teal) 8%, transparent), transparent 42%),
-    color-mix(in oklch, var(--graphite) 88%, black);
+    radial-gradient(circle at 50% 30%, color-mix(in oklch, var(--teal) 7%, transparent), transparent 46%),
+    color-mix(in oklch, var(--graphite) 90%, black);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  overflow: hidden;
-  padding: 8px;
+  border-radius: 12px;
+  padding: 16px 18px 18px;
 }
 
-.architecture-canvas svg {
-  display: block;
-  width: 100%;
-}
-
-.light-mode .architecture-canvas {
+.light-mode .arch2-canvas {
   background:
-    radial-gradient(circle at 50% 40%, color-mix(in oklch, var(--teal) 10%, transparent), transparent 46%),
-    oklch(0.97 0.008 205);
-  border-color: oklch(0.84 0.026 210);
+    radial-gradient(circle at 50% 30%, color-mix(in oklch, var(--teal) 9%, transparent), transparent 48%),
+    oklch(0.975 0.006 205);
+  border-color: oklch(0.85 0.024 210);
 }
 
-/* Tier bands and headers */
-.arch-tier-band {
-  fill: color-mix(in oklch, var(--steel) 8%, transparent);
-  stroke: color-mix(in oklch, var(--steel) 16%, transparent);
-  stroke-width: 0.12;
+/* Tier headers — small, uppercase, quiet */
+.arch2-headers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 12px;
 }
 
-.light-mode .arch-tier-band {
-  fill: color-mix(in oklch, var(--steel) 7%, transparent);
-  stroke: oklch(0.86 0.02 210);
-}
-
-.arch-tier-label {
-  fill: var(--steel);
-  font-size: 1.7px;
-  font-weight: 800;
-  letter-spacing: 0.06px;
+.arch2-header {
+  color: var(--steel);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
   text-transform: uppercase;
 }
 
-/* Connectors */
-.arch-edge {
+/* Body holds the card grid plus the connector overlay */
+.arch2-body {
+  position: relative;
+}
+
+.arch2-grid {
+  column-gap: 16px;
+  display: grid;
+  grid-auto-rows: minmax(52px, auto);
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 12px;
+}
+
+.arch2-band {
+  background: color-mix(in oklch, var(--steel) 7%, transparent);
+  border: 1px solid color-mix(in oklch, var(--steel) 12%, transparent);
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.light-mode .arch2-band {
+  background: color-mix(in oklch, var(--steel) 6%, transparent);
+  border-color: oklch(0.88 0.018 210);
+}
+
+/* Connector overlay — empty (and invisible) until a card is hovered */
+.arch2-overlay {
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.arch2-edge {
   fill: none;
-  stroke: color-mix(in oklch, var(--teal) 52%, var(--steel));
+  stroke: var(--teal);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 0.45;
-  opacity: 0.55;
-  transition: opacity 160ms ease, stroke-width 160ms ease, stroke 160ms ease;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 2px color-mix(in oklch, var(--teal) 55%, transparent));
+  animation: arch2EdgeIn 200ms ease both;
 }
 
-.arch-edge[marker-end] {
-  marker-end: none;
+@keyframes arch2EdgeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-#archArrow path {
-  fill: color-mix(in oklch, var(--teal) 70%, white);
-}
-
-.arch-edge.active {
-  stroke: var(--teal);
-  stroke-width: 0.85;
-  opacity: 1;
-  filter: drop-shadow(0 0 1.2px color-mix(in oklch, var(--teal) 70%, transparent));
-}
-
-.arch-edge.dim {
-  opacity: 0.12;
-}
-
-/* Service nodes */
-.arch-node {
+/* Service cards — compact, modern, text always fits */
+.arch2-card {
+  align-content: center;
+  background: color-mix(in oklch, var(--graphite-3) 78%, black);
+  border: 1px solid color-mix(in oklch, var(--steel) 34%, transparent);
+  border-radius: 11px;
   cursor: pointer;
+  display: grid;
+  gap: 1px;
   outline: none;
+  padding: 9px 12px;
+  text-align: center;
+  transition: border-color 150ms ease, background 150ms ease, opacity 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  z-index: 2;
 }
 
-.arch-node-box {
-  fill: color-mix(in oklch, var(--graphite-3) 82%, black);
-  stroke: color-mix(in oklch, var(--steel) 40%, transparent);
-  stroke-width: 0.18;
-  transition: fill 160ms ease, stroke 160ms ease, opacity 160ms ease;
+.arch2-card strong {
+  color: oklch(0.96 0.012 205);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.light-mode .arch-node-box {
-  fill: oklch(0.99 0.004 205);
-  stroke: oklch(0.8 0.03 210);
-}
-
-.arch-node-title {
-  fill: oklch(0.96 0.012 205);
-  font-size: 1.85px;
-  font-weight: 700;
-}
-
-.arch-node-tech {
-  fill: color-mix(in oklch, var(--steel) 70%, white);
-  font-size: 1.45px;
+.arch2-card span {
+  color: color-mix(in oklch, var(--steel) 72%, white);
+  font-size: 0.66rem;
   font-weight: 500;
+  line-height: 1.2;
 }
 
-.light-mode .arch-node-title {
-  fill: oklch(0.22 0.03 230);
+.light-mode .arch2-card {
+  background: oklch(0.995 0.003 205);
+  border-color: oklch(0.82 0.028 210);
+  box-shadow: 0 1px 2px rgba(28, 42, 54, 0.05);
 }
 
-.light-mode .arch-node-tech {
-  fill: oklch(0.44 0.04 225);
+.light-mode .arch2-card strong {
+  color: oklch(0.22 0.03 230);
 }
 
-/* Hover / focus highlight states */
-.arch-node.hovered .arch-node-box {
-  fill: color-mix(in oklch, var(--teal) 22%, var(--graphite-3));
-  stroke: var(--teal);
-  stroke-width: 0.4;
-  filter: drop-shadow(0 0 1.6px color-mix(in oklch, var(--teal) 70%, transparent));
+.light-mode .arch2-card span {
+  color: oklch(0.46 0.04 225);
 }
 
-.light-mode .arch-node.hovered .arch-node-box {
-  fill: color-mix(in oklch, var(--teal) 18%, white);
-  stroke: color-mix(in oklch, var(--teal) 80%, var(--graphite));
+/* Hover / focus highlight */
+.arch2-card.is-hovered {
+  background: color-mix(in oklch, var(--teal) 20%, var(--graphite-3));
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 45%, transparent), 0 8px 22px rgba(0, 209, 194, 0.18);
+  transform: translateY(-1px);
 }
 
-.arch-node.linked .arch-node-box {
-  stroke: color-mix(in oklch, var(--teal) 72%, transparent);
-  stroke-width: 0.34;
+.light-mode .arch2-card.is-hovered {
+  background: color-mix(in oklch, var(--teal) 16%, white);
+  border-color: color-mix(in oklch, var(--teal) 78%, var(--graphite));
 }
 
-.arch-node.hovered .arch-node-title,
-.arch-node.linked .arch-node-title {
-  fill: oklch(0.99 0.01 200);
+.arch2-card.is-linked {
+  border-color: color-mix(in oklch, var(--teal) 68%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 30%, transparent);
 }
 
-.light-mode .arch-node.hovered .arch-node-title,
-.light-mode .arch-node.linked .arch-node-title {
-  fill: oklch(0.18 0.04 220);
+.arch2-card.is-hovered strong,
+.arch2-card.is-linked strong {
+  color: oklch(0.99 0.01 200);
 }
 
-.arch-node.dim {
-  opacity: 0.32;
+.light-mode .arch2-card.is-hovered strong,
+.light-mode .arch2-card.is-linked strong {
+  color: oklch(0.17 0.04 220);
 }
 
-.arch-node:focus-visible .arch-node-box {
-  stroke: var(--teal);
-  stroke-width: 0.4;
+.arch2-card.is-dim {
+  opacity: 0.34;
+}
+
+.arch2-card:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--teal) 50%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .arch-edge,
-  .arch-node-box {
+  .arch2-card,
+  .arch2-edge {
     transition: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 920px) {
+  .arch2-header {
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+  }
+
+  .arch2-card {
+    padding: 7px 8px;
+  }
+
+  .arch2-card strong {
+    font-size: 0.72rem;
+  }
+
+  .arch2-card span {
+    font-size: 0.6rem;
   }
 }

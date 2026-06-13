@@ -1,48 +1,36 @@
-import { useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 type ServiceNode = {
   id: string;
   tier: number;
+  row: number;
   label: string;
   tech: string;
-  x: number;
-  y: number;
 };
 
-type TierHeader = {
-  label: string;
-  x: number;
-};
+const TIERS = ["Microsoft 365", "Governed Edge", "Reasoning & Gate", "Data & Audit", "Experience & Ops"];
 
-// Five layered tiers, left to right along the request path. x is the column
-// centre, y the row centre, in the SVG's 104 x 58 user-unit space.
-const TIERS: TierHeader[] = [
-  { label: "Microsoft 365", x: 10 },
-  { label: "Governed Edge", x: 31 },
-  { label: "Reasoning & Gate", x: 52 },
-  { label: "Data & Audit", x: 73 },
-  { label: "Experience & Ops", x: 94 }
-];
-
+// tier = column (0-4), row = matrix row (1-7); the stagger keeps the request
+// path readable across lanes.
 const SERVICES: ServiceNode[] = [
-  { id: "copilot-chat", tier: 0, label: "Copilot Chat", tech: "Microsoft 365", x: 10, y: 13 },
-  { id: "declarative-agent", tier: 0, label: "Declarative Agent", tech: "manifest v1.6", x: 10, y: 25 },
-  { id: "work-iq", tier: 0, label: "Work IQ", tech: "People + Meetings", x: 10, y: 37 },
-  { id: "adaptive-cards", tier: 0, label: "Adaptive Cards", tech: "response UI", x: 10, y: 49 },
+  { id: "copilot-chat", tier: 0, row: 1, label: "Copilot Chat", tech: "Microsoft 365" },
+  { id: "declarative-agent", tier: 0, row: 3, label: "Declarative Agent", tech: "manifest v1.6" },
+  { id: "work-iq", tier: 0, row: 5, label: "Work IQ", tech: "People + Meetings" },
+  { id: "adaptive-cards", tier: 0, row: 7, label: "Adaptive Cards", tech: "response UI" },
 
-  { id: "mcp-server", tier: 1, label: "MCP Server", tech: "13 tools · Zod", x: 31, y: 25 },
-  { id: "oauth-guard", tier: 1, label: "Entra ID", tech: "OAuth guard", x: 31, y: 37 },
+  { id: "mcp-server", tier: 1, row: 3, label: "MCP Server", tech: "13 tools · Zod" },
+  { id: "oauth-guard", tier: 1, row: 5, label: "Entra ID", tech: "OAuth guard" },
 
-  { id: "confirm-gate", tier: 2, label: "Confirmation Gate", tech: "schema-enforced", x: 52, y: 19 },
-  { id: "risk-gate", tier: 2, label: "Risk Gate", tech: "deterministic", x: 52, y: 31 },
-  { id: "advisory", tier: 2, label: "Foundry Advisory", tech: "multi-step reasoning", x: 52, y: 43 },
+  { id: "confirm-gate", tier: 2, row: 2, label: "Confirmation Gate", tech: "schema-enforced" },
+  { id: "risk-gate", tier: 2, row: 4, label: "Risk Gate", tech: "deterministic" },
+  { id: "advisory", tier: 2, row: 6, label: "Foundry Advisory", tech: "multi-step reasoning" },
 
-  { id: "registry", tier: 3, label: "Capability Registry", tech: "Table Storage", x: 73, y: 19 },
-  { id: "audit", tier: 3, label: "Audit Ledger", tech: "correlation IDs", x: 73, y: 31 },
-  { id: "key-vault", tier: 3, label: "Key Vault", tech: "secrets", x: 73, y: 43 },
+  { id: "registry", tier: 3, row: 2, label: "Capability Registry", tech: "Table Storage" },
+  { id: "audit", tier: 3, row: 4, label: "Audit Ledger", tech: "correlation IDs" },
+  { id: "key-vault", tier: 3, row: 6, label: "Key Vault", tech: "secrets" },
 
-  { id: "foundry-floor", tier: 4, label: "Foundry Floor", tech: "Static Web Apps", x: 94, y: 25 },
-  { id: "app-insights", tier: 4, label: "App Insights", tech: "telemetry", x: 94, y: 37 }
+  { id: "foundry-floor", tier: 4, row: 3, label: "Foundry Floor", tech: "Static Web Apps" },
+  { id: "app-insights", tier: 4, row: 5, label: "App Insights", tech: "telemetry" }
 ];
 
 const CONNECTIONS: ReadonlyArray<readonly [string, string]> = [
@@ -64,34 +52,6 @@ const CONNECTIONS: ReadonlyArray<readonly [string, string]> = [
   ["foundry-floor", "app-insights"]
 ];
 
-const BOX_W = 17;
-const BOX_H = 9;
-const HALF_W = BOX_W / 2;
-const HALF_H = BOX_H / 2;
-
-function serviceById(id: string): ServiceNode {
-  const node = SERVICES.find((item) => item.id === id);
-  if (!node) {
-    throw new Error(`Unknown architecture service ${id}`);
-  }
-  return node;
-}
-
-// Right-angle (orthogonal) connector: every segment is horizontal or vertical,
-// so the routing reads as 90-degree elbows like a board schematic.
-function connectorPath(a: ServiceNode, b: ServiceNode): string {
-  if (a.x === b.x) {
-    const top = Math.min(a.y, b.y) + HALF_H;
-    const bottom = Math.max(a.y, b.y) - HALF_H;
-    return `M ${a.x} ${top} V ${bottom}`;
-  }
-  const [left, right] = a.x < b.x ? [a, b] : [b, a];
-  const startX = left.x + HALF_W;
-  const endX = right.x - HALF_W;
-  const midX = (startX + endX) / 2;
-  return `M ${startX} ${left.y} H ${midX} V ${right.y} H ${endX}`;
-}
-
 function neighborsOf(id: string): Set<string> {
   const set = new Set<string>();
   for (const [a, b] of CONNECTIONS) {
@@ -105,121 +65,130 @@ function neighborsOf(id: string): Set<string> {
   return set;
 }
 
-// Wrap a short label into at most two lines so titles fit the service box.
-function wrapTwo(text: string, maxChars = 15): string[] {
-  if (text.length <= maxChars) {
-    return [text];
+type Box = { left: number; right: number; top: number; bottom: number; cx: number; cy: number };
+
+function boxOf(el: Element, origin: DOMRect): Box {
+  const r = el.getBoundingClientRect();
+  return {
+    left: r.left - origin.left,
+    right: r.right - origin.left,
+    top: r.top - origin.top,
+    bottom: r.bottom - origin.top,
+    cx: (r.left + r.right) / 2 - origin.left,
+    cy: (r.top + r.bottom) / 2 - origin.top
+  };
+}
+
+// Pure right-angle routing in pixel space: horizontal then vertical then
+// horizontal (or a straight vertical for same-column links).
+function orthogonalPath(a: Box, b: Box): string {
+  if (Math.abs(a.cx - b.cx) < 2) {
+    const [upper, lower] = a.cy <= b.cy ? [a, b] : [b, a];
+    return `M ${a.cx} ${upper.bottom} V ${lower.top}`;
   }
-  const words = text.split(" ");
-  const lines: string[] = [];
-  let current = "";
-  for (const word of words) {
-    const candidate = current ? `${current} ${word}` : word;
-    if (candidate.length <= maxChars || !current) {
-      current = candidate;
-    } else {
-      lines.push(current);
-      current = word;
-    }
-  }
-  if (current) {
-    lines.push(current);
-  }
-  return lines.slice(0, 2);
+  const [left, right] = a.cx < b.cx ? [a, b] : [b, a];
+  const midX = (left.right + right.left) / 2;
+  return `M ${left.right} ${left.cy} H ${midX} V ${right.cy} H ${right.left}`;
 }
 
 export function ArchitectureView() {
-  const [focused, setFocused] = useState<string | null>(null);
-  const linked = useMemo(() => (focused ? neighborsOf(focused) : null), [focused]);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [edges, setEdges] = useState<Array<{ id: string; d: string }>>([]);
+  const linked = hovered ? neighborsOf(hovered) : null;
+  const bodyRef = useRef<HTMLDivElement | null>(null);
 
-  function nodeState(id: string): "hovered" | "linked" | "dim" | "" {
-    if (!focused) {
+  const recompute = useCallback((id: string | null) => {
+    const body = bodyRef.current;
+    if (!body || !id) {
+      setEdges([]);
+      return;
+    }
+    const origin = body.getBoundingClientRect();
+    const next: Array<{ id: string; d: string }> = [];
+    for (const [a, b] of CONNECTIONS) {
+      if (a !== id && b !== id) {
+        continue;
+      }
+      const aEl = body.querySelector(`[data-arch-id="${a}"]`);
+      const bEl = body.querySelector(`[data-arch-id="${b}"]`);
+      if (!aEl || !bEl) {
+        continue;
+      }
+      next.push({ id: `${a}-${b}`, d: orthogonalPath(boxOf(aEl, origin), boxOf(bEl, origin)) });
+    }
+    setEdges(next);
+  }, []);
+
+  useLayoutEffect(() => {
+    recompute(hovered);
+    if (!hovered) {
+      return;
+    }
+    const onResize = () => recompute(hovered);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [hovered, recompute]);
+
+  function cardState(id: string): string {
+    if (!hovered) {
       return "";
     }
-    if (id === focused) {
-      return "hovered";
+    if (id === hovered) {
+      return "is-hovered";
     }
-    return linked?.has(id) ? "linked" : "dim";
-  }
-
-  function edgeState(a: string, b: string): "active" | "dim" | "" {
-    if (!focused) {
-      return "";
-    }
-    return a === focused || b === focused ? "active" : "dim";
+    return linked?.has(id) ? "is-linked" : "is-dim";
   }
 
   return (
-    <section className="architecture-view" aria-label="Architecture">
-      <div className="architecture-head">
+    <section className="arch2" aria-label="Architecture">
+      <div className="arch2-head">
         <div>
           <p className="eyebrow">System architecture</p>
           <h1>Signal Foundry, tier by tier</h1>
-          <p className="architecture-sub">
-            Hover any service to trace what it connects to — linked services and their right-angle paths light up, the rest fade back.
-          </p>
+          <p className="arch2-sub">Hover any service to trace its connections — only then do the linked services and their right-angle paths light up.</p>
         </div>
-        <div className="architecture-legend">
-          <span><i className="arch-legend-flow" /> Request &amp; data path</span>
-          <span><i className="arch-legend-node" /> Service</span>
+        <div className="arch2-legend">
+          <span><i className="arch2-legend-flow" /> Connection (on hover)</span>
+          <span><i className="arch2-legend-node" /> Service</span>
         </div>
       </div>
 
-      <div className="architecture-canvas">
-        <svg viewBox="0 0 104 58" role="img" aria-label="Tiered architecture diagram of Signal Foundry services and their connections">
-          <defs>
-            <marker id="archArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="3.4" markerHeight="3.4" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-          </defs>
+      <div className="arch2-canvas">
+        <div className="arch2-headers">
+          {TIERS.map((tier) => <div key={tier} className="arch2-header">{tier}</div>)}
+        </div>
 
-          {TIERS.map((tier) => (
-            <g key={tier.label} className="arch-tier">
-              <rect className="arch-tier-band" x={tier.x - HALF_W - 1.2} y={8} width={BOX_W + 2.4} height={47} rx={2} />
-              <text className="arch-tier-label" x={tier.x} y={5.4} textAnchor="middle">{tier.label}</text>
-            </g>
-          ))}
-
-          {CONNECTIONS.map(([a, b]) => {
-            const state = edgeState(a, b);
-            return (
-              <path
-                key={`${a}-${b}`}
-                className={`arch-edge ${state}`}
-                d={connectorPath(serviceById(a), serviceById(b))}
-                markerEnd="url(#archArrow)"
-                pathLength={1}
-              />
-            );
-          })}
-
-          {SERVICES.map((node) => {
-            const state = nodeState(node.id);
-            const titleLines = wrapTwo(node.label);
-            const titleTop = node.y - (titleLines.length > 1 ? 1.5 : 0.6);
-            return (
-              <g
+        <div className="arch2-body" ref={bodyRef}>
+          <div className="arch2-grid">
+            {TIERS.map((_, tier) => (
+              <div key={tier} className="arch2-band" style={{ gridColumn: tier + 1, gridRow: "1 / -1" }} aria-hidden="true" />
+            ))}
+            {SERVICES.map((node) => (
+              <div
                 key={node.id}
-                className={`arch-node ${state}`}
+                data-arch-id={node.id}
+                className={`arch2-card ${cardState(node.id)}`}
+                style={{ gridColumn: node.tier + 1, gridRow: node.row }}
                 tabIndex={0}
                 role="button"
                 aria-label={`${node.label}, ${node.tech}`}
-                onMouseEnter={() => setFocused(node.id)}
-                onMouseLeave={() => setFocused((current) => (current === node.id ? null : current))}
-                onFocus={() => setFocused(node.id)}
-                onBlur={() => setFocused((current) => (current === node.id ? null : current))}
+                onMouseEnter={() => setHovered(node.id)}
+                onMouseLeave={() => setHovered((current) => (current === node.id ? null : current))}
+                onFocus={() => setHovered(node.id)}
+                onBlur={() => setHovered((current) => (current === node.id ? null : current))}
               >
-                <rect className="arch-node-box" x={node.x - HALF_W} y={node.y - HALF_H} width={BOX_W} height={BOX_H} rx={1.4} />
-                <text className="arch-node-title" x={node.x} y={titleTop} textAnchor="middle">
-                  {titleLines.map((line, index) => (
-                    <tspan key={index} x={node.x} dy={index === 0 ? 1.6 : 2.0}>{line}</tspan>
-                  ))}
-                </text>
-                <text className="arch-node-tech" x={node.x} y={node.y + HALF_H - 1.4} textAnchor="middle">{node.tech}</text>
-              </g>
-            );
-          })}
-        </svg>
+                <strong>{node.label}</strong>
+                <span>{node.tech}</span>
+              </div>
+            ))}
+          </div>
+
+          <svg className="arch2-overlay" aria-hidden="true">
+            {edges.map((edge) => (
+              <path key={edge.id} className="arch2-edge" d={edge.d} />
+            ))}
+          </svg>
+        </div>
       </div>
     </section>
   );
