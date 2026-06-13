@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import type { Capability } from "@signal-foundry/shared";
 import {
   atlasEdges,
@@ -27,8 +28,8 @@ const SEEDED_WORKFLOW_NODES = atlasNodes.filter((node) => node.kind === "workflo
 const STRUCTURAL_EDGES = atlasEdges.filter((edge) => edge.kind !== "approval_path");
 const SEEDED_WORKFLOW_EDGES = atlasEdges.filter((edge) => edge.kind === "approval_path");
 const WORKFLOW_X = 82;
-const WORKFLOW_TOP = 26;
-const WORKFLOW_BOTTOM = 72;
+const WORKFLOW_CENTER = 49;
+const WORKFLOW_SPACING = 12;
 const MAX_LIVE_WORKFLOWS = 6;
 
 const SEEDED_WORKFLOW_IDS = SEEDED_WORKFLOW_NODES.map((node) => node.id);
@@ -46,12 +47,14 @@ function liveWorkflowNodes(records: readonly Capability[]): PositionedNode[] {
   ];
   const shown = ordered.slice(0, MAX_LIVE_WORKFLOWS);
   const count = shown.length;
+  // Centre the stack on the gate and use a fixed, generous gap so labels in a
+  // busy column never collide. Overflow below the viewBox is reachable by panning.
   return shown.map((record, index) => ({
     id: record.id,
     label: record.title,
     kind: "workflow",
     x: WORKFLOW_X,
-    y: count <= 1 ? 49 : WORKFLOW_TOP + ((WORKFLOW_BOTTOM - WORKFLOW_TOP) * index) / (count - 1),
+    y: WORKFLOW_CENTER + (index - (count - 1) / 2) * WORKFLOW_SPACING,
     riskLevel: record.riskLevel,
     status: record.status
   }));
@@ -145,6 +148,46 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
   ];
   const nodeLookup = new Map(displayNodes.map((node) => [node.id, node] as const));
 
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; panX: number; panY: number; sx: number; sy: number } | null>(null);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+
+  // Drag the background to pan the graph; node clicks still pass through.
+  function onPointerDown(event: React.PointerEvent<SVGSVGElement>) {
+    if ((event.target as Element).closest(".node-hit")) {
+      return;
+    }
+    const ctm = svgRef.current?.getScreenCTM();
+    if (!ctm) {
+      return;
+    }
+    dragRef.current = { startX: event.clientX, startY: event.clientY, panX: pan.x, panY: pan.y, sx: ctm.a || 1, sy: ctm.d || 1 };
+    try {
+      svgRef.current?.setPointerCapture(event.pointerId);
+    } catch {
+      // pointer capture is best-effort; panning still works while over the canvas
+    }
+  }
+
+  function onPointerMove(event: React.PointerEvent<SVGSVGElement>) {
+    const drag = dragRef.current;
+    if (!drag) {
+      return;
+    }
+    const clamp = (value: number) => Math.max(-55, Math.min(55, value));
+    setPan({
+      x: clamp(drag.panX + (event.clientX - drag.startX) / drag.sx),
+      y: clamp(drag.panY + (event.clientY - drag.startY) / drag.sy)
+    });
+  }
+
+  function endPan(event: React.PointerEvent<SVGSVGElement>) {
+    if (dragRef.current) {
+      svgRef.current?.releasePointerCapture(event.pointerId);
+    }
+    dragRef.current = null;
+  }
+
   return (
     <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""}`} aria-label="Signal Atlas">
       <div className="panel-heading">
@@ -167,7 +210,22 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             <span className="outbound">Approved workflows</span>
           </div>
         ) : null}
-        <svg viewBox={judgeMode ? "0 16 100 74" : "0 0 100 112"} role="img" aria-label="Animated graph of signals, roles, risk gates, and workflows">
+        <svg
+          ref={svgRef}
+          className="atlas-svg"
+          viewBox={judgeMode ? "0 16 100 74" : "0 0 100 112"}
+          role="img"
+          aria-label="Animated graph of signals, roles, risk gates, and workflows. Drag to pan; double-click to reset."
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endPan}
+          onPointerCancel={endPan}
+          onDoubleClick={(event) => {
+            if (!(event.target as Element).closest(".node-hit")) {
+              setPan({ x: 0, y: 0 });
+            }
+          }}
+        >
           <defs>
             <filter id="tealGlow" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="1.8" result="blur" />
@@ -183,6 +241,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
               <path d="M 0 0 L 10 5 L 0 10 z" />
             </marker>
           </defs>
+          <g className="atlas-pan" transform={`translate(${pan.x} ${pan.y})`}>
           <g className="constellation">
             {Array.from({ length: 44 }, (_, index) => {
               const x = 14 + ((index * 17) % 62);
@@ -242,6 +301,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             </g>
             );
           })}
+          </g>
         </svg>
         {judgeMode ? (
           <div className="atlas-badges" aria-label="Atlas proof badges">

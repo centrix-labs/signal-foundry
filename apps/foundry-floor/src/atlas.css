@@ -29,6 +29,23 @@
   width: 100%;
 }
 
+.atlas-canvas svg.atlas-svg {
+  cursor: grab;
+  touch-action: none;
+}
+
+.atlas-canvas svg.atlas-svg:active {
+  cursor: grabbing;
+}
+
+.atlas-pan {
+  transition: transform 60ms linear;
+}
+
+.node-hit {
+  cursor: pointer;
+}
+
 .judge-atlas-panel .atlas-canvas {
   min-height: 440px;
 }
