@@ -23,7 +23,8 @@ import {
   reviewItems,
   riskLabels,
   riskReview,
-  statusLabels
+  statusLabels,
+  synthesizeRiskReview
 } from "./data";
 import { signOutUrl, type StaticWebAppUser } from "./auth";
 import { decisionCopy } from "./decisionText";
@@ -225,7 +226,7 @@ export function CapabilityList({
 
 export function RiskGate({ selected, riskReviews = [riskReview], compact = false }: { selected: Capability; riskReviews?: readonly RiskReview[]; compact?: boolean }) {
   const isBlocked = selected.status === "blocked";
-  const selectedRisk = riskReviews.find((item) => item.proposalId === selected.id) ?? riskReview;
+  const selectedRisk = riskReviews.find((item) => item.proposalId === selected.id) ?? synthesizeRiskReview(selected);
   const reviewDecision = selectedRisk.requiresHumanReview ? "Human review required" : "Assistive release path";
   return (
     <section className={`panel risk-gate ${compact ? "compact-risk" : ""}`} aria-label="Risk Gate">

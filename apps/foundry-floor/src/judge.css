@@ -258,7 +258,7 @@
 
 .advisory-heading {
   align-items: center;
-  color: oklch(0.28 0.09 205);
+  color: oklch(0.26 0.045 222);
   display: flex;
   gap: 0.45rem;
 }

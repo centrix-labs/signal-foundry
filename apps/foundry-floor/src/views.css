@@ -80,6 +80,7 @@ summary em,
 }
 
 .mcp-rail {
+  align-content: start;
   min-width: 0;
   overflow: hidden;
 }

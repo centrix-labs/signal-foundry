@@ -154,6 +154,47 @@ export const riskReview: RiskReview = {
   }
 };
 
+const controlsByLevel: Record<RiskLevel, string[]> = {
+  low: ["Use approved summaries only", "Retain sanitized correlation IDs"],
+  medium: ["Use approved summaries only", "Confirm human review before release", "Retain sanitized correlation IDs"],
+  high: [
+    "Use approved summaries only",
+    "Confirm human review before release",
+    "Restrict to least-privilege audience",
+    "Retain sanitized correlation IDs",
+    "Block surveillance framing"
+  ],
+  blocked: ["Refuse the request", "Convert to a governed capability before review"]
+};
+
+const rationaleByLevel: Record<RiskLevel, string> = {
+  low: "Low-sensitivity summaries with a narrow audience — assistive release is appropriate once standard controls pass.",
+  medium: "Useful but sensitive context — release is allowed after reviewer approval and source controls pass.",
+  high: "Sensitive context with broad reach or higher automation — strict controls and human approval are required before release.",
+  blocked: "The request resembles monitoring or ranking of people and is refused by policy."
+};
+
+// Derive a risk review from a capability when no scored review exists yet, so
+// each offering shows its own risk profile instead of borrowing another's.
+export function synthesizeRiskReview(capability: Capability): RiskReview {
+  const level = capability.riskLevel;
+  return {
+    id: `synth-${capability.id}`,
+    proposalId: capability.id,
+    riskLevel: level,
+    dataSensitivity: level === "low" ? "low" : level === "high" ? "high" : "medium",
+    externalSharing: "low",
+    automationLevel: level === "high" ? "autonomous" : "assistive",
+    audienceScope: level === "high" ? "enterprise" : "team",
+    usesCustomerData: level !== "low",
+    requiresHumanReview: level !== "low",
+    requiredControls: controlsByLevel[level] ?? controlsByLevel.medium,
+    rationale: `${capability.title}: ${rationaleByLevel[level] ?? rationaleByLevel.medium}`,
+    createdAt: capability.updatedAt,
+    correlationId: `corr-${capability.id}`
+  };
+}
+
 export const reviewItems: ReviewItem[] = [
   {
     id: "rev-renewal-001",
