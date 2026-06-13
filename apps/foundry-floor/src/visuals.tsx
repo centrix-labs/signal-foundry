@@ -180,6 +180,9 @@ function StoryHero({ story, stageKey, heroLabel }: { story: StoryState; stageKey
   if (!heroVisible) {
     return null;
   }
+  // Size the label box to its text so wide titles never bleed past the box.
+  const heroText = heroLabel ? (heroLabel.length > 26 ? `${heroLabel.slice(0, 25)}…` : heroLabel) : "";
+  const heroLabelWidth = Math.max(10, heroText.length * 0.9 + 2.4);
   return (
     <g
       className={`story-hero story-hero-${variant}`}
@@ -203,12 +206,13 @@ function StoryHero({ story, stageKey, heroLabel }: { story: StoryState; stageKey
       ) : null}
       <circle className="story-hero-ring" r={2.7} />
       <circle className="story-hero-core" r={1.15} />
-      {heroLabel ? (
+      {/* Label only the sealed result — in the clear space below the lane. While
+          the hero is in flight the right-rail ledger already names the record,
+          so an axis label here would just crowd the forge/gate nodes. */}
+      {heroText && variant === "sealed" ? (
         <g className="story-hero-label" pointerEvents="none">
-          <rect className="story-hero-label-bg" x={-9} y={3.4} width={18} height={3.4} rx={0.8} />
-          <text className="story-hero-label-text" x={0} y={5.7} textAnchor="middle">
-            {heroLabel.length > 22 ? `${heroLabel.slice(0, 21)}…` : heroLabel}
-          </text>
+          <rect className="story-hero-label-bg" x={-heroLabelWidth / 2} y={3.4} width={heroLabelWidth} height={3.4} rx={0.8} />
+          <text className="story-hero-label-text" x={0} y={5.7} textAnchor="middle">{heroText}</text>
         </g>
       ) : null}
     </g>
@@ -238,8 +242,11 @@ function computeViewBox(
     minY = Math.min(minY, point.y - 3.5);
     maxY = Math.max(maxY, point.y + 10.5);
   }
+  // Extra bottom padding leaves a clear strip for the legend / proof badges that
+  // overlay the bottom of the canvas, so the lowest node never sits under them.
   const pad = 4;
-  return `${(minX - pad).toFixed(1)} ${(minY - pad).toFixed(1)} ${(maxX - minX + pad * 2).toFixed(1)} ${(maxY - minY + pad * 2).toFixed(1)}`;
+  const padBottom = 12;
+  return `${(minX - pad).toFixed(1)} ${(minY - pad).toFixed(1)} ${(maxX - minX + pad * 2).toFixed(1)} ${(maxY - minY + pad + padBottom).toFixed(1)}`;
 }
 
 export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false, story, heroLabel }: AtlasProps) {
