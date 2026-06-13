@@ -144,6 +144,56 @@
   filter: drop-shadow(0 0 1.4px color-mix(in oklch, var(--amber) 70%, transparent));
 }
 
+.atlas-node.selected .node-ring {
+  stroke: color-mix(in oklch, var(--teal) 92%, white);
+  stroke-width: 0.6;
+  filter: drop-shadow(0 0 1.8px color-mix(in oklch, var(--teal) 78%, transparent));
+}
+
+.atlas-node.risk_gate.selected .node-ring {
+  stroke: color-mix(in oklch, var(--amber) 92%, white);
+  filter: drop-shadow(0 0 1.8px color-mix(in oklch, var(--amber) 78%, transparent));
+}
+
+/* Expanding rings that replay each time the selected node changes —
+   draws the eye to exactly which node is now in focus. */
+.atlas-node-pulse circle {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 0.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nodePulse 1.5s cubic-bezier(0.2, 0.7, 0.3, 1) 2;
+}
+
+.atlas-node-pulse circle:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.atlas-node-pulse circle:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.atlas-node.risk_gate .atlas-node-pulse circle {
+  stroke: var(--amber);
+}
+
+@keyframes nodePulse {
+  0% {
+    opacity: 0.9;
+    stroke-width: 0.6;
+    transform: scale(1);
+  }
+  70% {
+    opacity: 0.22;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 0.12;
+    transform: scale(2.7);
+  }
+}
+
 .atlas-node.workflow.released .node-ring {
   stroke: color-mix(in oklch, var(--teal) 80%, white);
   filter: drop-shadow(0 0 1px rgba(0, 209, 194, 0.55));
@@ -164,63 +214,61 @@
   fill: var(--red);
 }
 
-.node-label {
-  backdrop-filter: blur(0.6px);
-  background: color-mix(in oklch, var(--graphite) 86%, transparent);
-  border: 0.14px solid color-mix(in oklch, var(--steel) 24%, transparent);
-  border-radius: 0.9px;
-  box-sizing: border-box;
-  color: oklch(0.91 0.02 210);
-  display: grid;
-  font-size: 1.22px;
-  gap: 0.5px;
-  line-height: 1.18;
-  margin: 0 auto;
-  max-width: 100%;
-  overflow: hidden;
-  padding: 0.5px 0.7px;
-  text-align: center;
-  width: fit-content;
+/* Node labels are native SVG <text> + <rect> (not foreignObject HTML) so they
+   rasterize crisply and never clip under the SVG's non-integer scale. */
+.node-label-bg {
+  fill: color-mix(in oklch, var(--graphite) 93%, transparent);
+  stroke: color-mix(in oklch, var(--steel) 30%, transparent);
+  stroke-width: 0.12;
 }
 
-.node-label strong {
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  display: -webkit-box;
-  line-clamp: 2;
-  overflow: hidden;
+.node-label-title {
+  fill: oklch(0.97 0.012 205);
+  font-size: 1.55px;
+  font-weight: 700;
+  letter-spacing: -0.02px;
+  paint-order: stroke;
 }
 
-.node-label span {
-  color: var(--steel);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.node-label-sub {
+  fill: color-mix(in oklch, var(--steel) 64%, white);
+  font-size: 1.3px;
+  font-weight: 500;
 }
 
-.atlas-node.selected .node-label {
-  background: color-mix(in oklch, var(--graphite) 94%, black);
-  border-color: color-mix(in oklch, var(--teal) 46%, transparent);
+.atlas-node.selected .node-label-bg {
+  fill: color-mix(in oklch, var(--graphite) 96%, black);
+  stroke: color-mix(in oklch, var(--teal) 60%, transparent);
+  stroke-width: 0.2;
 }
 
-.atlas-node.stage-active .node-label {
-  background: color-mix(in oklch, var(--graphite) 94%, black);
-  border-color: color-mix(in oklch, var(--amber) 52%, transparent);
+.atlas-node.stage-active .node-label-bg {
+  fill: color-mix(in oklch, var(--graphite) 96%, black);
+  stroke: color-mix(in oklch, var(--amber) 60%, transparent);
+  stroke-width: 0.2;
 }
 
-.light-mode .node-label {
-  background: color-mix(in oklch, white 90%, var(--graphite));
-  border-color: oklch(0.8 0.03 210);
+.light-mode .node-label-bg {
+  fill: color-mix(in oklch, white 92%, var(--graphite));
+  stroke: oklch(0.78 0.03 210);
 }
 
-.light-mode .atlas-node.selected .node-label {
-  background: color-mix(in oklch, white 96%, var(--graphite));
-  border-color: color-mix(in oklch, var(--teal) 55%, oklch(0.8 0.03 210));
+.light-mode .node-label-title {
+  fill: oklch(0.22 0.03 230);
 }
 
-.light-mode .atlas-node.stage-active .node-label {
-  background: color-mix(in oklch, white 96%, var(--graphite));
-  border-color: color-mix(in oklch, var(--amber) 60%, oklch(0.8 0.03 210));
+.light-mode .node-label-sub {
+  fill: oklch(0.42 0.04 225);
+}
+
+.light-mode .atlas-node.selected .node-label-bg {
+  fill: color-mix(in oklch, white 97%, var(--graphite));
+  stroke: color-mix(in oklch, var(--teal) 60%, oklch(0.78 0.03 210));
+}
+
+.light-mode .atlas-node.stage-active .node-label-bg {
+  fill: color-mix(in oklch, white 97%, var(--graphite));
+  stroke: color-mix(in oklch, var(--amber) 62%, oklch(0.78 0.03 210));
 }
 
 .atlas-legend {
@@ -323,6 +371,11 @@
 @media (prefers-reduced-motion: reduce) {
   .atlas-flow-particle {
     display: none;
+  }
+
+  .atlas-node-pulse circle {
+    animation: none;
+    opacity: 0.4;
   }
 }
 

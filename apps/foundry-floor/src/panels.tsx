@@ -169,14 +169,16 @@ export function TopBar({
           aria-label="Search synthetic records"
         />
       </label>
-      <div className="operator-badge">
-        <span>{initials}</span>
-        <div>
-          <strong>{displayName}</strong>
-          <small>{user ? "Microsoft authenticated" : "Release Manager"}</small>
+      <div className="top-bar-right">
+        <div className="operator-badge">
+          <span>{initials}</span>
+          <div>
+            <strong>{displayName}</strong>
+            <small>{user ? "Microsoft authenticated" : "Release Manager"}</small>
+          </div>
         </div>
+        <a className="sign-out-link" href={signOutUrl()}>Sign out</a>
       </div>
-      <a className="sign-out-link" href={signOutUrl()}>Sign out</a>
     </header>
   );
 }

@@ -32,6 +32,71 @@ function pathFor(source: PositionedNode, target: PositionedNode): string {
   return `M ${source.x} ${source.y} C ${mid} ${source.y}, ${mid} ${target.y}, ${target.x} ${target.y}`;
 }
 
+// Wrap a label into at most `maxLines` lines of ~`maxChars`, so SVG <text> can
+// render multi-line titles (SVG text has no auto-wrap). Trailing overflow is
+// truncated with an ellipsis so a long title never blows past the node box.
+function wrapLabel(text: string, maxChars = 15, maxLines = 2): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= maxChars || !current) {
+      current = candidate;
+    } else {
+      lines.push(current);
+      current = word;
+      if (lines.length === maxLines - 1) {
+        break;
+      }
+    }
+  }
+  if (current && lines.length < maxLines) {
+    lines.push(current);
+  }
+  const consumed = lines.join(" ").split(/\s+/).length;
+  if (consumed < words.length && lines.length) {
+    lines[lines.length - 1] = `${lines[lines.length - 1]}…`;
+  }
+  return lines;
+}
+
+function renderNodeLabel(node: PositionedNode) {
+  const titleLines = wrapLabel(node.label);
+  const sub = node.volume ?? (node.status ? statusLabels[node.status] : undefined);
+  const titleSize = 1.55;
+  const subSize = 1.3;
+  const lineHeight = 1.7;
+  const padY = 0.95;
+  const padX = 1.1;
+  // Size the box to its own text so adjacent labels (e.g. Signal Foundry next to
+  // Risk Gate) don't overlap. Char-width factors approximate the Aptos metrics.
+  const longestTitleChars = Math.max(...titleLines.map((line) => line.length));
+  const subChars = sub ? sub.length : 0;
+  const contentW = Math.max(longestTitleChars * titleSize * 0.6, subChars * subSize * 0.6);
+  const boxW = Math.min(24, Math.max(9, contentW + padX * 2));
+  const titleBlock = titleLines.length * lineHeight;
+  const subBlock = sub ? 1.65 : 0;
+  const boxH = padY * 2 + titleBlock + subBlock;
+  const boxX = node.x - boxW / 2;
+  const boxY = node.y + 2.9;
+  const titleBaseline = boxY + padY + titleSize * 0.82;
+  const subBaseline = boxY + padY + titleBlock + subSize * 0.86;
+  return (
+    <g className="node-label" pointerEvents="none">
+      <rect className="node-label-bg" x={boxX} y={boxY} width={boxW} height={boxH} rx={1} ry={1} />
+      <text className="node-label-title" x={node.x} y={titleBaseline} textAnchor="middle">
+        {titleLines.map((line, index) => (
+          <tspan key={index} x={node.x} dy={index === 0 ? 0 : lineHeight}>{line}</tspan>
+        ))}
+      </text>
+      {sub ? (
+        <text className="node-label-sub" x={node.x} y={subBaseline} textAnchor="middle">{sub}</text>
+      ) : null}
+    </g>
+  );
+}
+
 export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey }: AtlasProps) {
   return (
     <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""}`} aria-label="Signal Atlas">
@@ -111,18 +176,19 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             const isStageRiskNode = stageKey === "score" && currentNode.id === "gate-risk";
             return (
             <g key={currentNode.id} className={`atlas-node ${currentNode.kind} ${selectedId === currentNode.id ? "selected" : ""} ${currentNode.status ?? ""} ${isStageRiskNode ? "stage-active" : ""}`}>
+              {selectedId === currentNode.id ? (
+                <g key={`pulse-${selectedId}`} className="atlas-node-pulse" pointerEvents="none" aria-hidden="true">
+                  <circle cx={currentNode.x} cy={currentNode.y} r={2.55} />
+                  <circle cx={currentNode.x} cy={currentNode.y} r={2.55} />
+                  <circle cx={currentNode.x} cy={currentNode.y} r={2.55} />
+                </g>
+              ) : null}
               <circle className="node-ring" cx={currentNode.x} cy={currentNode.y} r={2.55} />
               <circle className="node-core" cx={currentNode.x} cy={currentNode.y} r={1.05} />
               <foreignObject x={currentNode.x - 2.8} y={currentNode.y - 2.8} width="5.6" height="5.6">
                 <button type="button" className="node-hit" onClick={() => onSelect(currentNode.id)} aria-label={`Select ${currentNode.label}`} />
               </foreignObject>
-              <foreignObject x={currentNode.x - 8} y={currentNode.y + 3.4} width="16" height="12">
-                <div className="node-label">
-                  <strong>{currentNode.label}</strong>
-                  {currentNode.volume ? <span>{currentNode.volume}</span> : null}
-                  {currentNode.status ? <span>{statusLabels[currentNode.status]}</span> : null}
-                </div>
-              </foreignObject>
+              {renderNodeLabel(currentNode)}
             </g>
             );
           })}
