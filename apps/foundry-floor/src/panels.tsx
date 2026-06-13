@@ -587,7 +587,7 @@ export function ExecutiveView({
       <div className="executive-hero">
         <p className="eyebrow">Signal Foundry</p>
         <h2>Approved workflow launchpad</h2>
-        <p>Judge-readable summary of how synthetic work signals become reviewed, released Copilot capabilities.</p>
+        <p>An at-a-glance summary of how work signals become reviewed, approved Copilot capabilities across your tenant.</p>
         <p className="executive-determinism-proof">
           <Lock size={13} />
           Byte-identical verdict — model on or off. The deterministic gate runs before and independently of AI advisory; unplugging the model produces the same release decision.

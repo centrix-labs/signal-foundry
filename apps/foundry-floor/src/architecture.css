@@ -23,6 +23,10 @@
   max-width: 62ch;
 }
 
+.light-mode .arch2-sub {
+  color: var(--description);
+}
+
 .arch2-legend {
   color: var(--steel);
   display: flex;

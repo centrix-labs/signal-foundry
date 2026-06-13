@@ -107,7 +107,7 @@
 }
 
 .deck-hero-claim p {
-  color: oklch(0.36 0.03 220);
+  color: var(--description);
   font-size: 0.92rem;
   margin: 0 0 12px;
   max-width: 48ch;
@@ -435,6 +435,9 @@ summary em,
     repeating-linear-gradient(0deg, rgba(70, 92, 100, 0.06) 0 1px, transparent 1px 44px),
     oklch(0.955 0.012 205);
   color: oklch(0.21 0.024 220);
+  /* Single, darker token for page/section descriptions so every screen's
+     supporting copy reads with the same weight. */
+  --description: oklch(0.36 0.03 222);
 }
 
 .light-mode .panel,
@@ -520,7 +523,7 @@ summary em,
 .light-mode .proof-rail article span,
 .light-mode .risk-comparison-grid span,
 .light-mode .atlas-field-labels {
-  color: oklch(0.42 0.026 220);
+  color: var(--description);
 }
 
 .light-mode .node-label,
@@ -538,8 +541,9 @@ summary em,
 .light-mode .risk-gate p,
 .light-mode .release-card p,
 .light-mode .copilot-proof p,
-.light-mode .mcp-rail p {
-  color: oklch(0.42 0.026 220);
+.light-mode .mcp-rail p,
+.light-mode .executive-hero p {
+  color: var(--description);
 }
 
 .light-mode .theme-switch button.active {
@@ -922,7 +926,7 @@ summary em,
 }
 
 .light-mode .pipeline-tagline {
-  color: oklch(0.46 0.04 220);
+  color: var(--description);
 }
 
 /* Flow-direction chevron in the seam to each card's right, so the left-to-right
