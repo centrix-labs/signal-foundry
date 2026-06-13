@@ -263,7 +263,7 @@ function JudgeMode({
         <div className="strip-copy" key={currentStage.key}>
           <p className="eyebrow">{currentStage.label} — stage {stageIndex + 1} of {judgeStages.length}</p>
           <strong>{currentStage.body}</strong>
-          <small>{selected.title} / {correlationId}</small>
+          <small title={`${selected.title} / ${correlationId}`}>{selected.title} / {correlationId}</small>
           <span className="illustrative-stat" title="Illustrative figure, not a measured metric">
             ~3,400 shadow-AI workflows ungoverned — illustrative for this tenant
           </span>

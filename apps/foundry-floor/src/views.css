@@ -304,6 +304,22 @@ summary em,
   padding: var(--sm, 8px);
 }
 
+/* The decision the reviewer took reads as chosen (so re-clicking has feedback). */
+.approval-bar button.chosen {
+  background: color-mix(in oklch, var(--teal) 18%, transparent);
+  border-color: color-mix(in oklch, var(--teal) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 35%, transparent);
+  color: var(--teal);
+}
+
+.review-empty {
+  color: var(--steel);
+  font-size: 0.86rem;
+  margin: 0;
+  padding: var(--md, 12px);
+  text-align: center;
+}
+
 .decision-banner {
   align-items: center;
   background: color-mix(in oklch, var(--graphite-3) 56%, black);
@@ -889,6 +905,12 @@ summary em,
 .light-mode .status-pill.low {
   background: oklch(0.94 0.05 162);
   color: oklch(0.4 0.11 162);
+}
+
+.light-mode .dot.high,
+.light-mode .status-pill.high {
+  background: oklch(0.95 0.055 52);
+  color: oklch(0.5 0.16 45);
 }
 
 .light-mode summary em,

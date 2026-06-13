@@ -37,6 +37,20 @@ export interface RecordFilters {
   pendingOnly?: boolean;
 }
 
+// Friendly labels for review-item statuses; humanizes any unmapped enum value
+// so a raw "changes_requested" never reaches the UI.
+const REVIEW_STATUS_LABELS: Record<string, string> = {
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Rejected",
+  in_review: "In review",
+  changes_requested: "Changes requested"
+};
+
+function reviewStatusLabel(status: string): string {
+  return REVIEW_STATUS_LABELS[status] ?? status.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export function LeftRail({
   activeView,
   onView,
@@ -444,6 +458,9 @@ export function ReviewQueue({
           </div>
           <span className="status-pill pending">{pendingCount} pending</span>
         </div>
+        {reviews.length === 0 ? (
+          <p className="review-empty">No reviews in the queue — every proposal is approved or released.</p>
+        ) : null}
         {reviews.map((item) => {
           const capability = records.find((record) => record.id === item.proposalId) ?? capabilities[0];
           if (!capability) {
@@ -457,7 +474,7 @@ export function ReviewQueue({
                 <small>{capability.version}</small>
                 <small>{capability.department}</small>
               </span>
-              <em>{item.status}</em>
+              <em className={`review-status ${item.status}`}>{reviewStatusLabel(item.status)}</em>
             </button>
           );
         })}
@@ -468,9 +485,9 @@ export function ReviewQueue({
           <span>{decisionCopy[decisionState].body}</span>
         </div>
         <div className="approval-bar">
-          <button type="button" onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
-          <button type="button" onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
-          <button type="button" className="primary" onClick={onApproveRelease}><Check size={18} /> Approve & Release</button>
+          <button type="button" className={decisionState === "changes_requested" ? "chosen" : ""} aria-pressed={decisionState === "changes_requested"} onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
+          <button type="button" className={decisionState === "saved" ? "chosen" : ""} aria-pressed={decisionState === "saved"} onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
+          <button type="button" className={`primary ${decisionState === "released" ? "chosen" : ""}`} aria-pressed={decisionState === "released"} onClick={onApproveRelease}><Check size={18} /> {decisionState === "released" ? "Released" : "Approve & Release"}</button>
         </div>
         <RiskGate selected={selected} riskReviews={riskReviews} />
       </div>

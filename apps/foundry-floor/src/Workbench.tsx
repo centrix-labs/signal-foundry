@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Activity, ChevronRight, X } from "lucide-react";
 import type { Capability, CapabilityStatus } from "@signal-foundry/shared";
 import { CapabilityList, McpActivityRail, ReleasePacketDrawer, RiskGate } from "./panels";
@@ -63,6 +63,16 @@ export function Workbench({
   onOpenMirror: () => void;
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setDrawerOpen(false);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [drawerOpen]);
+
   const riskReview = riskReviews.find((item) => item.proposalId === selected.id);
   const packet = packets.find((item) => item.capabilityId === selected.id);
   const scopedActivity = activity.filter(
@@ -95,7 +105,7 @@ export function Workbench({
             <span className={`status-pill ${checkpoints.length > 0 ? "approved" : "pending"}`}>
               {checkpoints.length > 0 ? "Live" : "Demo"}
             </span>
-            <p>{checkpoints[0]?.displayText ?? copilotTurns[2]?.text}</p>
+            <p title={checkpoints[0]?.displayText ?? copilotTurns[2]?.text}>{checkpoints[0]?.displayText ?? copilotTurns[2]?.text}</p>
             <button type="button" className="text-link" onClick={onOpenMirror}>Open mirror <ChevronRight size={14} /></button>
           </div>
         </section>
@@ -116,14 +126,21 @@ export function Workbench({
         </section>
       </div>
       {drawerOpen ? (
-        <div className="audit-drawer" role="dialog" aria-label="Audit trail">
-          <div className="audit-drawer-head">
-            <button type="button" className="text-link" aria-label="Close audit trail" onClick={() => setDrawerOpen(false)}>
-              <X size={15} /> Close
-            </button>
+        <>
+          <div
+            className="audit-drawer-scrim"
+            aria-hidden="true"
+            onClick={() => setDrawerOpen(false)}
+          />
+          <div className="audit-drawer" role="dialog" aria-label="Audit trail" aria-modal="true">
+            <div className="audit-drawer-head">
+              <button type="button" className="text-link" aria-label="Close audit trail" onClick={() => setDrawerOpen(false)}>
+                <X size={15} /> Close
+              </button>
+            </div>
+            <McpActivityRail items={activity} />
           </div>
-          <McpActivityRail items={activity} />
-        </div>
+        </>
       ) : null}
     </div>
   );

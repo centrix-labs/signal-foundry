@@ -350,16 +350,20 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
                 <text x={boundary.x + boundary.w / 2} y={Math.max(11, boundary.y - 6)} textAnchor="middle">summary-only — no raw M365 content past here</text>
               </g>
             ) : null}
-            {edges.map((edge) => (
-              <g key={edge.id} className="arch2-edge-group">
-                <path className="arch2-edge" d={edge.d} markerEnd="url(#arch2Arrow)" />
-                <path className="arch2-edge-pulse" d={edge.d} pathLength={1} />
-                <g className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
-                  <rect className="arch2-edge-label-bg" x={-28} y={-9} width={56} height={16} rx={4} />
-                  <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
+            {edges.map((edge) => {
+              // Size the label pill to its text so longer labels never bleed.
+              const labelWidth = edge.label.length * 5.4 + 12;
+              return (
+                <g key={edge.id} className="arch2-edge-group">
+                  <path className="arch2-edge" d={edge.d} markerEnd="url(#arch2Arrow)" />
+                  <path className="arch2-edge-pulse" d={edge.d} pathLength={1} />
+                  <g className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
+                    <rect className="arch2-edge-label-bg" x={-labelWidth / 2} y={-9} width={labelWidth} height={16} rx={4} />
+                    <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
+                  </g>
                 </g>
-              </g>
-            ))}
+              );
+            })}
           </svg>
         </div>
       </div>

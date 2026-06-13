@@ -46,47 +46,6 @@
     radial-gradient(circle at 50% 49%, rgba(255, 255, 255, 0.24), rgba(240, 249, 250, 0.18) 38%, rgba(232, 241, 244, 0.46) 88%);
 }
 
-.login-theme-switch {
-  background: rgba(4, 10, 14, 0.42);
-  border: 1px solid color-mix(in oklch, var(--steel) 42%, transparent);
-  border-radius: 999px;
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  position: absolute;
-  right: 24px;
-  top: 22px;
-  z-index: 2;
-}
-
-.login-theme-switch button {
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  color: oklch(0.86 0.018 210);
-  font-size: 0.78rem;
-  padding: 7px 11px;
-}
-
-.login-theme-switch button.active {
-  background: color-mix(in oklch, var(--teal) 22%, var(--graphite-3));
-  color: oklch(0.96 0.022 190);
-}
-
-.login-light .login-theme-switch {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: oklch(0.83 0.022 210);
-}
-
-.login-light .login-theme-switch button {
-  color: oklch(0.38 0.026 220);
-}
-
-.login-light .login-theme-switch button.active {
-  background: oklch(0.86 0.072 185);
-  color: oklch(0.2 0.03 220);
-}
-
 .login-card {
   background:
     linear-gradient(180deg, rgba(20, 31, 34, 0.88), rgba(5, 10, 14, 0.88)),
@@ -106,66 +65,10 @@
   z-index: 1;
 }
 
-.access-card {
-  min-height: auto;
-  padding-block: 46px 42px;
-}
-
-.access-card h1 {
-  font-family: Bahnschrift, "Aptos Display", Aptos, sans-serif;
-  font-size: 2rem;
-  letter-spacing: 0;
-  line-height: 1.05;
-  margin: 8px 0 12px;
-  text-align: center;
-}
-
-.access-card .eyebrow {
-  text-align: center;
-}
-
-.access-emblem {
-  border: 1px solid color-mix(in oklch, var(--teal) 58%, transparent);
-  color: var(--teal);
-  display: grid;
-  height: 58px;
-  margin: 0 auto 18px;
-  place-items: center;
-  width: 58px;
-  clip-path: polygon(50% 0, 96% 24%, 96% 76%, 50% 100%, 4% 76%, 4% 24%);
-}
-
-.access-copy {
-  color: oklch(0.82 0.024 210);
-  line-height: 1.45;
-  margin: 0 auto 24px;
-  max-width: 34ch;
-  text-align: center;
-}
-
-.login-light .access-copy {
-  color: oklch(0.38 0.026 220);
-}
-
-.access-form {
-  margin: 0 auto;
-  max-width: 340px;
-}
-
 .access-error {
   color: oklch(0.72 0.16 28);
   font-size: 0.86rem;
   margin: -2px 0 0;
-}
-
-.access-unlock-button {
-  display: inline-flex;
-  justify-content: center;
-  text-align: center;
-}
-
-.access-unlock-button span {
-  flex: 0 1 auto;
 }
 
 .login-light .login-card {
@@ -372,6 +275,15 @@
   padding: 0;
 }
 
+.login-hint {
+  color: color-mix(in oklch, var(--steel) 76%, black);
+  font-size: 0.78rem;
+}
+
+.login-light .login-hint {
+  color: oklch(0.52 0.022 220);
+}
+
 .login-primary,
 .login-provider {
   align-items: center;
@@ -409,10 +321,6 @@
 
 .login-primary svg:first-child {
   margin-left: auto;
-}
-
-.login-primary.access-unlock-button svg:first-child {
-  margin-left: 0;
 }
 
 .login-divider {

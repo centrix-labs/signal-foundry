@@ -106,6 +106,26 @@
   padding: 0;
 }
 
+.audit-drawer-scrim {
+  background: rgba(0, 0, 0, 0.48);
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 39;
+  animation: scrimIn 200ms ease both;
+}
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-drawer-scrim { animation: none; }
+}
+
 .audit-drawer {
   background: color-mix(in oklch, var(--graphite) 97%, black);
   border-inline-start: 1px solid var(--line);

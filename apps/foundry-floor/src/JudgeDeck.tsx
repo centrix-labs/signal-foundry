@@ -73,7 +73,9 @@ function DeckCard({
       </header>
       <strong>{headline}</strong>
       <p>{context}</p>
-      {evidence ? <code>{evidence}</code> : null}
+      {evidence
+        ? <code>{evidence}</code>
+        : <code style={{ opacity: 0.3, userSelect: "none" }} aria-hidden>—</code>}
     </article>
   );
 }

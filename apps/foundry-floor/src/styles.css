@@ -448,6 +448,8 @@ nav button.active,
 .dot.medium,
 .status-pill.medium,
 .status-pill.pending { background: color-mix(in oklch, var(--amber) 18%, transparent); color: var(--amber); }
+.dot.high,
+.status-pill.high { background: color-mix(in oklch, oklch(0.72 0.18 45) 18%, transparent); color: oklch(0.74 0.17 48); }
 .dot.blocked,
 .status-pill.blocked { background: color-mix(in oklch, var(--red) 18%, transparent); color: var(--red); }
 .status-pill.approved { background: color-mix(in oklch, var(--teal) 16%, transparent); color: var(--teal); }

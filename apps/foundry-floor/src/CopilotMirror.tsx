@@ -218,7 +218,7 @@ function ReleasePacketCard({ card }: { card: GoldenCard }) {
   );
 }
 
-function GovernanaceCard({ card }: { card: GoldenCard }) {
+function GovernanceCard({ card }: { card: GoldenCard }) {
   switch (card.kind) {
     case "recommendation": return <RecommendationCard card={card} />;
     case "risk-verdict": return <RiskVerdictCard card={card} />;
@@ -267,7 +267,7 @@ function AssistantBubble({
       <div className="chat-bubble-wrap chat-bubble-wrap--assistant">
         <div className={`chat-bubble chat-bubble--assistant ${avatarClass}`}>
           <p>{turn.text}</p>
-          {turn.card && <GovernanaceCard card={turn.card} />}
+          {turn.card && <GovernanceCard card={turn.card} />}
         </div>
         <div className="chat-meta">
           <time>{turn.time}</time>
@@ -316,7 +316,7 @@ function LiveCheckpointBubble({ checkpoint }: { checkpoint: CopilotCheckpoint })
       <div className="chat-bubble-wrap chat-bubble-wrap--assistant">
         <div className={`chat-bubble chat-bubble--assistant ${avatarClass}`}>
           <p>{checkpoint.displayText}</p>
-          {evidence && <p className="chat-evidence-inline">{evidence}</p>}
+          {evidence && <p className="chat-evidence-inline" style={{ overflowWrap: "anywhere" }}>{evidence}</p>}
         </div>
         <div className="chat-meta">
           <time>{time}</time>
@@ -363,6 +363,20 @@ function ChatComposer() {
           aria-disabled="true"
           aria-label="Message input (disabled in demo)"
         />
+        <span
+          style={{
+            alignSelf: "center",
+            color: "var(--steel)",
+            fontSize: "0.7rem",
+            fontStyle: "italic",
+            opacity: 0.72,
+            paddingInlineEnd: "6px",
+            whiteSpace: "nowrap"
+          }}
+          aria-hidden
+        >
+          Demo · read-only
+        </span>
         <button
           type="button"
           className="chat-send-btn"

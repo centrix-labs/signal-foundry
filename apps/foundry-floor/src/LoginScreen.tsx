@@ -118,7 +118,7 @@ export function LoginScreen({ isCheckingAuth = false, onLocalLogin }: LoginScree
                 <small>Secure session on this device</small>
               </span>
             </label>
-            <button type="button" className="login-link" onClick={() => window.location.assign(signInUrl)}>Forgot password?</button>
+            <span className="login-hint">Use SSO below</span>
           </div>
 
           <button type="submit" className="login-primary" disabled={isVerifying}>

@@ -398,6 +398,13 @@
   transition: opacity 320ms ease;
 }
 
+/* ...and ghost the amber approval edges that feed it, so the yellow lines don't
+   read as sitting on top of the faded nodes. */
+.story-mode.story-hidden .atlas-edge.approval_path {
+  opacity: 0.16;
+  transition: opacity 320ms ease;
+}
+
 /* Discover: subtle scan shimmer over the signal nodes. */
 .story-mode.story-hidden .atlas-node.signal .node-ring {
   animation: signalScan 2.4s ease-in-out infinite;
