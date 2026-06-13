@@ -126,6 +126,11 @@ export function createServer(store = new RegistryStore()) {
     });
   });
 
+  app.get("/mcp", (_request, response) => {
+    // Streamable HTTP transport: no SSE stream offered; clients must POST.
+    response.status(405).set("Allow", "POST").end();
+  });
+
   app.post("/mcp", async (request, response) => {
     const { id, method, params } = request.body ?? {};
     const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
@@ -136,11 +141,22 @@ export function createServer(store = new RegistryStore()) {
         jsonrpc: "2.0",
         id,
         result: {
-          protocolVersion: "2024-11-05",
+          protocolVersion: (params as { protocolVersion?: string } | undefined)?.protocolVersion ?? "2024-11-05",
           capabilities: { tools: {} },
-          serverInfo: { name: "signal-foundry-mcp", version: "0.1.0" }
+          serverInfo: { name: "signal-foundry-mcp", version: "1.0.2" }
         }
       });
+      return;
+    }
+
+    // JSON-RPC notifications (no response payload expected) and keepalives.
+    if (typeof method === "string" && method.startsWith("notifications/")) {
+      response.status(202).end();
+      return;
+    }
+
+    if (method === "ping") {
+      response.json({ jsonrpc: "2.0", id, result: {} });
       return;
     }
 
