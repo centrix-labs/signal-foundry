@@ -34,7 +34,7 @@ const STRUCTURAL_EDGES = atlasEdges.filter((edge) => edge.kind !== "approval_pat
 const SEEDED_WORKFLOW_EDGES = atlasEdges.filter((edge) => edge.kind === "approval_path");
 const WORKFLOW_X = 82;
 const WORKFLOW_CENTER = 49;
-const WORKFLOW_SPACING = 12;
+const WORKFLOW_SPACING = 14;
 const MAX_LIVE_WORKFLOWS = 6;
 
 const SEEDED_WORKFLOW_IDS = SEEDED_WORKFLOW_NODES.map((node) => node.id);
@@ -156,16 +156,13 @@ function storyEdgePath(key: StoryState["activeEdges"][number]): string {
   }
 }
 
-/**
- * The travelling hero proposal plus its draw-on connector. Each is keyed on the
- * stage so one-shot animations (draw-on, seal pop) replay on every advance; the
- * hero group itself is NOT keyed so it transitions its transform smoothly from
- * one lane to the next (the "it travels" beat).
- */
-function StoryLayer({ story, stageKey, heroLabel }: { story: StoryState; stageKey?: string; heroLabel?: string }) {
-  const { heroPos, variant, heroVisible } = story;
+// The Guided Story renders in two layers so the connector never sits on top of
+// a node: StoryEdges draws with the other edges (behind nodes), StoryHero draws
+// after the nodes (on top). Both are keyed on the stage so one-shot animations
+// replay on each advance; the hero group is NOT keyed so it travels smoothly.
+function StoryEdges({ story, stageKey }: { story: StoryState; stageKey?: string }) {
   return (
-    <g className="story-layer" aria-hidden="true">
+    <g className="story-edges" aria-hidden="true">
       {story.activeEdges.map((edge) => (
         <path
           key={`${edge}-${stageKey}`}
@@ -174,40 +171,75 @@ function StoryLayer({ story, stageKey, heroLabel }: { story: StoryState; stageKe
           pathLength={1}
         />
       ))}
-      {heroVisible ? (
-        <g
-          className={`story-hero story-hero-${variant}`}
-          style={{ transform: `translate(${heroPos.x}px, ${heroPos.y}px)` }}
-        >
-          {/* arrive / seal one-shots replay via the stage key */}
-          <g key={`hero-fx-${stageKey}`} className="story-hero-fx" pointerEvents="none">
-            <circle className="story-hero-burst" r={3.4} />
-          </g>
-          {variant === "sealed" ? (
-            <g key={`seal-${stageKey}`} className="story-seal-pop" pointerEvents="none">
-              <rect className="story-packet" x={-1.2} y={-1.2} width={2.4} height={2.4} rx={0.5} />
-            </g>
-          ) : null}
-          {variant === "hold" ? (
-            <g className="story-hold-marker" pointerEvents="none">
-              {/* shield outline — human hold */}
-              <path className="story-shield" d="M0 -3.1 L2.4 -2 L2.4 0.4 Q2.4 2.4 0 3.4 Q-2.4 2.4 -2.4 0.4 L-2.4 -2 Z" />
-            </g>
-          ) : null}
-          <circle className="story-hero-ring" r={2.7} />
-          <circle className="story-hero-core" r={1.15} />
-          {heroLabel ? (
-            <g className="story-hero-label" pointerEvents="none">
-              <rect className="story-hero-label-bg" x={-9} y={3.4} width={18} height={3.4} rx={0.8} />
-              <text className="story-hero-label-text" x={0} y={5.7} textAnchor="middle">
-                {heroLabel.length > 22 ? `${heroLabel.slice(0, 21)}…` : heroLabel}
-              </text>
-            </g>
-          ) : null}
+    </g>
+  );
+}
+
+function StoryHero({ story, stageKey, heroLabel }: { story: StoryState; stageKey?: string; heroLabel?: string }) {
+  const { heroPos, variant, heroVisible } = story;
+  if (!heroVisible) {
+    return null;
+  }
+  return (
+    <g
+      className={`story-hero story-hero-${variant}`}
+      style={{ transform: `translate(${heroPos.x}px, ${heroPos.y}px)` }}
+      aria-hidden="true"
+    >
+      {/* arrive / seal one-shots replay via the stage key */}
+      <g key={`hero-fx-${stageKey}`} className="story-hero-fx" pointerEvents="none">
+        <circle className="story-hero-burst" r={3.4} />
+      </g>
+      {variant === "sealed" ? (
+        <g key={`seal-${stageKey}`} className="story-seal-pop" pointerEvents="none">
+          <rect className="story-packet" x={-1.2} y={-1.2} width={2.4} height={2.4} rx={0.5} />
+        </g>
+      ) : null}
+      {variant === "hold" ? (
+        <g className="story-hold-marker" pointerEvents="none">
+          {/* shield outline — human hold */}
+          <path className="story-shield" d="M0 -3.1 L2.4 -2 L2.4 0.4 Q2.4 2.4 0 3.4 Q-2.4 2.4 -2.4 0.4 L-2.4 -2 Z" />
+        </g>
+      ) : null}
+      <circle className="story-hero-ring" r={2.7} />
+      <circle className="story-hero-core" r={1.15} />
+      {heroLabel ? (
+        <g className="story-hero-label" pointerEvents="none">
+          <rect className="story-hero-label-bg" x={-9} y={3.4} width={18} height={3.4} rx={0.8} />
+          <text className="story-hero-label-text" x={0} y={5.7} textAnchor="middle">
+            {heroLabel.length > 22 ? `${heroLabel.slice(0, 21)}…` : heroLabel}
+          </text>
         </g>
       ) : null}
     </g>
   );
+}
+
+// Auto-fit the viewBox to the rendered nodes (plus their label extents) so the
+// whole graph is always in view — adding workflow nodes zooms the camera out
+// instead of overlapping. A node label box reaches ~±11 wide, ~3.5 above the
+// node centre and ~10.5 below it.
+function computeViewBox(
+  nodes: readonly PositionedNode[],
+  judgeMode: boolean,
+  extra: ReadonlyArray<{ x: number; y: number }> = []
+): string {
+  const points = [...nodes, ...extra];
+  if (points.length === 0) {
+    return judgeMode ? "0 16 100 74" : "0 0 100 112";
+  }
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const point of points) {
+    minX = Math.min(minX, point.x - 11);
+    maxX = Math.max(maxX, point.x + 11);
+    minY = Math.min(minY, point.y - 3.5);
+    maxY = Math.max(maxY, point.y + 10.5);
+  }
+  const pad = 4;
+  return `${(minX - pad).toFixed(1)} ${(minY - pad).toFixed(1)} ${(maxX - minX + pad * 2).toFixed(1)} ${(maxY - minY + pad * 2).toFixed(1)}`;
 }
 
 export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false, story, heroLabel }: AtlasProps) {
@@ -301,7 +333,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
         <svg
           ref={svgRef}
           className="atlas-svg"
-          viewBox={judgeMode ? "0 16 100 74" : "0 0 100 112"}
+          viewBox={computeViewBox(displayNodes, judgeMode, storyState?.heroVisible ? [storyState.heroPos] : [])}
           role="img"
           aria-label="Animated graph of signals, roles, risk gates, and workflows. Drag to pan; double-click to reset."
           onPointerDown={onPointerDown}
@@ -361,6 +393,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
               </g>
             );
           })}
+          {storyState ? <StoryEdges story={storyState} stageKey={stageKey} /> : null}
           {[...displayNodes]
             .sort((a, b) => {
               const paintRank = (item: PositionedNode) =>
@@ -390,7 +423,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
             );
           })}
           {storyState ? (
-            <StoryLayer story={storyState} stageKey={stageKey} heroLabel={heroLabel} />
+            <StoryHero story={storyState} stageKey={stageKey} heroLabel={heroLabel} />
           ) : null}
           </g>
         </svg>

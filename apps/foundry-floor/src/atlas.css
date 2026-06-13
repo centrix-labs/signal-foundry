@@ -421,13 +421,10 @@
   animation: storyDraw 380ms cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
 }
 
-.story-edge.forge-gate.firing,
+/* Risk-gate and approval paths are amber; the pre-gate signal flow stays teal. */
+.story-edge.forge-gate,
 .story-edge.gate-workflow {
   stroke: var(--amber);
-}
-
-.story-edge.gate-workflow {
-  stroke: var(--teal);
 }
 
 @keyframes storyDraw {

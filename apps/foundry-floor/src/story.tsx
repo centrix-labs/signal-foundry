@@ -33,7 +33,10 @@ export type StoryEdgeKey = "role-forge" | "forge-gate" | "gate-workflow";
 // the fixed backdrop: signals 12, roles 32, forge 52, gate 67, workflow 82.
 const FORGE = { x: 52, y: 49 };
 const GATE = { x: 67, y: 49 };
-const WORKFLOW = { x: 82, y: 49 };
+// The hero seals as the newest approved workflow, appended below the live lane,
+// so the sealing node never overlaps an existing one. The Atlas includes this
+// point in its auto-fit, so the camera pulls back to reveal the sealed result.
+const RELEASE_SEAL = { x: 82, y: 98 };
 // Just off-stage left of the forge so "animate in" reads as entering the forge.
 const OFFSTAGE = { x: 40, y: 49 };
 
@@ -83,10 +86,13 @@ export function storyStateForStage(stageKey: string, _record: Capability | undef
       };
     case "release":
       return {
-        heroPos: WORKFLOW,
+        heroPos: RELEASE_SEAL,
         variant: "sealed",
         heroVisible: true,
-        activeEdges: ["gate-workflow"],
+        // No story connector here — the sealed node sits below the live lane
+        // (whose amber gate edges already show the approval fan), so nothing
+        // crosses a node.
+        activeEdges: [],
         gateFiring: false,
         sealed: true
       };
