@@ -20,7 +20,7 @@
   color: var(--steel);
   font-size: 0.84rem;
   margin: 0;
-  max-width: 56ch;
+  max-width: 62ch;
 }
 
 .arch2-legend {
@@ -49,15 +49,16 @@
   height: 2px !important;
 }
 
-.arch2-legend-node {
-  background: color-mix(in oklch, var(--graphite-3) 55%, var(--teal));
-  border: 1px solid color-mix(in oklch, var(--teal) 38%, transparent);
+.arch2-legend-boundary {
+  background: transparent;
+  border: 1.5px dashed color-mix(in oklch, var(--teal) 70%, transparent);
+  height: 11px !important;
 }
 
 /* Canvas */
 .arch2-canvas {
   background:
-    radial-gradient(circle at 50% 30%, color-mix(in oklch, var(--teal) 7%, transparent), transparent 46%),
+    radial-gradient(circle at 50% 26%, color-mix(in oklch, var(--teal) 7%, transparent), transparent 46%),
     color-mix(in oklch, var(--graphite) 90%, black);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -66,17 +67,38 @@
 
 .light-mode .arch2-canvas {
   background:
-    radial-gradient(circle at 50% 30%, color-mix(in oklch, var(--teal) 9%, transparent), transparent 48%),
+    radial-gradient(circle at 50% 26%, color-mix(in oklch, var(--teal) 9%, transparent), transparent 48%),
     oklch(0.975 0.006 205);
   border-color: oklch(0.85 0.024 210);
 }
 
-/* Tier headers — small, uppercase, quiet */
-.arch2-headers {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+.arch2-body {
+  padding-top: 22px;
+  position: relative;
+}
+
+/* Columns pack their cards from the top — no placeholder cells */
+.arch2-cols {
+  align-items: start;
+  display: flex;
   gap: 16px;
-  margin-bottom: 12px;
+}
+
+.arch2-col {
+  background: color-mix(in oklch, var(--steel) 7%, transparent);
+  border: 1px solid color-mix(in oklch, var(--steel) 12%, transparent);
+  border-radius: 12px;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 12px 14px;
+}
+
+.light-mode .arch2-col {
+  background: color-mix(in oklch, var(--steel) 6%, transparent);
+  border-color: oklch(0.88 0.018 210);
 }
 
 .arch2-header {
@@ -88,32 +110,13 @@
   text-transform: uppercase;
 }
 
-/* Body holds the card grid plus the connector overlay */
-.arch2-body {
-  position: relative;
+.arch2-col-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.arch2-grid {
-  column-gap: 16px;
-  display: grid;
-  grid-auto-rows: minmax(52px, auto);
-  grid-template-columns: repeat(5, 1fr);
-  row-gap: 12px;
-}
-
-.arch2-band {
-  background: color-mix(in oklch, var(--steel) 7%, transparent);
-  border: 1px solid color-mix(in oklch, var(--steel) 12%, transparent);
-  border-radius: 12px;
-  z-index: 0;
-}
-
-.light-mode .arch2-band {
-  background: color-mix(in oklch, var(--steel) 6%, transparent);
-  border-color: oklch(0.88 0.018 210);
-}
-
-/* Connector overlay — empty (and invisible) until a card is hovered */
+/* Connector overlay — boundary always shown, connectors only on hover/pin */
 .arch2-overlay {
   height: 100%;
   inset: 0;
@@ -123,6 +126,33 @@
   z-index: 1;
 }
 
+#arch2Arrow path {
+  fill: none;
+  stroke: var(--teal);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.arch2-boundary rect {
+  fill: none;
+  stroke: color-mix(in oklch, var(--teal) 55%, transparent);
+  stroke-dasharray: 5 5;
+  stroke-width: 1.2;
+}
+
+.arch2-boundary text {
+  fill: color-mix(in oklch, var(--teal) 72%, var(--steel));
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.light-mode .arch2-boundary text {
+  fill: color-mix(in oklch, var(--teal) 60%, oklch(0.4 0.03 220));
+}
+
 .arch2-edge {
   fill: none;
   stroke: var(--teal);
@@ -130,7 +160,17 @@
   stroke-linejoin: round;
   stroke-width: 1.5;
   filter: drop-shadow(0 0 2px color-mix(in oklch, var(--teal) 55%, transparent));
-  animation: arch2EdgeIn 200ms ease both;
+  animation: arch2EdgeIn 180ms ease both;
+}
+
+/* One-shot dash that travels the path when a connection appears */
+.arch2-edge-pulse {
+  fill: none;
+  stroke: oklch(0.95 0.12 190);
+  stroke-dasharray: 0.14 0.86;
+  stroke-linecap: round;
+  stroke-width: 2.4;
+  animation: arch2Flow 0.7s ease-out 1 both;
 }
 
 @keyframes arch2EdgeIn {
@@ -138,23 +178,35 @@
   to { opacity: 1; }
 }
 
-/* Service cards — compact, modern, text always fits */
+@keyframes arch2Flow {
+  from { stroke-dashoffset: 1; opacity: 0.95; }
+  to { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* Service cards */
 .arch2-card {
-  align-content: center;
+  align-items: center;
   background: color-mix(in oklch, var(--graphite-3) 78%, black);
   border: 1px solid color-mix(in oklch, var(--steel) 34%, transparent);
   border-radius: 11px;
   cursor: pointer;
-  display: grid;
-  gap: 1px;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
   outline: none;
-  padding: 9px 12px;
-  text-align: center;
-  transition: border-color 150ms ease, background 150ms ease, opacity 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  padding: 9px 11px;
+  position: relative;
   z-index: 2;
+  transition: border-color 150ms ease, background 150ms ease, opacity 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
-.arch2-card strong {
+.arch2-card-text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.arch2-card-text strong {
   color: oklch(0.96 0.012 205);
   font-size: 0.82rem;
   font-weight: 600;
@@ -162,7 +214,7 @@
   line-height: 1.2;
 }
 
-.arch2-card span {
+.arch2-card-text span {
   color: color-mix(in oklch, var(--steel) 72%, white);
   font-size: 0.66rem;
   font-weight: 500;
@@ -175,23 +227,46 @@
   box-shadow: 0 1px 2px rgba(28, 42, 54, 0.05);
 }
 
-.light-mode .arch2-card strong {
+.light-mode .arch2-card-text strong {
   color: oklch(0.22 0.03 230);
 }
 
-.light-mode .arch2-card span {
+.light-mode .arch2-card-text span {
   color: oklch(0.46 0.04 225);
 }
 
-/* Hover / focus highlight */
-.arch2-card.is-hovered {
+.arch2-card-link {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  color: color-mix(in oklch, var(--teal) 70%, var(--steel));
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 3px;
+}
+
+.arch2-card-link:hover {
+  background: color-mix(in oklch, var(--teal) 16%, transparent);
+  color: var(--teal);
+}
+
+/* Highlight states */
+.arch2-card.is-hovered,
+.arch2-card.is-pinned {
   background: color-mix(in oklch, var(--teal) 20%, var(--graphite-3));
   border-color: var(--teal);
   box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 45%, transparent), 0 8px 22px rgba(0, 209, 194, 0.18);
   transform: translateY(-1px);
 }
 
-.light-mode .arch2-card.is-hovered {
+.arch2-card.is-pinned {
+  box-shadow: 0 0 0 2px var(--teal), 0 8px 22px rgba(0, 209, 194, 0.22);
+}
+
+.light-mode .arch2-card.is-hovered,
+.light-mode .arch2-card.is-pinned {
   background: color-mix(in oklch, var(--teal) 16%, white);
   border-color: color-mix(in oklch, var(--teal) 78%, var(--graphite));
 }
@@ -201,23 +276,38 @@
   box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 30%, transparent);
 }
 
-.arch2-card.is-hovered strong,
-.arch2-card.is-linked strong {
+.arch2-card.is-hovered .arch2-card-text strong,
+.arch2-card.is-pinned .arch2-card-text strong,
+.arch2-card.is-linked .arch2-card-text strong {
   color: oklch(0.99 0.01 200);
 }
 
-.light-mode .arch2-card.is-hovered strong,
-.light-mode .arch2-card.is-linked strong {
+.light-mode .arch2-card.is-hovered .arch2-card-text strong,
+.light-mode .arch2-card.is-pinned .arch2-card-text strong,
+.light-mode .arch2-card.is-linked .arch2-card-text strong {
   color: oklch(0.17 0.04 220);
 }
 
 .arch2-card.is-dim {
-  opacity: 0.34;
+  opacity: 0.32;
 }
 
 .arch2-card:focus-visible {
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--teal) 50%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--teal) 55%, transparent);
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -226,23 +316,24 @@
     transition: none;
     animation: none;
   }
+
+  .arch2-edge-pulse {
+    display: none;
+  }
 }
 
-@media (max-width: 920px) {
-  .arch2-header {
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
+@media (max-width: 960px) {
+  .arch2-cols {
+    flex-wrap: wrap;
   }
 
-  .arch2-card {
-    padding: 7px 8px;
+  .arch2-col {
+    flex-basis: calc(33.333% - 12px);
   }
+}
 
-  .arch2-card strong {
-    font-size: 0.72rem;
-  }
-
-  .arch2-card span {
-    font-size: 0.6rem;
+@media (max-width: 620px) {
+  .arch2-col {
+    flex-basis: calc(50% - 8px);
   }
 }

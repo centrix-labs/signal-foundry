@@ -19,8 +19,8 @@ const STEPS: TourStep[] = [
     placement: "center"
   },
   {
-    title: "Judge Mode is the guided story",
-    body: "Start here. Judge Mode walks the full governance journey end to end — no setup, no clicking around to find the point.",
+    title: "Guided Story is where to start",
+    body: "Start here. The Guided Story walks the full governance journey end to end — no setup, no clicking around to find the point.",
     selector: '[data-tour="nav-judge"]',
     view: "judge"
   },

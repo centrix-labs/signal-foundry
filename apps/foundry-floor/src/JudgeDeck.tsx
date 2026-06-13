@@ -104,7 +104,7 @@ export function JudgeDeck({
     <section className="judge-deck" aria-label="Judge Deck evidence scorecard">
       <div className="deck-header">
         <div>
-          <h1>Judge Deck</h1>
+          <h1>Highlights</h1>
           <p className="deck-sub">Every claim on one screen, verified against the live registry. No scrolling, no hand-waving.</p>
         </div>
         <div className="deck-meta">

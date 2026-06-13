@@ -131,16 +131,8 @@ function useDemoState(baseRecords: readonly Capability[]) {
   };
 }
 
-function getRiskReview(selected: Capability, riskReviews: readonly RiskReview[]) {
-  return riskReviews.find((item) => item.proposalId === selected.id);
-}
-
 function getReleasePacket(selected: Capability, packets: readonly ReleasePacket[]) {
   return packets.find((item) => item.capabilityId === selected.id);
-}
-
-function getReview(selected: Capability, reviews: readonly ReviewItem[]) {
-  return reviews.find((item) => item.proposalId === selected.id);
 }
 
 function latestCorrelation(activity: readonly McpActivity[], packet?: ReleasePacket) {
@@ -189,7 +181,7 @@ function JudgeMode({
     <section className="judge-mode" aria-label="Judge Mode">
       <div className="judge-hero">
         <div className="judge-copy">
-          <p className="eyebrow">Judge Mode</p>
+          <p className="eyebrow">Guided Story</p>
           <h1>Signal Foundry</h1>
           <p>Governed Copilot workflows from idea to approved release.</p>
         </div>
@@ -541,7 +533,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           />
         ) : null}
         {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} isLive={dashboardData.isLive} /> : null}
-        {activeView === "architecture" ? <ArchitectureView /> : null}
+        {activeView === "architecture" ? <ArchitectureView onOpenView={setActiveView} /> : null}
         {activeView === "pipeline" ? <PipelineView records={visibleRecords} selected={selected} /> : null}
         {activeView === "review" ? (
           <ReviewQueue

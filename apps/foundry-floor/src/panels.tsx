@@ -49,9 +49,9 @@ export function LeftRail({
   onFiltersChange?: (filters: RecordFilters) => void;
 }) {
   const groups = [
-    ["For judges", [
-      ["judge", "Judge Mode"],
-      ["deck", "Judge Deck"]
+    ["Overview", [
+      ["judge", "Guided Story"],
+      ["deck", "Highlights"]
     ]],
     ["Workspace", [
       ["floor", "Foundry Floor"],
