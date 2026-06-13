@@ -17,14 +17,44 @@ type AtlasProps = {
   compact?: boolean;
   judgeMode?: boolean;
   stageKey?: string;
+  isLive?: boolean;
 };
 
-function nodeById(id: string): PositionedNode {
-  const node = atlasNodes.find((item) => item.id === id);
-  if (!node) {
-    throw new Error(`Unknown atlas node ${id}`);
-  }
-  return node;
+// Structural lanes (signals, roles, the forge, the gate) are fixed; the approved-
+// workflow lane on the right is where live, Copilot-created proposals land.
+const STRUCTURAL_NODES = atlasNodes.filter((node) => node.kind !== "workflow");
+const SEEDED_WORKFLOW_NODES = atlasNodes.filter((node) => node.kind === "workflow");
+const STRUCTURAL_EDGES = atlasEdges.filter((edge) => edge.kind !== "approval_path");
+const SEEDED_WORKFLOW_EDGES = atlasEdges.filter((edge) => edge.kind === "approval_path");
+const WORKFLOW_X = 82;
+const WORKFLOW_TOP = 26;
+const WORKFLOW_BOTTOM = 72;
+const MAX_LIVE_WORKFLOWS = 6;
+
+const SEEDED_WORKFLOW_IDS = SEEDED_WORKFLOW_NODES.map((node) => node.id);
+
+// When the registry is live, render the workflow lane straight from records so
+// that proposals created in different Copilot chats appear and the graph grows.
+// The seeded golden workflows are kept first so the judge scenario always shows,
+// then new live proposals fill the remaining slots.
+function liveWorkflowNodes(records: readonly Capability[]): PositionedNode[] {
+  const ordered: Capability[] = [
+    ...SEEDED_WORKFLOW_IDS.map((id) => records.find((record) => record.id === id)).filter(
+      (record): record is Capability => Boolean(record)
+    ),
+    ...records.filter((record) => !SEEDED_WORKFLOW_IDS.includes(record.id))
+  ];
+  const shown = ordered.slice(0, MAX_LIVE_WORKFLOWS);
+  const count = shown.length;
+  return shown.map((record, index) => ({
+    id: record.id,
+    label: record.title,
+    kind: "workflow",
+    x: WORKFLOW_X,
+    y: count <= 1 ? 49 : WORKFLOW_TOP + ((WORKFLOW_BOTTOM - WORKFLOW_TOP) * index) / (count - 1),
+    riskLevel: record.riskLevel,
+    status: record.status
+  }));
 }
 
 function pathFor(source: PositionedNode, target: PositionedNode): string {
@@ -97,7 +127,24 @@ function renderNodeLabel(node: PositionedNode) {
   );
 }
 
-export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey }: AtlasProps) {
+export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false }: AtlasProps) {
+  const useLiveWorkflows = isLive && records.length > 0;
+  const workflowNodes = useLiveWorkflows ? liveWorkflowNodes(records) : SEEDED_WORKFLOW_NODES;
+  const displayNodes: PositionedNode[] = [...STRUCTURAL_NODES, ...workflowNodes];
+  const displayEdges = [
+    ...STRUCTURAL_EDGES,
+    ...(useLiveWorkflows
+      ? workflowNodes.map((node) => ({
+          id: `gate-${node.id}`,
+          source: "gate-risk",
+          target: node.id,
+          label: "governed",
+          kind: "approval_path" as const
+        }))
+      : SEEDED_WORKFLOW_EDGES)
+  ];
+  const nodeLookup = new Map(displayNodes.map((node) => [node.id, node] as const));
+
   return (
     <section className={`panel atlas-panel ${compact ? "compact-atlas" : ""} ${judgeMode ? "judge-atlas-panel" : ""}`} aria-label="Signal Atlas">
       <div className="panel-heading">
@@ -143,9 +190,12 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
               return <circle key={index} cx={x} cy={y} r={index % 5 === 0 ? 0.45 : 0.28} />;
             })}
           </g>
-          {atlasEdges.map((edge, index) => {
-            const source = nodeById(edge.source);
-            const target = nodeById(edge.target);
+          {displayEdges.map((edge, index) => {
+            const source = nodeLookup.get(edge.source);
+            const target = nodeLookup.get(edge.target);
+            if (!source || !target) {
+              return null;
+            }
             const path = pathFor(source, target);
             const isRisk = edge.kind === "risk_gate" || edge.kind === "approval_path";
             const isStageRisk = stageKey === "score" && (edge.kind === "risk_gate" || edge.source === "gate-risk");
@@ -164,7 +214,7 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
               </g>
             );
           })}
-          {[...atlasNodes]
+          {[...displayNodes]
             .sort((a, b) => {
               const paintRank = (item: PositionedNode) =>
                 item.id === selectedId ? 2 : stageKey === "score" && item.id === "gate-risk" ? 1 : 0;

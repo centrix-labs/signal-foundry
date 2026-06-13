@@ -217,6 +217,7 @@ function JudgeMode({
             onSelect={onSelect}
             stageKey={currentStage.key}
             judgeMode
+            isLive={isLive}
           />
         </div>
         <StoryLedger
@@ -358,16 +359,18 @@ function AtlasView({
   records,
   selectedId,
   onSelect,
-  activity
+  activity,
+  isLive = false
 }: {
   records: readonly Capability[];
   selectedId: string;
   onSelect: (id: string) => void;
   activity: ReturnType<typeof useDashboardData>["mcpActivity"];
+  isLive?: boolean;
 }) {
   return (
     <div className="atlas-view">
-      <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} />
+      <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} />
       <div className="atlas-support">
         <McpActivityRail compact items={activity} />
         <ReleasePipeline selected={findCapability(selectedId, records)} />
@@ -537,7 +540,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
             onOpenMirror={() => setActiveView("mirror")}
           />
         ) : null}
-        {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} /> : null}
+        {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} isLive={dashboardData.isLive} /> : null}
         {activeView === "architecture" ? <ArchitectureView /> : null}
         {activeView === "pipeline" ? <PipelineView records={visibleRecords} selected={selected} /> : null}
         {activeView === "review" ? (
