@@ -126,6 +126,11 @@
   z-index: 1;
 }
 
+/* Edge labels overlay sits above the cards (z-index 2) so labels stay readable. */
+.arch2-overlay-labels {
+  z-index: 3;
+}
+
 #arch2Arrow path {
   fill: none;
   stroke: var(--teal);

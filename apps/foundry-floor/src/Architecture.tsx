@@ -338,6 +338,7 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
             ))}
           </div>
 
+          {/* Connector lines tuck BEHIND the cards (this overlay sits under them). */}
           <svg className="arch2-overlay" aria-hidden="true">
             <defs>
               <marker id="arch2Arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -350,17 +351,24 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
                 <text x={boundary.x + boundary.w / 2} y={Math.max(11, boundary.y - 6)} textAnchor="middle">summary-only — no raw M365 content past here</text>
               </g>
             ) : null}
+            {edges.map((edge) => (
+              <g key={edge.id} className="arch2-edge-group">
+                <path className="arch2-edge" d={edge.d} markerEnd="url(#arch2Arrow)" />
+                <path className="arch2-edge-pulse" d={edge.d} pathLength={1} />
+              </g>
+            ))}
+          </svg>
+
+          {/* Edge labels render in a separate overlay ABOVE the cards so a label
+              whose midpoint lands on a card stays fully readable. */}
+          <svg className="arch2-overlay arch2-overlay-labels" aria-hidden="true">
             {edges.map((edge) => {
               // Size the label pill to its text so longer labels never bleed.
               const labelWidth = edge.label.length * 5.4 + 12;
               return (
-                <g key={edge.id} className="arch2-edge-group">
-                  <path className="arch2-edge" d={edge.d} markerEnd="url(#arch2Arrow)" />
-                  <path className="arch2-edge-pulse" d={edge.d} pathLength={1} />
-                  <g className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
-                    <rect className="arch2-edge-label-bg" x={-labelWidth / 2} y={-9} width={labelWidth} height={16} rx={4} />
-                    <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
-                  </g>
+                <g key={edge.id} className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
+                  <rect className="arch2-edge-label-bg" x={-labelWidth / 2} y={-9} width={labelWidth} height={16} rx={4} />
+                  <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
                 </g>
               );
             })}
