@@ -97,24 +97,15 @@ function boxOf(el: Element, origin: DOMRect): Box {
   };
 }
 
-// Pure right-angle routing in pixel space. Returns the path string and the
-// approximate midpoint for label placement.
-function orthogonalPath(a: Box, b: Box): { d: string; midX: number; midY: number } {
+// Pure right-angle routing in pixel space. Returns the connector path string.
+function orthogonalPath(a: Box, b: Box): string {
   if (Math.abs(a.cx - b.cx) < 2) {
     const [upper, lower] = a.cy <= b.cy ? [a, b] : [b, a];
-    return {
-      d: `M ${a.cx} ${upper.bottom} V ${lower.top}`,
-      midX: a.cx,
-      midY: (upper.bottom + lower.top) / 2
-    };
+    return `M ${a.cx} ${upper.bottom} V ${lower.top}`;
   }
   const [left, right] = a.cx < b.cx ? [a, b] : [b, a];
   const midX = (left.right + right.left) / 2;
-  return {
-    d: `M ${left.right} ${left.cy} H ${midX} V ${right.cy} H ${right.left}`,
-    midX,
-    midY: (left.cy + right.cy) / 2
-  };
+  return `M ${left.right} ${left.cy} H ${midX} V ${right.cy} H ${right.left}`;
 }
 
 type ArchitectureViewProps = {
@@ -125,12 +116,22 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string>(SERVICES[0]!.id);
-  const [edges, setEdges] = useState<Array<{ id: string; d: string; label: string; midX: number; midY: number }>>([]);
+  const [edges, setEdges] = useState<Array<{ id: string; d: string }>>([]);
   const [boundary, setBoundary] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
 
   const active = pinned ?? hovered;
   const linked = active ? neighborsOf(active) : null;
+
+  // The active card's connections, listed in a readable panel (rather than inline
+  // labels that would overlap the cards). Each entry: where it goes + what flows.
+  const connections = active
+    ? CONNECTIONS.filter(([a, b]) => a === active || b === active).map(([a, b, flow]) => ({
+        id: `${a}-${b}`,
+        target: SERVICE_LABEL.get(a === active ? b : a) ?? "",
+        flow
+      }))
+    : [];
 
   const recomputeEdges = useCallback((id: string | null) => {
     const body = bodyRef.current;
@@ -139,8 +140,8 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
       return;
     }
     const origin = body.getBoundingClientRect();
-    const next: Array<{ id: string; d: string; label: string; midX: number; midY: number }> = [];
-    for (const [a, b, label] of CONNECTIONS) {
+    const next: Array<{ id: string; d: string }> = [];
+    for (const [a, b] of CONNECTIONS) {
       if (a !== id && b !== id) {
         continue;
       }
@@ -151,8 +152,7 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
       if (!fromEl || !toEl) {
         continue;
       }
-      const routed = orthogonalPath(boxOf(fromEl, origin), boxOf(toEl, origin));
-      next.push({ id: `${from}-${to}`, d: routed.d, label, midX: routed.midX, midY: routed.midY });
+      next.push({ id: `${from}-${to}`, d: orthogonalPath(boxOf(fromEl, origin), boxOf(toEl, origin)) });
     }
     setEdges(next);
   }, []);
@@ -358,21 +358,25 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
               </g>
             ))}
           </svg>
+        </div>
 
-          {/* Edge labels render in a separate overlay ABOVE the cards so a label
-              whose midpoint lands on a card stays fully readable. */}
-          <svg className="arch2-overlay arch2-overlay-labels" aria-hidden="true">
-            {edges.map((edge) => {
-              // Size the label pill to its text so longer labels never bleed.
-              const labelWidth = edge.label.length * 5.4 + 12;
-              return (
-                <g key={edge.id} className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
-                  <rect className="arch2-edge-label-bg" x={-labelWidth / 2} y={-9} width={labelWidth} height={16} rx={4} />
-                  <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
-                </g>
-              );
-            })}
-          </svg>
+        <div className={`arch2-connections ${active ? "is-active" : ""}`} aria-live="polite">
+          {active ? (
+            <>
+              <p className="arch2-conn-head"><strong>{SERVICE_LABEL.get(active)}</strong> connects to</p>
+              <ul>
+                {connections.map((conn) => (
+                  <li key={conn.id}>
+                    <ChevronRight size={13} aria-hidden="true" />
+                    <span className="arch2-conn-target">{conn.target}</span>
+                    <span className="arch2-conn-flow">{conn.flow}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="arch2-conn-hint">Hover or pin a service to list its connections and what flows on each.</p>
+          )}
         </div>
       </div>
 

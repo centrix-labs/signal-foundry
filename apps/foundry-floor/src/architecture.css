@@ -126,11 +126,6 @@
   z-index: 1;
 }
 
-/* Edge labels overlay sits above the cards (z-index 2) so labels stay readable. */
-.arch2-overlay-labels {
-  z-index: 3;
-}
-
 #arch2Arrow path {
   fill: none;
   stroke: var(--teal);
@@ -343,38 +338,94 @@
   }
 }
 
-/* Edge labels — appear when connections are shown on hover/pin */
-.arch2-edge-label {
-  pointer-events: none;
+/* Connections panel — readable list of the active service's edges + what flows
+   on each, kept out of the diagram so cards and connector lines stay legible. */
+.arch2-connections {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  min-height: 64px;
+  padding-top: 14px;
 }
 
-.arch2-edge-label-bg {
-  fill: color-mix(in oklch, var(--graphite) 92%, black);
-  rx: 4px;
-  stroke: color-mix(in oklch, var(--teal) 38%, transparent);
-  stroke-width: 1;
+.arch2-conn-head {
+  color: var(--steel);
+  font-size: 0.78rem;
+  margin: 0 0 10px;
 }
 
-.arch2-edge-label-text {
-  fill: color-mix(in oklch, var(--teal) 88%, white);
-  font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
-  font-size: 9.5px;
+.arch2-conn-head strong {
+  color: oklch(0.96 0.012 205);
+  font-weight: 700;
+}
+
+.light-mode .arch2-conn-head strong {
+  color: oklch(0.22 0.03 230);
+}
+
+.arch2-connections ul {
+  display: grid;
+  gap: 7px 18px;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.arch2-connections li {
+  align-items: center;
+  animation: arch2EdgeIn 200ms ease both;
+  background: color-mix(in oklch, var(--teal) 7%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 22%, transparent);
+  border-radius: 8px;
+  color: var(--steel);
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+.light-mode .arch2-connections li {
+  background: color-mix(in oklch, var(--teal) 9%, white);
+  border-color: color-mix(in oklch, var(--teal) 30%, transparent);
+}
+
+.arch2-connections li svg {
+  color: color-mix(in oklch, var(--teal) 78%, var(--steel));
+  flex: 0 0 auto;
+}
+
+.arch2-conn-target {
+  color: oklch(0.95 0.012 205);
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
-.light-mode .arch2-edge-label-bg {
-  fill: oklch(0.99 0.003 205);
-  stroke: color-mix(in oklch, var(--teal) 46%, transparent);
+.light-mode .arch2-conn-target {
+  color: oklch(0.24 0.03 225);
 }
 
-.light-mode .arch2-edge-label-text {
-  fill: oklch(0.3 0.09 190);
+.arch2-conn-flow {
+  color: color-mix(in oklch, var(--teal) 78%, var(--steel));
+  font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+  font-size: 0.7rem;
+  margin-left: auto;
+  text-align: right;
 }
 
-/* Animate labels in with the edge */
-.arch2-edge-group .arch2-edge-label {
-  animation: arch2EdgeIn 220ms ease both;
+.light-mode .arch2-conn-flow {
+  color: oklch(0.4 0.08 195);
+}
+
+.arch2-conn-hint {
+  color: var(--steel);
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch2-connections li {
+    animation: none;
+  }
 }
 
 /* Click-to-pin discovery hint in the legend */
@@ -394,10 +445,4 @@
   background: oklch(0.95 0.016 195);
   border-color: oklch(0.72 0.08 190);
   color: oklch(0.36 0.09 190);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arch2-edge-group .arch2-edge-label {
-    animation: none;
-  }
 }
