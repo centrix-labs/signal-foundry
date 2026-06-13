@@ -417,12 +417,14 @@ type PipelineProps = {
 };
 
 function StageCard({ stage, index }: { stage: Stage; index: number }) {
-  const activeClass = stage.key === "gate" || stage.key === "risk" ? "active" : "";
+  const isGate = stage.key === "gate" || stage.key === "risk";
+  const activeClass = isGate ? "active" : "";
   return (
     <div className={`stage-card ${stage.tone} ${activeClass}`} style={{ animationDelay: `${index * 80}ms` }}>
-      <span>{stage.label}</span>
+      {isGate ? <span className="stage-gate-label">{stage.label}</span> : <span>{stage.label}</span>}
       <strong>{stage.count}</strong>
       <small>{stage.sublabel}</small>
+      {isGate ? <span className="stage-gate-badge">Risk Gate</span> : null}
     </div>
   );
 }
@@ -436,11 +438,23 @@ export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
         <div>
           <p className="eyebrow">Release Pipeline</p>
           <h2>{detailed ? "End-to-end factory lanes" : selected.title}</h2>
+          <p className="pipeline-tagline">Every work signal passes a deterministic Risk Gate before a human reviewer can release it.</p>
         </div>
         <span className={`status-pill ${selected.riskLevel}`}>{riskLabels[selected.riskLevel]} Risk</span>
       </div>
       <div className="pipeline-track">
-        {stages.map((stage, index) => <StageCard key={stage.key} stage={stage} index={index} />)}
+        {stages.map((stage, index) => (
+          <StageCard key={stage.key} stage={stage} index={index} />
+        ))}
+      </div>
+      <div className="pipeline-flow-arrows" aria-hidden="true">
+        {stages.map((_, index) =>
+          index < stages.length - 1 ? (
+            <span key={index} className="pipeline-arrow">›</span>
+          ) : (
+            <span key={index} />
+          )
+        )}
       </div>
       <div className="signal-trace" aria-hidden="true">
         {stages.map((stage, index) => {

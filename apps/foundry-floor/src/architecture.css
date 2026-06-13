@@ -337,3 +337,62 @@
     flex-basis: calc(50% - 8px);
   }
 }
+
+/* Edge labels — appear when connections are shown on hover/pin */
+.arch2-edge-label {
+  pointer-events: none;
+}
+
+.arch2-edge-label-bg {
+  fill: color-mix(in oklch, var(--graphite) 92%, black);
+  rx: 4px;
+  stroke: color-mix(in oklch, var(--teal) 38%, transparent);
+  stroke-width: 1;
+}
+
+.arch2-edge-label-text {
+  fill: color-mix(in oklch, var(--teal) 88%, white);
+  font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.light-mode .arch2-edge-label-bg {
+  fill: oklch(0.99 0.003 205);
+  stroke: color-mix(in oklch, var(--teal) 46%, transparent);
+}
+
+.light-mode .arch2-edge-label-text {
+  fill: oklch(0.3 0.09 190);
+}
+
+/* Animate labels in with the edge */
+.arch2-edge-group .arch2-edge-label {
+  animation: arch2EdgeIn 220ms ease both;
+}
+
+/* Click-to-pin discovery hint in the legend */
+.arch2-pin-hint {
+  background: color-mix(in oklch, var(--teal) 12%, transparent);
+  border: 1px dashed color-mix(in oklch, var(--teal) 44%, transparent);
+  border-radius: 999px;
+  color: color-mix(in oklch, var(--teal) 78%, var(--steel));
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 3px 9px;
+  width: fit-content;
+}
+
+.light-mode .arch2-pin-hint {
+  background: oklch(0.95 0.016 195);
+  border-color: oklch(0.72 0.08 190);
+  color: oklch(0.36 0.09 190);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch2-edge-group .arch2-edge-label {
+    animation: none;
+  }
+}

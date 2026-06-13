@@ -904,3 +904,182 @@ summary em,
 .light-mode .activity-icon {
   color: oklch(0.42 0.1 190);
 }
+
+/* ── Release Pipeline: hierarchy, flow, and gate emphasis ─────────────────── */
+
+.pipeline-tagline {
+  color: var(--steel);
+  font-size: 0.8rem;
+  margin: 3px 0 0;
+}
+
+.light-mode .pipeline-tagline {
+  color: oklch(0.46 0.04 220);
+}
+
+/* Flow-direction arrows between stage cards — aligned to the pipeline-track grid */
+.pipeline-flow-arrows {
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(6, minmax(112px, 1fr));
+  margin-block-start: -10px;
+  pointer-events: none;
+}
+
+.release-pipeline.factory .pipeline-flow-arrows {
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+}
+
+.pipeline-arrow {
+  color: var(--steel);
+  font-size: 1.1rem;
+  line-height: 1;
+  text-align: right;
+  user-select: none;
+}
+
+.light-mode .pipeline-arrow {
+  color: oklch(0.56 0.04 220);
+}
+
+/* Risk Gate badge inside the active stage card */
+.stage-gate-badge {
+  align-items: center;
+  background: color-mix(in oklch, var(--amber) 18%, transparent);
+  border: 1px solid color-mix(in oklch, var(--amber) 52%, transparent);
+  border-radius: 999px;
+  color: var(--amber);
+  display: inline-flex;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.light-mode .stage-gate-badge {
+  background: oklch(0.96 0.04 82);
+  border-color: oklch(0.73 0.13 76);
+  color: oklch(0.44 0.12 72);
+}
+
+/* Emphasised label for the Risk Gate lane */
+.stage-gate-label {
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.light-mode .stage-gate-label {
+  color: oklch(0.44 0.12 72);
+}
+
+/* ── Executive View: determinism proof line + audit table ─────────────────── */
+
+.executive-determinism-proof {
+  align-items: flex-start;
+  background: color-mix(in oklch, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 30%, transparent);
+  border-radius: 8px;
+  color: oklch(0.32 0.07 200);
+  display: flex;
+  font-size: 0.8rem;
+  font-style: normal;
+  gap: 7px;
+  line-height: 1.45;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+}
+
+.executive-determinism-proof svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  opacity: 0.75;
+}
+
+.light-mode .executive-determinism-proof {
+  background: oklch(0.96 0.018 200);
+  border-color: oklch(0.78 0.06 195);
+  color: oklch(0.3 0.07 200);
+}
+
+/* Audit note badge in the panel heading */
+.executive-audit-note {
+  align-items: center;
+  color: oklch(0.4 0.09 180);
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 600;
+  gap: 5px;
+}
+
+.light-mode .executive-audit-note {
+  color: oklch(0.38 0.1 180);
+}
+
+/* Proper audit grid table — column-aligned, monospace IDs, zebra rows */
+.audit-grid {
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  width: 100%;
+}
+
+.audit-grid thead th {
+  border-block-end: 1px solid oklch(0.82 0.022 220);
+  color: var(--steel);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px 8px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.audit-grid tbody tr {
+  border-block-end: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+}
+
+.audit-grid tbody td {
+  padding: 9px 10px;
+  vertical-align: middle;
+}
+
+.audit-grid tbody td strong {
+  font-size: 0.84rem;
+}
+
+.audit-row-even {
+  background: transparent;
+}
+
+.audit-row-odd {
+  background: color-mix(in oklch, var(--steel) 5%, transparent);
+}
+
+.light-mode .audit-row-odd {
+  background: oklch(0.97 0.006 210);
+}
+
+.audit-corr-id {
+  background: color-mix(in oklch, var(--steel) 10%, transparent);
+  border-radius: 4px;
+  color: oklch(0.68 0.09 185);
+  font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+  font-size: 0.78rem;
+  padding: 2px 6px;
+}
+
+.light-mode .audit-corr-id {
+  background: oklch(0.94 0.018 200);
+  color: oklch(0.36 0.1 190);
+}
+
+.light-mode .audit-grid thead th {
+  border-block-end-color: oklch(0.82 0.022 220);
+  color: oklch(0.46 0.04 220);
+}
+
+.light-mode .audit-grid tbody tr {
+  border-block-end-color: oklch(0.88 0.018 215);
+}

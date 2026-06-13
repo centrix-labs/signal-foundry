@@ -546,6 +546,10 @@ export function ExecutiveView({
         <p className="eyebrow">Signal Foundry</p>
         <h2>Approved workflow launchpad</h2>
         <p>Judge-readable summary of how synthetic work signals become reviewed, released Copilot capabilities.</p>
+        <p className="executive-determinism-proof">
+          <Lock size={13} />
+          Byte-identical verdict — model on or off. The deterministic gate runs before and independently of AI advisory; unplugging the model produces the same release decision.
+        </p>
       </div>
       <div className="executive-grid">
         <div className="panel">
@@ -570,15 +574,28 @@ export function ExecutiveView({
             <p className="eyebrow">Audit View</p>
             <h2>Sanitized evidence</h2>
           </div>
+          <span className="executive-audit-note"><ShieldCheck size={13} /> No raw content</span>
         </div>
-        {events.map((event) => (
-          <div key={event.id}>
-            <span>{event.actor}</span>
-            <strong>{event.action}</strong>
-            <small>{event.targetRecord}</small>
-            <em>{event.correlationId}</em>
-          </div>
-        ))}
+        <table className="audit-grid" role="table" aria-label="Sanitized audit events">
+          <thead>
+            <tr>
+              <th scope="col">Actor</th>
+              <th scope="col">Action</th>
+              <th scope="col">Record</th>
+              <th scope="col">Correlation ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((event, index) => (
+              <tr key={event.id} className={index % 2 === 0 ? "audit-row-even" : "audit-row-odd"}>
+                <td>{event.actor}</td>
+                <td><strong>{event.action}</strong></td>
+                <td>{event.targetRecord}</td>
+                <td><code className="audit-corr-id">{event.correlationId}</code></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <button type="button" className="primary action-button" onClick={onOpenReview}>Open release packet <ChevronRight size={16} /></button>
     </section>

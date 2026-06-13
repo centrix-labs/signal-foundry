@@ -33,23 +33,25 @@ const SERVICES: ServiceNode[] = [
   { id: "app-insights", tier: 4, label: "App Insights", tech: "telemetry" }
 ];
 
-const CONNECTIONS: ReadonlyArray<readonly [string, string]> = [
-  ["copilot-chat", "declarative-agent"],
-  ["declarative-agent", "work-iq"],
-  ["declarative-agent", "adaptive-cards"],
-  ["declarative-agent", "mcp-server"],
-  ["mcp-server", "oauth-guard"],
-  ["mcp-server", "confirm-gate"],
-  ["mcp-server", "risk-gate"],
-  ["risk-gate", "advisory"],
-  ["mcp-server", "registry"],
-  ["mcp-server", "audit"],
-  ["oauth-guard", "key-vault"],
-  ["advisory", "key-vault"],
-  ["registry", "foundry-floor"],
-  ["audit", "foundry-floor"],
-  ["mcp-server", "app-insights"],
-  ["foundry-floor", "app-insights"]
+type Connection = readonly [string, string, string];
+
+const CONNECTIONS: ReadonlyArray<Connection> = [
+  ["copilot-chat", "declarative-agent", "user prompt"],
+  ["declarative-agent", "work-iq", "People + Meetings"],
+  ["declarative-agent", "adaptive-cards", "response UI"],
+  ["declarative-agent", "mcp-server", "MCP tool call"],
+  ["mcp-server", "oauth-guard", "OAuth token"],
+  ["mcp-server", "confirm-gate", "schema check"],
+  ["mcp-server", "risk-gate", "verdict request"],
+  ["risk-gate", "advisory", "score + rationale"],
+  ["mcp-server", "registry", "capability read/write"],
+  ["mcp-server", "audit", "correlation ID"],
+  ["oauth-guard", "key-vault", "secret lookup"],
+  ["advisory", "key-vault", "model credentials"],
+  ["registry", "foundry-floor", "approved records"],
+  ["audit", "foundry-floor", "sanitized evidence"],
+  ["mcp-server", "app-insights", "telemetry"],
+  ["foundry-floor", "app-insights", "telemetry"]
 ];
 
 // Services that map to a place in the app you can jump to.
@@ -95,15 +97,24 @@ function boxOf(el: Element, origin: DOMRect): Box {
   };
 }
 
-// Pure right-angle routing in pixel space.
-function orthogonalPath(a: Box, b: Box): string {
+// Pure right-angle routing in pixel space. Returns the path string and the
+// approximate midpoint for label placement.
+function orthogonalPath(a: Box, b: Box): { d: string; midX: number; midY: number } {
   if (Math.abs(a.cx - b.cx) < 2) {
     const [upper, lower] = a.cy <= b.cy ? [a, b] : [b, a];
-    return `M ${a.cx} ${upper.bottom} V ${lower.top}`;
+    return {
+      d: `M ${a.cx} ${upper.bottom} V ${lower.top}`,
+      midX: a.cx,
+      midY: (upper.bottom + lower.top) / 2
+    };
   }
   const [left, right] = a.cx < b.cx ? [a, b] : [b, a];
   const midX = (left.right + right.left) / 2;
-  return `M ${left.right} ${left.cy} H ${midX} V ${right.cy} H ${right.left}`;
+  return {
+    d: `M ${left.right} ${left.cy} H ${midX} V ${right.cy} H ${right.left}`,
+    midX,
+    midY: (left.cy + right.cy) / 2
+  };
 }
 
 type ArchitectureViewProps = {
@@ -114,7 +125,7 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string>(SERVICES[0]!.id);
-  const [edges, setEdges] = useState<Array<{ id: string; d: string }>>([]);
+  const [edges, setEdges] = useState<Array<{ id: string; d: string; label: string; midX: number; midY: number }>>([]);
   const [boundary, setBoundary] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const bodyRef = useRef<HTMLDivElement | null>(null);
 
@@ -128,8 +139,8 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
       return;
     }
     const origin = body.getBoundingClientRect();
-    const next: Array<{ id: string; d: string }> = [];
-    for (const [a, b] of CONNECTIONS) {
+    const next: Array<{ id: string; d: string; label: string; midX: number; midY: number }> = [];
+    for (const [a, b, label] of CONNECTIONS) {
       if (a !== id && b !== id) {
         continue;
       }
@@ -140,7 +151,8 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
       if (!fromEl || !toEl) {
         continue;
       }
-      next.push({ id: `${from}-${to}`, d: orthogonalPath(boxOf(fromEl, origin), boxOf(toEl, origin)) });
+      const routed = orthogonalPath(boxOf(fromEl, origin), boxOf(toEl, origin));
+      next.push({ id: `${from}-${to}`, d: routed.d, label, midX: routed.midX, midY: routed.midY });
     }
     setEdges(next);
   }, []);
@@ -269,6 +281,7 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
         <div className="arch2-legend">
           <span><i className="arch2-legend-flow" /> Connection (hover / pin)</span>
           <span><i className="arch2-legend-boundary" /> Summary-only boundary</span>
+          <span className="arch2-pin-hint">Click a card to pin its connections</span>
         </div>
       </div>
 
@@ -341,6 +354,10 @@ export function ArchitectureView({ onOpenView }: ArchitectureViewProps) {
               <g key={edge.id} className="arch2-edge-group">
                 <path className="arch2-edge" d={edge.d} markerEnd="url(#arch2Arrow)" />
                 <path className="arch2-edge-pulse" d={edge.d} pathLength={1} />
+                <g className="arch2-edge-label" transform={`translate(${edge.midX}, ${edge.midY})`}>
+                  <rect className="arch2-edge-label-bg" x={-28} y={-9} width={56} height={16} rx={4} />
+                  <text className="arch2-edge-label-text" textAnchor="middle" dominantBaseline="middle">{edge.label}</text>
+                </g>
               </g>
             ))}
           </svg>
