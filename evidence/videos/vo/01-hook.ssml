@@ -1,0 +1,8 @@
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+ <voice name="en-US-AndrewMultilingualNeural">
+  <prosody rate="-4%">
+   Every enterprise is about to face the same flood<break time="280ms"/> — hundreds of employee A I ideas,<break time="200ms"/> and no governed way to ship them.<break time="350ms"/>
+   <emphasis level="moderate">Signal Foundry</emphasis> is the layer that turns that flood into approved,<break time="160ms"/> auditable Copilot workflows.
+  </prosody>
+ </voice>
+</speak>

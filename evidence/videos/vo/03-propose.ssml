@@ -1,0 +1,9 @@
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+ <voice name="en-US-AndrewMultilingualNeural">
+  <prosody rate="-4%">
+   I propose a capability<break time="180ms"/> — an Incident Summarization Copilot.<break time="320ms"/>
+   Watch the confirmation gate:<break time="220ms"/> nothing is written until I explicitly approve it.<break time="320ms"/>
+   The moment I confirm, it lands in the governed registry with a correlation I D<break time="200ms"/> — and appears on the Foundry Floor instantly.
+  </prosody>
+ </voice>
+</speak>

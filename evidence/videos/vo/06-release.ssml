@@ -1,0 +1,9 @@
+<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+ <voice name="en-US-AndrewMultilingualNeural">
+  <prosody rate="-4%">
+   A human reviewer approves<break time="200ms"/> — no release without it.<break time="320ms"/>
+   Signal Foundry seals an audit-safe release packet:<break time="220ms"/> owner,<break time="130ms"/> reviewer,<break time="130ms"/> controls,<break time="130ms"/> version,<break time="130ms"/> correlation I D.<break time="300ms"/>
+   One human decision,<break time="180ms"/> fully traceable.
+  </prosody>
+ </voice>
+</speak>
