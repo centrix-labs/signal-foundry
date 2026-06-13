@@ -139,7 +139,16 @@ export const releaseCapabilityInputSchema = idempotentRequestSchema.extend({
   capabilityId: z.string().min(6),
   releasedBy: z.string().min(2),
   audience: audienceScopeSchema,
-  version: z.string().regex(/^v\d+\.\d+\.\d+$/)
+  // LLM clients omit the v-prefix or the field entirely; coerce shape,
+  // default the demo release version, keep the format contract.
+  version: z.preprocess(
+    (value) => {
+      if (value == null || value === "") return "v1.0.0";
+      if (typeof value === "string" && /^\d+\.\d+\.\d+$/.test(value.trim())) return `v${value.trim()}`;
+      return value;
+    },
+    z.string().regex(/^v\d+\.\d+\.\d+$/)
+  )
 });
 
 export const recordCopilotCheckpointInputSchema = idempotentRequestSchema.extend({
