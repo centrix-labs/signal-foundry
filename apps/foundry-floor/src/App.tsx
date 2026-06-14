@@ -424,7 +424,22 @@ function AtlasView({
   return (
     <div className="atlas-view" ref={viewRef}>
       <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} />
-      <McpActivityRail compact items={activity} highlightId={selectedId} paginate maxHeight={atlasHeight} />
+      <McpActivityRail
+        compact
+        items={activity}
+        highlightId={selectedId}
+        paginate
+        maxHeight={atlasHeight}
+        onSelectRecord={(recordId) => {
+          // An activity's recordId may be the proposal id while the node is the
+          // released capability (cap-<id>); match on the normalized id.
+          const key = recordId.replace(/^cap-/, "");
+          const match = records.find((record) => record.id.replace(/^cap-/, "") === key);
+          if (match) {
+            onSelect(match.id);
+          }
+        }}
+      />
       {/* The pipeline is a horizontal stage flow, so it spans the full width
           below the two column panels rather than cramping into the right rail. */}
       <ReleasePipeline selected={findCapability(selectedId, records)} />

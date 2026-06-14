@@ -241,6 +241,22 @@ summary em,
   box-shadow: inset 3px 0 0 var(--teal);
 }
 
+/* Rows are clickable on the Atlas — clicking selects the workflow on the graph. */
+.mcp-rail article.is-clickable {
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.mcp-rail article.is-clickable:hover {
+  border-color: color-mix(in oklch, var(--teal) 45%, var(--line));
+}
+
+.mcp-rail article.is-clickable:focus-visible {
+  border-color: var(--teal);
+  outline: 2px solid color-mix(in oklch, var(--teal) 50%, transparent);
+  outline-offset: 1px;
+}
+
 .activity-time {
   color: var(--steel);
   font-size: 0.66rem;
@@ -1090,6 +1106,36 @@ summary em,
   background: oklch(0.96 0.04 82);
   border-color: oklch(0.73 0.13 76);
   color: oklch(0.44 0.12 72);
+}
+
+/* "This workflow is here" marker on the stage where the selected record sits */
+.stage-here-badge {
+  align-items: center;
+  background: color-mix(in oklch, var(--teal) 18%, transparent);
+  border: 1px solid color-mix(in oklch, var(--teal) 52%, transparent);
+  border-radius: 999px;
+  color: color-mix(in oklch, var(--teal) 82%, white);
+  display: inline-flex;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.light-mode .stage-here-badge {
+  background: oklch(0.95 0.04 195);
+  border-color: oklch(0.72 0.1 188);
+  color: oklch(0.34 0.1 190);
+}
+
+/* The selected workflow's current stage reads teal (its position), distinct from
+   the amber gate emphasis used in the full factory view. */
+.release-pipeline:not(.factory) .stage-card.is-here {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 45%, transparent), 0 0 22px rgba(0, 209, 194, 0.18);
 }
 
 /* Emphasised label for the Risk Gate lane */

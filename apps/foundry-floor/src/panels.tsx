@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -468,7 +468,8 @@ export function McpActivityRail({
   limit,
   highlightId,
   paginate = false,
-  maxHeight
+  maxHeight,
+  onSelectRecord
 }: {
   compact?: boolean;
   proofMode?: boolean;
@@ -481,6 +482,8 @@ export function McpActivityRail({
   paginate?: boolean;
   /** Cap the rail height (e.g. to match the Atlas) — the list scrolls within. */
   maxHeight?: number;
+  /** When set, a row click selects the workflow that produced the call. */
+  onSelectRecord?: (recordId: string) => void;
 }) {
   // Newest governed calls first so the rail reads as a live trace.
   const sorted = [...items].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
@@ -520,8 +523,26 @@ export function McpActivityRail({
       <div className="mcp-rail-list">
         {visibleItems.map((item) => {
           const related = scope !== null && normalizeRecordId(item.recordId) === scope;
+          const clickable = Boolean(onSelectRecord);
           return (
-            <article key={item.id} className={`${item.status} ${related ? "is-related" : ""}`}>
+            <article
+              key={item.id}
+              className={`${item.status} ${related ? "is-related" : ""} ${clickable ? "is-clickable" : ""}`}
+              {...(clickable
+                ? {
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `${item.action} — show its workflow on the Atlas`,
+                    onClick: () => onSelectRecord?.(item.recordId),
+                    onKeyDown: (event: ReactKeyboardEvent) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        onSelectRecord?.(item.recordId);
+                      }
+                    }
+                  }
+                : {})}
+            >
               <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
               <div>
                 <strong>{item.action}</strong>
