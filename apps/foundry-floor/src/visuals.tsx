@@ -330,9 +330,11 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
   // the live workflow lane and drag-to-pan stay exactly as before.
   const storyState = judgeMode ? story : undefined;
 
-  // The header chips become live filters on the standard Atlas (not the cinematic
-  // Guided Story, not the compact mirror). Domain + risk narrow the workflow lane.
-  const interactive = !judgeMode && !compact;
+  // The header chips are live filters on the full-size Atlas surfaces (standard
+  // Atlas and the Guided Story); the compact mirror keeps simple status chips.
+  // The story hero is a separate overlay, so filtering the backdrop workflow
+  // lane never disturbs the choreography.
+  const interactive = !compact;
   const [domainFilter, setDomainFilter] = useState<string>("all");
   const [riskFilter, setRiskFilter] = useState<string>("all");
   const domains = useMemo(
