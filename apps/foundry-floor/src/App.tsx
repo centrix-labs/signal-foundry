@@ -27,6 +27,7 @@ import { capabilities, copilotTurns, statusLabels, type ViewKey } from "./data";
 import { LoginScreen } from "./LoginScreen";
 import { getStaticWebAppUser, type StaticWebAppUser } from "./auth";
 import { useDashboardData } from "./liveData";
+import { releaseCapabilityLive } from "./liveActions";
 
 const firstCapability = capabilities[0];
 const judgeStages = [
@@ -592,6 +593,18 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
     approveRelease
   } = useDemoState(dashboardData.records);
 
+  // Approve & Release applies the optimistic local decision immediately, then —
+  // when the registry is live — drives the real governed write on the MCP server
+  // (approve_capability → release_capability). A server-side failure is a no-op:
+  // the demo state already reflects the decision, so the console never breaks
+  // offline. The 15s snapshot poll surfaces the real packet once it lands.
+  const approveReleaseWired = () => {
+    approveRelease();
+    if (dashboardData.isLive && selected) {
+      void releaseCapabilityLive(selected).catch(() => undefined);
+    }
+  };
+
   // Auto-play drives the Guided Story for screen recording. Manual interaction
   // (Reset / Advance / stage select) cancels it; reduced-motion disables it.
   const [autoPlaying, setAutoPlaying] = useState(false);
@@ -746,7 +759,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
             onSelect={setSelectedId}
             onRequestChanges={requestChanges}
             onSaveForLater={saveForLater}
-            onApproveRelease={approveRelease}
+            onApproveRelease={approveReleaseWired}
           />
         ) : null}
         {activeView === "mirror" ? (
