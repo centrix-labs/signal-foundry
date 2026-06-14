@@ -259,6 +259,95 @@ summary em,
   overflow: hidden;
 }
 
+/* Capped rail (Atlas page): header + scrollable list + pager, bounded to the
+   Atlas height so the trace scrolls instead of pushing the pipeline down. */
+.mcp-rail.is-capped {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mcp-rail-list {
+  display: grid;
+  gap: var(--sm, 8px);
+  min-width: 0;
+}
+
+.mcp-rail.is-capped .mcp-rail-list {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.mcp-pager {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.mcp-pager-sizes,
+.mcp-pager-nav {
+  align-items: center;
+  color: var(--steel);
+  display: flex;
+  font-size: 0.72rem;
+  gap: 6px;
+}
+
+.mcp-pager-sizes button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--steel);
+  cursor: pointer;
+  font-size: 0.72rem;
+  min-width: 26px;
+  padding: 2px 6px;
+}
+
+.mcp-pager-sizes button.is-active {
+  background: color-mix(in oklch, var(--teal) 18%, transparent);
+  border-color: color-mix(in oklch, var(--teal) 55%, transparent);
+  color: color-mix(in oklch, var(--teal) 80%, white);
+}
+
+.light-mode .mcp-pager-sizes button.is-active {
+  background: color-mix(in oklch, var(--teal) 16%, white);
+  border-color: color-mix(in oklch, var(--teal) 60%, var(--graphite));
+  color: oklch(0.32 0.1 190);
+}
+
+.mcp-pager-range {
+  white-space: nowrap;
+}
+
+.mcp-pager-nav button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--steel);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 2px 9px;
+}
+
+.mcp-pager-nav button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.mcp-pager-nav button:not(:disabled):hover {
+  border-color: color-mix(in oklch, var(--teal) 50%, var(--line));
+  color: color-mix(in oklch, var(--teal) 70%, var(--steel));
+}
+
 .mcp-rail article > div {
   min-width: 0;
 }

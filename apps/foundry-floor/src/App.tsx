@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Capability, CapabilityStatus, McpActivity, ReleasePacket, ReviewItem, RiskReview } from "@signal-foundry/shared";
 import { Check, ChevronRight, ClipboardCheck, FilePlus2, RotateCcw, Scale, ShieldCheck, Sparkles } from "lucide-react";
 import {
@@ -406,10 +406,25 @@ function AtlasView({
   activity: ReturnType<typeof useDashboardData>["mcpActivity"];
   isLive?: boolean;
 }) {
+  // Cap the MCP rail to the live Atlas height so a long audit trace scrolls
+  // inside the column instead of pushing the Release Pipeline far down.
+  const viewRef = useRef<HTMLDivElement | null>(null);
+  const [atlasHeight, setAtlasHeight] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const panel = viewRef.current?.querySelector<HTMLElement>(".atlas-panel");
+    if (!panel) {
+      return;
+    }
+    const observer = new ResizeObserver(() => setAtlasHeight(panel.offsetHeight));
+    observer.observe(panel);
+    setAtlasHeight(panel.offsetHeight);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="atlas-view">
+    <div className="atlas-view" ref={viewRef}>
       <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} />
-      <McpActivityRail compact items={activity} limit={8} highlightId={selectedId} />
+      <McpActivityRail compact items={activity} highlightId={selectedId} paginate maxHeight={atlasHeight} />
       {/* The pipeline is a horizontal stage flow, so it spans the full width
           below the two column panels rather than cramping into the right rail. */}
       <ReleasePipeline selected={findCapability(selectedId, records)} />
