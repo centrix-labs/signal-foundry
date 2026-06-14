@@ -902,6 +902,7 @@ function auditActionLabel(action: string): string {
 
 export function ExecutiveView({
   selected,
+  records = [],
   reviews = reviewItems,
   events = auditEvents,
   activity = mcpActivity,
@@ -910,6 +911,7 @@ export function ExecutiveView({
   onOpenReview
 }: {
   selected: Capability;
+  records?: readonly Capability[];
   reviews?: readonly ReviewItem[];
   events?: readonly AuditEvent[];
   activity?: readonly McpActivity[];
@@ -918,7 +920,30 @@ export function ExecutiveView({
   onOpenReview?: () => void;
 }) {
   const governedWrites = activity.filter((item) => !EXECUTIVE_READ_ACTIONS.has(item.action) && item.status === "success").length;
-  const pendingReviews = reviews.filter((item) => item.status === "pending").length;
+  // Pending reviews tied to a real record (matches the Review Queue's count).
+  const pendingReviews = records.length > 0
+    ? reviews.filter((item) => item.status === "pending" && records.some((record) => record.id === item.proposalId)).length
+    : reviews.filter((item) => item.status === "pending").length;
+
+  // Audit View: search across all columns + paginate (10/25/50).
+  const [auditQuery, setAuditQuery] = useState("");
+  const [auditPageSize, setAuditPageSize] = useState(10);
+  const [auditPage, setAuditPage] = useState(0);
+  useEffect(() => {
+    setAuditPage(0);
+  }, [auditQuery, auditPageSize]);
+  const aq = auditQuery.trim().toLowerCase();
+  const filteredEvents = aq
+    ? events.filter((event) =>
+        [event.actor, auditActionLabel(event.action), event.action, event.targetRecord, event.correlationId]
+          .some((value) => value.toLowerCase().includes(aq))
+      )
+    : events;
+  const auditTotal = filteredEvents.length;
+  const auditPageCount = Math.max(1, Math.ceil(auditTotal / auditPageSize));
+  const auditSafePage = Math.min(auditPage, auditPageCount - 1);
+  const pagedEvents = filteredEvents.slice(auditSafePage * auditPageSize, auditSafePage * auditPageSize + auditPageSize);
+
   const latestRisk = riskReviews[0];
   const advisory = latestRisk?.advisory;
   const advisoryTone = advisory?.status === "available"
@@ -985,6 +1010,20 @@ export function ExecutiveView({
           </div>
           <span className="executive-audit-note"><ShieldCheck size={13} /> No raw content</span>
         </div>
+        <label className="audit-search">
+          <Search size={15} aria-hidden />
+          <input
+            value={auditQuery}
+            onChange={(event) => setAuditQuery(event.target.value)}
+            placeholder="Search actor, action, record, or correlation ID…"
+            aria-label="Search audit events"
+          />
+          {auditQuery ? (
+            <button type="button" className="search-clear" aria-label="Clear search" onClick={() => setAuditQuery("")}>
+              <X size={14} />
+            </button>
+          ) : null}
+        </label>
         <table className="audit-grid" role="table" aria-label="Sanitized audit events">
           <thead>
             <tr>
@@ -995,16 +1034,30 @@ export function ExecutiveView({
             </tr>
           </thead>
           <tbody>
-            {events.map((event, index) => (
-              <tr key={event.id} className={index % 2 === 0 ? "audit-row-even" : "audit-row-odd"}>
-                <td>{event.actor}</td>
-                <td><strong title={event.action}>{auditActionLabel(event.action)}</strong></td>
-                <td><code className="audit-record-id">{event.targetRecord}</code></td>
-                <td><code className="audit-corr-id">{event.correlationId}</code></td>
-              </tr>
-            ))}
+            {pagedEvents.length === 0 ? (
+              <tr><td colSpan={4} className="audit-empty">No audit events match “{auditQuery}”.</td></tr>
+            ) : (
+              pagedEvents.map((event, index) => (
+                <tr key={event.id} className={index % 2 === 0 ? "audit-row-even" : "audit-row-odd"}>
+                  <td>{event.actor}</td>
+                  <td><strong title={event.action}>{auditActionLabel(event.action)}</strong></td>
+                  <td><code className="audit-record-id">{event.targetRecord}</code></td>
+                  <td><code className="audit-corr-id">{event.correlationId}</code></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
+        {auditTotal > 0 ? (
+          <Pager
+            total={auditTotal}
+            page={auditSafePage}
+            pageSize={auditPageSize}
+            pageSizes={[10, 25, 50]}
+            onPage={setAuditPage}
+            onPageSize={setAuditPageSize}
+          />
+        ) : null}
       </div>
       <button type="button" className="primary action-button" onClick={onOpenReview}>Open release packet <ChevronRight size={16} /></button>
     </section>

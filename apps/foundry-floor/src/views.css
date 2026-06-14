@@ -1392,6 +1392,40 @@ summary em,
 }
 
 /* Proper audit grid table — column-aligned, monospace IDs, zebra rows */
+.audit-search {
+  align-items: center;
+  background: color-mix(in oklch, var(--panel) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--steel);
+  display: flex;
+  gap: var(--sm, 8px);
+  margin-bottom: var(--md, 12px);
+  padding: 8px 12px;
+}
+
+.audit-search input {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  flex: 1;
+  font-size: 0.85rem;
+  min-width: 0;
+  outline: 0;
+}
+
+.light-mode .audit-search {
+  background: oklch(0.985 0.006 205);
+  border-color: oklch(0.84 0.026 210);
+}
+
+.audit-empty {
+  color: var(--steel);
+  font-size: 0.84rem;
+  padding: 18px 10px;
+  text-align: center;
+}
+
 .audit-grid {
   border-collapse: collapse;
   font-size: 0.84rem;

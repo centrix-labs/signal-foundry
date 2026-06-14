@@ -767,8 +767,12 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
         {activeView === "executive" ? (
           <ExecutiveView
             selected={selected}
+            records={records}
             reviews={dashboardData.reviewItems}
             events={dashboardData.auditEvents}
+            activity={dashboardData.mcpActivity}
+            packets={dashboardData.releasePackets}
+            riskReviews={dashboardData.riskReviews}
             onOpenReview={() => setActiveView("review")}
           />
         ) : null}
