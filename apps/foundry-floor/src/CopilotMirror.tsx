@@ -1,4 +1,5 @@
-import { Send, AlertTriangle, ShieldCheck, PackageCheck, Sparkles, X, FileText } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Lock, AlertTriangle, ShieldCheck, PackageCheck, Sparkles, X, FileText } from "lucide-react";
 import type { Capability, CopilotCheckpoint, RiskLevel } from "@signal-foundry/shared";
 import { capabilities, type CopilotTurn } from "./data";
 import { McpActivityRail, ReleasePacketDrawer, RiskGate } from "./panels";
@@ -256,7 +257,7 @@ function AssistantBubble({
   avatarClass: string;
 }) {
   return (
-    <div className="chat-row chat-row--assistant">
+    <div className="chat-row chat-row--assistant" data-jump={turn.card?.kind}>
       <div className={`chat-avatar ${avatarClass}`} aria-label={avatarLabel}>
         {avatarLabel === "Copilot" ? (
           <Sparkles size={13} aria-hidden />
@@ -305,7 +306,7 @@ function LiveCheckpointBubble({ checkpoint }: { checkpoint: CopilotCheckpoint })
   const evidence = [checkpoint.stage, checkpoint.sourceTool].filter(Boolean).join(" / ");
 
   return (
-    <div className="chat-row chat-row--assistant">
+    <div className="chat-row chat-row--assistant" data-jump={checkpoint.stage}>
       <div className={`chat-avatar ${avatarClass}`} aria-label={avatarLabel}>
         {checkpoint.speaker === "copilot" ? (
           <Sparkles size={13} aria-hidden />
@@ -330,63 +331,29 @@ function LiveCheckpointBubble({ checkpoint }: { checkpoint: CopilotCheckpoint })
 }
 
 // ---------------------------------------------------------------------------
-// Composer — inert demo input
+// Read-only footer — replaces the (misleading) inert chat composer. States the
+// surface is a read-only audit replay and offers jump chips to the governed
+// outputs already in the thread.
 // ---------------------------------------------------------------------------
-const SUGGESTION_CHIPS = [
-  "Show release packet",
-  "Explain risk controls",
-  "List approved sources"
-];
+type JumpChip = { label: string; target: string };
 
-function ChatComposer() {
+function ReadOnlyBar({ chips, onJump }: { chips: JumpChip[]; onJump: (target: string) => void }) {
   return (
-    <div className="chat-composer" role="group" aria-label="Message Copilot (demo — input disabled)">
-      <div className="chat-composer-chips">
-        {SUGGESTION_CHIPS.map((chip) => (
-          <button
-            key={chip}
-            type="button"
-            className="chat-chip"
-            disabled
-            aria-disabled="true"
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
-      <div className="chat-composer-row">
-        <input
-          className="chat-composer-input"
-          type="text"
-          placeholder="Message Copilot…"
-          disabled
-          aria-disabled="true"
-          aria-label="Message input (disabled in demo)"
-        />
-        <span
-          style={{
-            alignSelf: "center",
-            color: "var(--steel)",
-            fontSize: "0.7rem",
-            fontStyle: "italic",
-            opacity: 0.72,
-            paddingInlineEnd: "6px",
-            whiteSpace: "nowrap"
-          }}
-          aria-hidden
-        >
-          Demo · read-only
-        </span>
-        <button
-          type="button"
-          className="chat-send-btn"
-          disabled
-          aria-disabled="true"
-          aria-label="Send message (disabled in demo)"
-        >
-          <Send size={15} aria-hidden />
-        </button>
-      </div>
+    <div className="chat-readonly" role="group" aria-label="Read-only audit view">
+      <p className="chat-readonly-note">
+        <Lock size={13} aria-hidden />
+        Read-only audit view — this mirrors what Copilot did. It doesn't run Copilot.
+      </p>
+      {chips.length > 0 && (
+        <div className="chat-readonly-chips">
+          <span className="chat-readonly-chips-label">Jump to</span>
+          {chips.map((chip) => (
+            <button key={chip.target} type="button" className="chat-jump-chip" onClick={() => onJump(chip.target)}>
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -400,19 +367,119 @@ function formatTime(value: string) {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
+// ---------------------------------------------------------------------------
+// Conversation model — every governed Copilot session the operator can review.
+// Live checkpoints are grouped by sessionId; the demo path is one rich session.
+// ---------------------------------------------------------------------------
+type MirrorSession = {
+  id: string;
+  title: string;
+  subtitle: string;
+  recordId?: string;
+  kind: "live" | "demo";
+  checkpoints: CopilotCheckpoint[];
+  turns: GoldenTurn[];
+};
+
+const CARD_KIND_LABELS: Record<GoldenCardType, string> = {
+  recommendation: "Recommendation",
+  "risk-verdict": "Risk verdict",
+  "proposal-receipt": "Proposal receipt",
+  "release-packet": "Release packet"
+};
+
+function humanizeStage(stage: string): string {
+  const spaced = stage.replace(/[_.]+/g, " ").trim();
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+function buildSessions(
+  hasLiveCheckpoints: boolean,
+  checkpoints: readonly CopilotCheckpoint[],
+  records: readonly Capability[]
+): MirrorSession[] {
+  if (hasLiveCheckpoints) {
+    const groups = new Map<string, CopilotCheckpoint[]>();
+    for (const cp of checkpoints) {
+      const arr = groups.get(cp.sessionId) ?? [];
+      arr.push(cp);
+      groups.set(cp.sessionId, arr);
+    }
+    const sessions = [...groups.entries()].map(([sessionId, cps]) => {
+      const sorted = [...cps].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      const first = sorted[0]!;
+      const recordId = sorted.find((c) => c.relatedRecordId)?.relatedRecordId;
+      const record = recordId ? records.find((r) => r.id === recordId) : undefined;
+      const steps = sorted.length;
+      return {
+        id: sessionId,
+        title: record?.title ?? "Governed Copilot session",
+        subtitle: `${formatTime(first.createdAt)} · ${steps} step${steps > 1 ? "s" : ""}`,
+        recordId,
+        kind: "live" as const,
+        checkpoints: sorted,
+        turns: []
+      };
+    });
+    // Most recently active session first.
+    return sessions.sort((a, b) => {
+      const aLast = a.checkpoints[a.checkpoints.length - 1]?.createdAt ?? "";
+      const bLast = b.checkpoints[b.checkpoints.length - 1]?.createdAt ?? "";
+      return bLast.localeCompare(aLast);
+    });
+  }
+  // Demo path: one rich scripted session carrying the governance cards.
+  const demoRecord = records.find((r) => /renewal brief/i.test(r.title)) ?? records[0];
+  return [
+    {
+      id: "demo-session",
+      title: demoRecord?.title ?? "Renewal Brief Generator",
+      subtitle: "Demo session · 9:18 AM",
+      recordId: demoRecord?.id,
+      kind: "demo",
+      checkpoints: [],
+      turns: GOLDEN_CONVERSATION
+    }
+  ];
+}
+
+function chipsForSession(session: MirrorSession): JumpChip[] {
+  if (session.kind === "demo") {
+    const seen = new Set<GoldenCardType>();
+    const chips: JumpChip[] = [];
+    for (const turn of session.turns) {
+      if (turn.card && !seen.has(turn.card.kind)) {
+        seen.add(turn.card.kind);
+        chips.push({ label: CARD_KIND_LABELS[turn.card.kind], target: turn.card.kind });
+      }
+    }
+    return chips;
+  }
+  const seen = new Set<string>();
+  const chips: JumpChip[] = [];
+  for (const cp of session.checkpoints) {
+    if (cp.speaker !== "operator" && !seen.has(cp.stage)) {
+      seen.add(cp.stage);
+      chips.push({ label: humanizeStage(cp.stage), target: cp.stage });
+    }
+  }
+  return chips;
+}
+
 export function CopilotMirror({
-  turns,
   checkpoints = [],
   isLiveCheckpointSource = false,
+  isLive = false,
   selected,
   records = capabilities,
   selectedId,
   onSelect,
   onHide
 }: {
-  turns: CopilotTurn[];
+  turns?: CopilotTurn[];
   checkpoints?: readonly CopilotCheckpoint[];
   isLiveCheckpointSource?: boolean;
+  isLive?: boolean;
   selected: Capability;
   records?: readonly Capability[];
   selectedId: string;
@@ -420,13 +487,41 @@ export function CopilotMirror({
   onHide: () => void;
 }) {
   const hasLiveCheckpoints = isLiveCheckpointSource && checkpoints.length > 0;
+  const threadRef = useRef<HTMLDivElement | null>(null);
 
-  // Derive golden turns from the `turns` prop when present; otherwise use the
-  // built-in scripted conversation. We cast CopilotTurn[] to GoldenTurn[] since
-  // the shapes are compatible for the text-only bubbles (no card).
-  const goldenTurns: GoldenTurn[] = turns.length > 0
-    ? turns.map((t) => ({ speaker: t.speaker, time: t.time, text: t.text }))
-    : GOLDEN_CONVERSATION;
+  const sessions = useMemo(
+    () => buildSessions(hasLiveCheckpoints, checkpoints, records),
+    [hasLiveCheckpoints, checkpoints, records]
+  );
+
+  const [activeSessionId, setActiveSessionId] = useState<string>(sessions[0]?.id ?? "");
+  const activeSession = sessions.find((s) => s.id === activeSessionId) ?? sessions[0];
+
+  function selectSession(session: MirrorSession) {
+    setActiveSessionId(session.id);
+    if (session.recordId && records.some((r) => r.id === session.recordId)) {
+      onSelect(session.recordId);
+    }
+  }
+
+  // Jump chips scroll the matching governed output into view and flash it.
+  function jumpTo(target: string) {
+    const thread = threadRef.current;
+    if (!thread) {
+      return;
+    }
+    const el = thread.querySelector<HTMLElement>(`[data-jump="${CSS.escape(target)}"]`);
+    if (!el) {
+      return;
+    }
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("is-jump-flash");
+    // reflow so the animation can replay on repeat clicks
+    void el.offsetWidth;
+    el.classList.add("is-jump-flash");
+  }
+
+  const chips = activeSession ? chipsForSession(activeSession) : [];
 
   return (
     <section className="mirror-layout">
@@ -435,7 +530,7 @@ export function CopilotMirror({
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Copilot Mirror</p>
-            <h2>Microsoft 365 Copilot proof</h2>
+            <h2>Governed record of a Copilot session</h2>
           </div>
           <div className="mirror-actions">
             <span className={`status-pill ${hasLiveCheckpoints ? "approved" : "pending"}`}>
@@ -455,13 +550,33 @@ export function CopilotMirror({
           This surface represents Signal Foundry's audit output, not a live Copilot session.
         </div>
 
+        {/* Conversation switcher */}
+        <div className="mirror-sessions" role="tablist" aria-label="Governed conversations">
+          <span className="mirror-sessions-label">Conversation{sessions.length > 1 ? `s · ${sessions.length}` : ""}</span>
+          <div className="mirror-sessions-list">
+            {sessions.map((session) => (
+              <button
+                key={session.id}
+                type="button"
+                role="tab"
+                aria-selected={session.id === activeSession?.id}
+                className={`mirror-session ${session.id === activeSession?.id ? "is-active" : ""}`}
+                onClick={() => selectSession(session)}
+              >
+                <span className="mirror-session-title">{session.title}</span>
+                <span className="mirror-session-sub">{session.subtitle}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Thread */}
-        <div className="chat-thread" aria-label="Conversation thread">
-          {hasLiveCheckpoints
-            ? checkpoints.map((cp) => (
+        <div className="chat-thread" aria-label="Conversation thread" ref={threadRef}>
+          {activeSession?.kind === "live"
+            ? activeSession.checkpoints.map((cp) => (
                 <LiveCheckpointBubble key={cp.id} checkpoint={cp} />
               ))
-            : goldenTurns.map((turn, idx) => {
+            : (activeSession?.turns ?? []).map((turn, idx) => {
                 if (turn.speaker === "operator") {
                   return <OperatorBubble key={idx} turn={turn} />;
                 }
@@ -477,13 +592,13 @@ export function CopilotMirror({
               })}
         </div>
 
-        {/* Composer */}
-        <ChatComposer />
+        {/* Read-only footer */}
+        <ReadOnlyBar chips={chips} onJump={jumpTo} />
       </div>
 
       {/* Right pane: Foundry context panels */}
       <div className="foundry-mirror">
-        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} compact />
+        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} compact />
         <RiskGate selected={selected} />
         <McpActivityRail compact />
         <ReleasePacketDrawer selected={selected} />

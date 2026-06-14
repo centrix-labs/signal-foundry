@@ -656,6 +656,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
             turns={copilotTurns}
             checkpoints={dashboardData.copilotCheckpoints}
             isLiveCheckpointSource={dashboardData.copilotCheckpoints.length > 0}
+            isLive={dashboardData.isLive}
             selected={selected}
             records={visibleRecords}
             selectedId={selectedId}
