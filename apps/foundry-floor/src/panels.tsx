@@ -48,10 +48,17 @@ function reviewStatusLabel(status: string): string {
 
 export function LeftRail({
   activeView,
-  onView
+  onView,
+  selectedRecord,
+  isLive = false,
+  refreshedAt
 }: {
   activeView: string;
   onView: (view: string) => void;
+  /** The currently-focused workflow; drives the live Active context panel. */
+  selectedRecord?: Capability;
+  isLive?: boolean;
+  refreshedAt?: string;
 }) {
   const groups = [
     ["Overview", [
@@ -95,9 +102,26 @@ export function LeftRail({
       </nav>
       <div className="context-card">
         <span>Active context</span>
-        <strong>Customer Success Renewals</strong>
-        <small>Production synthetic tenant</small>
-        <small>SOC 2 + ISO 27001 controls</small>
+        {selectedRecord ? (
+          <>
+            <strong>{selectedRecord.title}</strong>
+            <small>{selectedRecord.department} · {selectedRecord.role}</small>
+            <small className="context-risk">
+              <span className={`dot ${selectedRecord.riskLevel}`} />
+              {riskLabels[selectedRecord.riskLevel]} risk · {statusLabels[selectedRecord.status]}
+            </small>
+          </>
+        ) : (
+          <>
+            <strong>Customer Success Renewals</strong>
+            <small>Production synthetic tenant</small>
+            <small>SOC 2 + ISO 27001 controls</small>
+          </>
+        )}
+        <small className="context-freshness">
+          <span className={`context-live-dot ${isLive ? "is-live" : ""}`} aria-hidden="true" />
+          {isLive ? "Live registry" : "Sample data"}{refreshedAt && relativeTime(refreshedAt) ? ` · updated ${relativeTime(refreshedAt)}` : ""}
+        </small>
       </div>
     </aside>
   );

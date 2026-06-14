@@ -172,6 +172,36 @@ nav button.active,
   padding: var(--lg, 16px);
 }
 
+.context-risk,
+.context-freshness {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+}
+
+.context-risk .dot {
+  flex: 0 0 auto;
+}
+
+.context-freshness {
+  border-top: 1px solid var(--line);
+  margin-top: 2px;
+  padding-top: 8px;
+}
+
+.context-live-dot {
+  background: var(--steel);
+  border-radius: 50%;
+  flex: 0 0 auto;
+  height: 7px;
+  width: 7px;
+}
+
+.context-live-dot.is-live {
+  background: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--green) 22%, transparent);
+}
+
 .workspace {
   align-content: start;
   display: grid;

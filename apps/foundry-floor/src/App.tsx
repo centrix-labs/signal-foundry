@@ -596,6 +596,9 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
       <LeftRail
         activeView={activeView}
         onView={(view) => setActiveView(view as ViewKey)}
+        selectedRecord={records.find((record) => record.id === selectedId)}
+        isLive={dashboardData.isLive}
+        refreshedAt={dashboardData.refreshedAt}
       />
       <div className="workspace">
         <TopBar
