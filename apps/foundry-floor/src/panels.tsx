@@ -81,7 +81,14 @@ export function LeftRail({
   return (
     <aside className="left-rail" aria-label="Foundry navigation">
       <div className="brand-lockup">
-        <span className="forge-mark">SF</span>
+        <span className="forge-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" role="img" aria-label="Signal Foundry">
+            <rect x="2.5" y="2.5" width="35" height="35" rx="11" fill="none" stroke="currentColor" strokeWidth="2.4" />
+            <path d="M7 20 H13 l2.5 -6 4 12 3 -8 2 2 H33" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="25.5" cy="20" r="3.3" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <circle cx="25.5" cy="20" r="1.15" fill="currentColor" />
+          </svg>
+        </span>
         <div>
           <strong>Signal Foundry</strong>
           <small>Summarized | Forged | Approved</small>

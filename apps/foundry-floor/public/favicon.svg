@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0b1117"/>
-  <path d="M32 8 52 20v24L32 56 12 44V20Z" fill="none" stroke="#00d1c2" stroke-width="4"/>
-  <path d="M24 22h16v6h-9v8h9v6H24z" fill="#e8f4f2"/>
-  <path d="M8 32h14m20 0h14" stroke="#ffb12e" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="Signal Foundry">
+  <rect width="40" height="40" rx="11" fill="#0b1117"/>
+  <rect x="1.4" y="1.4" width="37.2" height="37.2" rx="9.8" fill="none" stroke="#1fd9c8" stroke-opacity="0.35" stroke-width="1.2"/>
+  <path d="M7 20 H13 l2.5 -6 4 12 3 -8 2 2 H33" fill="none" stroke="#1fd9c8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="25.5" cy="20" r="3.4" fill="none" stroke="#1fd9c8" stroke-width="1.9"/>
+  <circle cx="25.5" cy="20" r="1.2" fill="#1fd9c8"/>
 </svg>

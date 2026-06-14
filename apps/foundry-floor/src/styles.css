@@ -99,14 +99,20 @@ summary:focus-visible {
 }
 
 .forge-mark {
-  border: 1px solid color-mix(in oklch, var(--teal) 65%, transparent);
+  align-items: center;
   color: var(--teal);
-  display: grid;
-  font-weight: 800;
+  display: inline-flex;
   height: 38px;
-  place-items: center;
+  justify-content: center;
   width: 38px;
-  clip-path: polygon(50% 0, 96% 24%, 96% 76%, 50% 100%, 4% 76%, 4% 24%);
+}
+
+.forge-mark svg {
+  display: block;
+}
+
+.light-mode .forge-mark {
+  color: oklch(0.56 0.12 188);
 }
 
 nav,
