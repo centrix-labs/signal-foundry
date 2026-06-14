@@ -9,7 +9,7 @@ REDIRECT_URI="${SIGNAL_FOUNDRY_OAUTH_REDIRECT_URI:-}"
 
 usage() {
   cat <<USAGE
-Usage: bash /Users/mattgraves/Documents/hackathon-enterprise/scripts/register-entra-app.sh [--plan|--apply]
+Usage: bash scripts/register-entra-app.sh [--plan|--apply]
 
 Environment:
   SIGNAL_FOUNDRY_OAUTH_REDIRECT_URI  Required for --apply.

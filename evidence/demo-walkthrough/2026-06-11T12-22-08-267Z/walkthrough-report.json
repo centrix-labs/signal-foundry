@@ -106,8 +106,8 @@
     }
   ],
   "artifacts": {
-    "directory": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z",
-    "desktopVideo": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-desktop-walkthrough.webm",
-    "mobileVideo": "/Users/mattgraves/Development/hackathon-enterprise/evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-mobile-mirror.webm"
+    "directory": "evidence/demo-walkthrough/2026-06-11T12-22-08-267Z",
+    "desktopVideo": "evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-desktop-walkthrough.webm",
+    "mobileVideo": "evidence/demo-walkthrough/2026-06-11T12-22-08-267Z/signal-foundry-mobile-mirror.webm"
   }
 }

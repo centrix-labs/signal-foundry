@@ -32,7 +32,7 @@ RUN_TYPECHECK="1"
 
 usage() {
   cat <<USAGE
-Usage: bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh [--plan|--what-if|--apply] [--build-image] [--deploy-static] [--skip-typecheck]
+Usage: bash scripts/deploy.sh [--plan|--what-if|--apply] [--build-image] [--deploy-static] [--skip-typecheck]
 
 Default mode is --plan. It validates local assets and prints the Azure commands
 without mutating Azure resources.
@@ -83,8 +83,8 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ "$SUBSCRIPTION_ID" != "YOUR-AZURE-SUBSCRIPTION-ID" ]]; then
-  echo "Refusing to continue: expected Signal Foundry subscription, got $SUBSCRIPTION_ID" >&2
+if [[ "$SUBSCRIPTION_ID" == "YOUR-AZURE-SUBSCRIPTION-ID" ]]; then
+  echo "Set SIGNAL_FOUNDRY_AZURE_SUBSCRIPTION_ID to your Azure subscription ID before deploying." >&2
   exit 1
 fi
 

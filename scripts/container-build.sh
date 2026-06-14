@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/Users/mattgraves/Development/hackathon-enterprise"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 IMAGE_NAME="${SIGNAL_FOUNDRY_LOCAL_IMAGE:-signal-foundry-mcp:local}"
 
 docker build \
