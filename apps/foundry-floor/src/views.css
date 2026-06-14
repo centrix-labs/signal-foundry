@@ -218,9 +218,140 @@ summary em,
   padding: 9px;
 }
 
+.artifact-list .artifact-row {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: var(--sm, 8px);
+  padding: 9px 11px;
+  text-align: start;
+  transition: border-color 120ms ease, background 120ms ease;
+  width: 100%;
+}
+
+.artifact-list .artifact-row:hover,
+.artifact-list .artifact-row:focus-visible {
+  border-color: var(--teal);
+}
+
+.artifact-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.artifact-row-text small {
+  color: var(--steel);
+}
+
 .release-packet ul {
   margin-block-end: 0;
   padding-inline-start: 20px;
+}
+
+.artifact-dialog-overlay {
+  align-items: center;
+  background: oklch(0.18 0.03 220 / 0.55);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: var(--lg, 16px);
+  position: fixed;
+  z-index: 60;
+}
+
+.artifact-dialog {
+  background: var(--surface, oklch(0.16 0.02 220));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: min(80vh, 720px);
+  max-width: 640px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.light-mode .artifact-dialog {
+  background: oklch(0.99 0.004 205);
+}
+
+.artifact-dialog-head {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: var(--md, 12px);
+  justify-content: space-between;
+  padding: var(--lg, 16px);
+}
+
+.artifact-dialog-head h3 {
+  margin: 2px 0 4px;
+}
+
+.artifact-provenance {
+  color: var(--steel);
+}
+
+.artifact-dialog-close {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  padding: 6px;
+}
+
+.artifact-dialog-close:hover,
+.artifact-dialog-close:focus-visible {
+  border-color: var(--teal);
+}
+
+.artifact-dialog-summary {
+  color: var(--steel);
+  margin: 0;
+  padding: var(--md, 12px) var(--lg, 16px) 0;
+}
+
+.artifact-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lg, 16px);
+  overflow-y: auto;
+  padding: var(--md, 12px) var(--lg, 16px) var(--lg, 16px);
+}
+
+.artifact-section h4 {
+  margin: 0 0 6px;
+}
+
+.artifact-section ul {
+  margin: 0;
+  padding-inline-start: 18px;
+}
+
+.artifact-section li {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+}
+
+.artifact-flow {
+  background: oklch(0.97 0.008 205);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: oklch(0.30 0.03 210);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-x: auto;
+  padding: var(--md, 12px);
+  white-space: pre;
 }
 
 .mcp-rail article {
@@ -815,6 +946,7 @@ summary em,
 .light-mode .mcp-rail article,
 .light-mode details,
 .light-mode .artifact-list div,
+.light-mode .artifact-list .artifact-row,
 .light-mode .packet-grid div,
 .light-mode .judge-stage-card dl div,
 .light-mode .copilot-bridge li,

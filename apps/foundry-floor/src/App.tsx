@@ -119,8 +119,6 @@ function useDemoState(baseRecords: readonly Capability[]) {
   function approveRelease() {
     setSelectedStatus("released");
     setDecisionState("released");
-    setDemoStep(judgeStages.length - 1);
-    setActiveView((view) => (view === "deck" ? view : "judge"));
   }
 
   return {
