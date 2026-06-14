@@ -27,7 +27,7 @@ export type StoryState = {
   sealed: boolean;
 };
 
-export type StoryEdgeKey = "role-forge" | "forge-gate" | "gate-workflow";
+export type StoryEdgeKey = "role-forge" | "forge-gate" | "gate-workflow" | "gate-seal";
 
 // Lane anchors mirror data.ts atlasNodes x-positions so the hero lines up with
 // the fixed backdrop: signals 12, roles 32, forge 52, gate 67, workflow 82.
@@ -89,10 +89,9 @@ export function storyStateForStage(stageKey: string, _record: Capability | undef
         heroPos: RELEASE_SEAL,
         variant: "sealed",
         heroVisible: true,
-        // No story connector here — the sealed node sits below the live lane
-        // (whose amber gate edges already show the approval fan), so nothing
-        // crosses a node.
-        activeEdges: [],
+        // Link the sealed release back to the Risk Gate so it reads as a
+        // governed workflow that passed the gate, not a node floating free.
+        activeEdges: ["gate-seal"],
         gateFiring: false,
         sealed: true
       };

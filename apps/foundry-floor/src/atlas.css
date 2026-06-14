@@ -577,7 +577,8 @@
 
 /* Risk-gate and approval paths are amber; the pre-gate signal flow stays teal. */
 .story-edge.forge-gate,
-.story-edge.gate-workflow {
+.story-edge.gate-workflow,
+.story-edge.gate-seal {
   stroke: var(--amber);
 }
 

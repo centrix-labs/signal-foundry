@@ -143,6 +143,8 @@ const STORY_FORGE = { x: 52, y: 49 };
 const STORY_GATE = { x: 67, y: 49 };
 const STORY_WORKFLOW = { x: 82, y: 49 };
 const STORY_ROLE = { x: 32, y: 34 };
+// Mirrors RELEASE_SEAL in story.tsx — where the hero seals below the lane.
+const STORY_SEAL = { x: 82, y: 98 };
 
 function storyEdgePath(key: StoryState["activeEdges"][number]): string {
   switch (key) {
@@ -152,6 +154,8 @@ function storyEdgePath(key: StoryState["activeEdges"][number]): string {
       return pathFor({ ...STORY_FORGE, id: "f", label: "", kind: "department" }, { ...STORY_GATE, id: "g", label: "", kind: "risk_gate" });
     case "gate-workflow":
       return pathFor({ ...STORY_GATE, id: "g", label: "", kind: "risk_gate" }, { ...STORY_WORKFLOW, id: "w", label: "", kind: "workflow" });
+    case "gate-seal":
+      return pathFor({ ...STORY_GATE, id: "g", label: "", kind: "risk_gate" }, { ...STORY_SEAL, id: "seal", label: "", kind: "workflow" });
     default:
       return "";
   }
