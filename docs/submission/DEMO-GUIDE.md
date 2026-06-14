@@ -13,6 +13,13 @@ workflows. Copilot Chat agent (discovery + proposals) → external MCP server
   - **Demo login (pre-filled on the page): `alex.kim@asteriadynamics.com` / `signal-foundry-2026`** — just click **Launch Console**. (Synthetic tenant; credential is intentionally public.)
 - The MCP/API server is an internal Azure Container Apps endpoint (not publicly documented); the portal and the Copilot agent call it. Judges interact via the portal above.
 
+> **Operator note (before a judging session):** the live registry is shared
+> synthetic state. To start from a clean baseline, reset it as admin against
+> your MCP base URL:
+> `curl -s -X POST "$SIGNAL_FOUNDRY_AZURE_MCP_URL/admin/reset" -H "x-sf-actor-id: actor-dana"`.
+> Data is synthetic and cost is capped (scale-to-zero, `maxReplicas=1`), so a
+> reset is the only prep the open demo boundary needs.
+
 ## Run locally (Node 20+)
 
 ```bash
