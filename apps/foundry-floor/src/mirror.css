@@ -86,8 +86,8 @@
   overflow-y: auto;
 }
 
-/* The single panel fills the scroll area. */
-.mirror-panel > .panel,
+/* The Atlas fills the scroll area; other panels size to their content and let
+   .mirror-panel scroll (so long Risk Gate / trail content never overflows). */
 .mirror-panel > .atlas-panel {
   height: 100%;
 }

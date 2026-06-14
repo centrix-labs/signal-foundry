@@ -734,10 +734,39 @@ export function ReviewQueue({
   const selected = activeReview?.capability ?? records.find((item) => item.id === selectedId) ?? records[0] ?? capabilities[0];
   const pendingCount = records.filter((item) => ["proposed", "risk_scored", "in_review"].includes(item.status)).length;
 
+  // Filter the queue by review status (default Pending) + paginate it.
+  const [statusFilter, setStatusFilter] = useState<string>("pending");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [reviewTab, setReviewTab] = useState<"risk" | "packet" | "mcp">("risk");
+  useEffect(() => {
+    setPage(0);
+  }, [statusFilter]);
+
+  const filteredReviews = statusFilter === "all"
+    ? renderableReviews
+    : renderableReviews.filter((entry) => entry.item.status === statusFilter);
+  const total = filteredReviews.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(page, pageCount - 1);
+  const shownReviews = filteredReviews.slice(safePage * pageSize, safePage * pageSize + pageSize);
+
   function selectReview(reviewId: string, capabilityId: string) {
     setActiveReviewId(reviewId);
     onSelect(capabilityId);
   }
+
+  const REVIEW_FILTERS = [
+    ["pending", "Pending"],
+    ["approved", "Approved"],
+    ["rejected", "Rejected"],
+    ["all", "All"]
+  ] as const;
+  const REVIEW_TABS = [
+    ["risk", "Risk Gate"],
+    ["packet", "Release Packet"],
+    ["mcp", "MCP Activity"]
+  ] as const;
 
   return (
     <section className="review-queue-layout">
@@ -749,41 +778,88 @@ export function ReviewQueue({
           </div>
           <span className="status-pill pending">{pendingCount} pending</span>
         </div>
-        {renderableReviews.length === 0 ? (
-          <p className="review-empty">No reviews in the queue — every proposal is approved or released.</p>
+        <div className="review-filter" role="group" aria-label="Filter by status">
+          {REVIEW_FILTERS.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              className={statusFilter === key ? "is-active" : ""}
+              aria-pressed={statusFilter === key}
+              onClick={() => setStatusFilter(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="review-list-scroll">
+          {total === 0 ? (
+            <p className="review-empty">No {statusFilter === "all" ? "" : `${statusFilter} `}reviews in the queue.</p>
+          ) : (
+            shownReviews.map(({ item, capability }) => (
+              <button
+                key={item.id}
+                type="button"
+                className={activeReview?.item.id === item.id ? "selected" : ""}
+                aria-pressed={activeReview?.item.id === item.id}
+                onClick={() => selectReview(item.id, capability.id)}
+              >
+                <PackageCheck size={22} />
+                <span>
+                  <strong>{capability.title}</strong>
+                  <small>{capability.version} · {capability.owner}</small>
+                  <small>{capability.department}</small>
+                </span>
+                <em className={`review-status ${item.status}`}>{reviewStatusLabel(item.status)}</em>
+              </button>
+            ))
+          )}
+        </div>
+        {total > 0 ? (
+          <Pager
+            total={total}
+            page={safePage}
+            pageSize={pageSize}
+            pageSizes={[5, 10, 20]}
+            onPage={setPage}
+            onPageSize={(size) => {
+              setPageSize(size);
+              setPage(0);
+            }}
+          />
         ) : null}
-        {renderableReviews.map(({ item, capability }) => (
-          <button
-            key={item.id}
-            type="button"
-            className={activeReview?.item.id === item.id ? "selected" : ""}
-            aria-pressed={activeReview?.item.id === item.id}
-            onClick={() => selectReview(item.id, capability.id)}
-          >
-            <PackageCheck size={22} />
-            <span>
-              <strong>{capability.title}</strong>
-              <small>{capability.version} · {capability.owner}</small>
-              <small>{capability.department}</small>
-            </span>
-            <em className={`review-status ${item.status}`}>{reviewStatusLabel(item.status)}</em>
-          </button>
-        ))}
       </div>
-      <div className="decision-pane">
-        <div className={`decision-banner ${decisionState}`}>
-          <strong>{decisionCopy[decisionState].title}</strong>
-          <span>{decisionCopy[decisionState].body}</span>
+      <div className="review-detail">
+        <div className="review-decision">
+          <div className={`decision-banner ${decisionState}`}>
+            <strong>{decisionCopy[decisionState].title}</strong>
+            <span>{decisionCopy[decisionState].body}</span>
+          </div>
+          <div className="approval-bar">
+            <button type="button" className={decisionState === "changes_requested" ? "chosen" : ""} aria-pressed={decisionState === "changes_requested"} onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
+            <button type="button" className={decisionState === "saved" ? "chosen" : ""} aria-pressed={decisionState === "saved"} onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
+            <button type="button" className={`primary ${decisionState === "released" ? "chosen" : ""}`} aria-pressed={decisionState === "released"} onClick={onApproveRelease}><Check size={18} /> {decisionState === "released" ? "Released" : "Approve & Release"}</button>
+          </div>
         </div>
-        <div className="approval-bar">
-          <button type="button" className={decisionState === "changes_requested" ? "chosen" : ""} aria-pressed={decisionState === "changes_requested"} onClick={onRequestChanges}><AlertTriangle size={17} /> Request Changes</button>
-          <button type="button" className={decisionState === "saved" ? "chosen" : ""} aria-pressed={decisionState === "saved"} onClick={onSaveForLater}><ClipboardCheck size={17} /> Save for Later</button>
-          <button type="button" className={`primary ${decisionState === "released" ? "chosen" : ""}`} aria-pressed={decisionState === "released"} onClick={onApproveRelease}><Check size={18} /> {decisionState === "released" ? "Released" : "Approve & Release"}</button>
+        <div className="mirror-tabs" role="tablist" aria-label="Review detail">
+          {REVIEW_TABS.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={reviewTab === key}
+              className={reviewTab === key ? "is-active" : ""}
+              onClick={() => setReviewTab(key)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-        <RiskGate selected={selected} riskReviews={riskReviews} />
+        <div className="mirror-panel">
+          {reviewTab === "risk" ? <RiskGate selected={selected} riskReviews={riskReviews} /> : null}
+          {reviewTab === "packet" ? <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} /> : null}
+          {reviewTab === "mcp" ? <McpActivityRail compact paginate items={activity} /> : null}
+        </div>
       </div>
-      <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
-      <McpActivityRail compact items={activity} />
     </section>
   );
 }

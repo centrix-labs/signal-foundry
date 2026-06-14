@@ -131,8 +131,8 @@ nav,
 
 nav button,
 .filter-stack button,
-.capability-list button,
-.review-list button,
+.capability-list-scroll button,
+.review-list-scroll button,
 .demo-controls button,
 .approval-bar button,
 .text-link,
@@ -154,8 +154,8 @@ nav button,
 }
 
 nav button.active,
-.capability-list button.selected,
-.review-list button.selected {
+.capability-list-scroll button.selected,
+.review-list-scroll button.selected {
   background: color-mix(in oklch, var(--teal) 12%, var(--graphite-3));
   border-color: color-mix(in oklch, var(--teal) 50%, transparent);
   color: oklch(0.96 0.024 195);
@@ -533,8 +533,8 @@ nav button.active,
   line-height: 1.2;
 }
 
-.capability-list button,
-.review-list button {
+.capability-list-scroll button,
+.review-list-scroll button {
   border-color: var(--line);
   border-radius: 7px;
   justify-content: flex-start;
@@ -546,27 +546,22 @@ nav button.active,
   gap: var(--md, 12px);
 }
 
-.capability-list button {
+.capability-list-scroll button {
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr);
   column-gap: 10px;
   row-gap: 3px;
-  min-height: 58px;
   text-align: left;
 }
 
-.capability-list button + button {
-  margin-top: 4px;
-}
-
-.capability-list strong {
+.capability-list-scroll strong {
   grid-column: 2;
   line-height: 1.25;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
-.capability-list small {
+.capability-list-scroll small {
   grid-column: 2;
   line-height: 1.25;
 }

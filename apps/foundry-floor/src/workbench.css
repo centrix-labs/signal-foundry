@@ -19,12 +19,12 @@
 }
 
 .capability-list-scroll {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--sm, 8px);
   flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
-  align-content: start;
   padding-right: 2px;
 }
 
