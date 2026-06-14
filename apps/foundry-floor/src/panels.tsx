@@ -46,6 +46,51 @@ function reviewStatusLabel(status: string): string {
   return REVIEW_STATUS_LABELS[status] ?? status.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+// Reusable rows-per-page pager (Show 5/10/20 etc. + range + prev/next).
+export function Pager({
+  total,
+  page,
+  pageSize,
+  pageSizes,
+  onPage,
+  onPageSize
+}: {
+  total: number;
+  page: number;
+  pageSize: number;
+  pageSizes: readonly number[];
+  onPage: (page: number) => void;
+  onPageSize: (size: number) => void;
+}) {
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(page, pageCount - 1);
+  const first = total === 0 ? 0 : safePage * pageSize + 1;
+  const last = Math.min(total, safePage * pageSize + pageSize);
+  return (
+    <div className="pager">
+      <div className="pager-sizes" role="group" aria-label="Rows per page">
+        <span>Show</span>
+        {pageSizes.map((size) => (
+          <button
+            key={size}
+            type="button"
+            className={pageSize === size ? "is-active" : ""}
+            aria-pressed={pageSize === size}
+            onClick={() => onPageSize(size)}
+          >
+            {size}
+          </button>
+        ))}
+      </div>
+      <div className="pager-nav">
+        <span className="pager-range">{first}–{last} of {total}</span>
+        <button type="button" aria-label="Previous page" disabled={safePage === 0} onClick={() => onPage(safePage - 1)}>‹</button>
+        <button type="button" aria-label="Next page" disabled={safePage >= pageCount - 1} onClick={() => onPage(safePage + 1)}>›</button>
+      </div>
+    </div>
+  );
+}
+
 export function LeftRail({
   activeView,
   onView,
@@ -290,6 +335,12 @@ export function CapabilityList({
   selectedId: string;
   onSelect: (id: string) => void;
 }) {
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(0);
+  const total = records.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(page, pageCount - 1);
+  const shown = records.slice(safePage * pageSize, safePage * pageSize + pageSize);
   return (
     <section className="panel capability-list" aria-label="Capability records">
       <div className="panel-heading">
@@ -298,16 +349,32 @@ export function CapabilityList({
           <h2>Capability records</h2>
         </div>
       </div>
-      {records.length === 0 && (
-        <p className="empty-state">No records match the current search and filters.</p>
-      )}
-      {records.map((item) => (
-        <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}>
-          <span className={`dot ${item.riskLevel}`} />
-          <strong>{item.title}</strong>
-          <small>{statusLabels[item.status]} / {riskLabels[item.riskLevel]} risk · {item.owner}</small>
-        </button>
-      ))}
+      <div className="capability-list-scroll">
+        {total === 0 ? (
+          <p className="empty-state">No records match the current search.</p>
+        ) : (
+          shown.map((item) => (
+            <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}>
+              <span className={`dot ${item.riskLevel}`} />
+              <strong>{item.title}</strong>
+              <small>{statusLabels[item.status]} / {riskLabels[item.riskLevel]} risk · {item.owner}</small>
+            </button>
+          ))
+        )}
+      </div>
+      {total > 0 ? (
+        <Pager
+          total={total}
+          page={safePage}
+          pageSize={pageSize}
+          pageSizes={[5, 10, 20]}
+          onPage={setPage}
+          onPageSize={(size) => {
+            setPageSize(size);
+            setPage(0);
+          }}
+        />
+      ) : null}
     </section>
   );
 }

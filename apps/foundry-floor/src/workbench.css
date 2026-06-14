@@ -1,21 +1,68 @@
-/* Foundry Floor workbench: master-detail, record-scoped */
+/* Foundry Floor workbench: master-detail, record-scoped. Fixed-height so the
+   registry list and the detail panel scroll internally instead of the page. */
 .workbench-grid {
   display: grid;
   gap: var(--lg, 16px);
   grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: calc(100dvh - 150px);
+  min-height: 480px;
   position: relative;
 }
 
-.workbench-detail {
+/* Registry list: header + scrollable rows + pager. */
+.workbench-grid > .capability-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.capability-list-scroll {
   display: grid;
-  gap: var(--md, 12px);
+  gap: var(--sm, 8px);
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
   align-content: start;
+  padding-right: 2px;
+}
+
+.workbench-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md, 12px);
+  min-height: 0;
   min-width: 0;
+  overflow: hidden;
+}
+
+/* Hero + tabs stay fixed; the active panel scrolls inside .mirror-panel. */
+.workbench-detail > .workbench-header,
+.workbench-detail > .mirror-tabs {
+  flex: 0 0 auto;
 }
 
 .workbench-header {
   display: grid;
   gap: var(--md, 12px);
+}
+
+@media (max-width: 1180px) {
+  .workbench-grid {
+    height: auto;
+    min-height: 0;
+  }
+
+  .workbench-grid > .capability-list,
+  .workbench-detail {
+    overflow: visible;
+  }
+
+  .capability-list-scroll {
+    flex: none;
+    max-height: 50vh;
+  }
 }
 
 .workbench-title {

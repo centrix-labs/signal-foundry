@@ -613,7 +613,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
             setSearchQuery("");
           }}
         />
-        {["judge", "floor"].includes(activeView) ? (
+        {activeView === "judge" ? (
         <div className="demo-controls">
           <span>Stage {demoStep + 1} of {judgeStages.length} — {judgeStages[demoStep]?.label ?? "Discover"} · {statusLabels[selected.status]}</span>
           <span className={`data-source ${dashboardData.isLive ? "live" : "fallback"}`}>

@@ -63,6 +63,12 @@ export function Workbench({
   onOpenMirror: () => void;
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [detailTab, setDetailTab] = useState<"risk" | "packet" | "trail">("risk");
+  const DETAIL_TABS = [
+    ["risk", "Risk Gate"],
+    ["packet", "Release Packet"],
+    ["trail", "Record Trail"]
+  ] as const;
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -109,21 +115,39 @@ export function Workbench({
             <button type="button" className="text-link" onClick={onOpenMirror}>Open mirror <ChevronRight size={14} /></button>
           </div>
         </section>
-        <RiskGate selected={selected} riskReviews={riskReviews} />
-        <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} />
-        <section className="panel workbench-trail" aria-label="This record's trail">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Record trail</p>
-              <h2>What happened to this capability</h2>
-            </div>
-          </div>
-          {scopedActivity.length === 0 ? (
-            <p className="empty-state">No recorded activity for this record yet.</p>
-          ) : (
-            <McpActivityRail compact items={scopedActivity.slice(0, 4)} />
-          )}
-        </section>
+        <div className="mirror-tabs" role="tablist" aria-label="Record detail">
+          {DETAIL_TABS.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={detailTab === key}
+              className={detailTab === key ? "is-active" : ""}
+              onClick={() => setDetailTab(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="mirror-panel">
+          {detailTab === "risk" ? <RiskGate selected={selected} riskReviews={riskReviews} /> : null}
+          {detailTab === "packet" ? <ReleasePacketDrawer selected={selected} packets={packets} reviews={reviews} /> : null}
+          {detailTab === "trail" ? (
+            <section className="panel workbench-trail" aria-label="This record's trail">
+              <div className="panel-heading">
+                <div>
+                  <p className="eyebrow">Record trail</p>
+                  <h2>What happened to this capability</h2>
+                </div>
+              </div>
+              {scopedActivity.length === 0 ? (
+                <p className="empty-state">No recorded activity for this record yet.</p>
+              ) : (
+                <McpActivityRail compact items={scopedActivity} />
+              )}
+            </section>
+          ) : null}
+        </div>
       </div>
       {drawerOpen ? (
         <>
