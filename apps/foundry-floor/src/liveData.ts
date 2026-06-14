@@ -109,7 +109,7 @@ function buildDashboardData(snapshot: RegistrySnapshot | null, liveError?: strin
   }
 
   const proposalRecords = snapshot.proposals.map((proposal) => projectProposal(proposal, snapshot.riskReviews));
-  const records = clean(mergeById(proposalRecords, snapshot.capabilities, sampleCapabilities));
+  const records = collapseLifecycle(clean(mergeById(proposalRecords, snapshot.capabilities, sampleCapabilities)));
   const reviewItems = clean(mergeById(withSyntheticReviewItems(snapshot.reviewItems, snapshot.proposals, snapshot.riskReviews), sampleReviewItems));
 
   return {
@@ -132,6 +132,44 @@ const DEMO_NOISE = /checkpoint smoke|advisory probe|smoke test/i;
 
 function clean<T>(items: readonly T[]): T[] {
   return items.filter((item) => !DEMO_NOISE.test(JSON.stringify(item)));
+}
+
+// A workflow can appear twice — once as its proposal and once as the released
+// capability minted from it (whose id is "cap-" + the proposal id). Collapse
+// each such pair onto the record at the furthest lifecycle stage so the same
+// workflow never shows up twice across the Atlas, Floor, Pipeline, and Queue.
+const LIFECYCLE_RANK: Record<string, number> = {
+  released: 6,
+  approved_for_release: 5,
+  approved: 5,
+  in_review: 4,
+  risk_scored: 3,
+  proposed: 2,
+  blocked: 1
+};
+
+function lifecycleKey(record: Capability): string {
+  return record.id.startsWith("cap-") ? record.id.slice(4) : record.id;
+}
+
+function collapseLifecycle(records: readonly Capability[]): Capability[] {
+  const byKey = new Map<string, Capability>();
+  for (const record of records) {
+    const key = lifecycleKey(record);
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, record);
+      continue;
+    }
+    const rank = (item: Capability) => LIFECYCLE_RANK[item.status] ?? 0;
+    const isFurther =
+      rank(record) > rank(existing) ||
+      (rank(record) === rank(existing) && record.updatedAt > existing.updatedAt);
+    if (isFurther) {
+      byKey.set(key, record);
+    }
+  }
+  return [...byKey.values()];
 }
 
 function projectProposal(proposal: CapabilityProposal, riskReviews: RiskReview[]): Capability {
