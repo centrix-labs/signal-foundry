@@ -330,11 +330,11 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
   // the live workflow lane and drag-to-pan stay exactly as before.
   const storyState = judgeMode ? story : undefined;
 
-  // The header chips are live filters on the full-size Atlas surfaces (standard
-  // Atlas and the Guided Story); the compact mirror keeps simple status chips.
-  // The story hero is a separate overlay, so filtering the backdrop workflow
-  // lane never disturbs the choreography.
-  const interactive = !compact;
+  // Domain/risk filters live on the standalone Atlas only. The Guided Story is a
+  // scripted narrative — filtering its specific nodes would orphan the story's
+  // hero node — so it shows a read-only Live status instead. The compact mirror
+  // keeps its simple status chips.
+  const interactive = !judgeMode && !compact;
   const [domainFilter, setDomainFilter] = useState<string>("all");
   const [riskFilter, setRiskFilter] = useState<string>("all");
   const domains = useMemo(
@@ -438,6 +438,10 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
                 { value: "blocked", label: "Blocked" }
               ]}
             />
+          </div>
+        ) : judgeMode ? (
+          <div className="atlas-filters">
+            <span className={`atlas-live ${isLive ? "is-live" : "is-snapshot"}`}>{isLive ? "Live" : "Snapshot"}</span>
           </div>
         ) : (
           <div className="segmented">

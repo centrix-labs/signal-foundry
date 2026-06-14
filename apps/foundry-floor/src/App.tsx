@@ -6,8 +6,7 @@ import {
   LeftRail,
   McpActivityRail,
   ReviewQueue,
-  TopBar,
-  type RecordFilters
+  TopBar
 } from "./panels";
 import { CopilotMirror } from "./CopilotMirror";
 import { JudgeDeck } from "./JudgeDeck";
@@ -473,7 +472,6 @@ export function App() {
 function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
   const dashboardData = useDashboardData();
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState<RecordFilters>({});
   const [showTour, setShowTour] = useState(false);
 
   // First-time visitors get the walkthrough automatically; afterwards it lives
@@ -543,17 +541,13 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
     setAutoPlaying(true);
   };
 
-  const pendingStatuses: readonly string[] = ["proposed", "risk_scored", "in_review"];
   const query = searchQuery.trim().toLowerCase();
-  const visibleRecords = records.filter((item) => {
-    return (!query
-        || item.title.toLowerCase().includes(query)
-        || item.role.toLowerCase().includes(query)
-        || item.department.toLowerCase().includes(query))
-      && (!filters.role || item.role === filters.role)
-      && (!filters.department || item.department === filters.department)
-      && (!filters.pendingOnly || pendingStatuses.includes(item.status));
-  });
+  const visibleRecords = records.filter((item) =>
+    !query
+    || item.title.toLowerCase().includes(query)
+    || item.role.toLowerCase().includes(query)
+    || item.department.toLowerCase().includes(query)
+  );
   const nextActionLabel = nextStageLabel(demoStep);
 
   return (
@@ -561,9 +555,6 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
       <LeftRail
         activeView={activeView}
         onView={(view) => setActiveView(view as ViewKey)}
-        records={records}
-        filters={filters}
-        onFiltersChange={setFilters}
       />
       <div className="workspace">
         <TopBar

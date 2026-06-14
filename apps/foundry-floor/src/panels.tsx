@@ -31,12 +31,6 @@ import { signOutUrl, type StaticWebAppUser } from "./auth";
 import { decisionCopy } from "./decisionText";
 import { proofSentence } from "./proofText";
 
-export interface RecordFilters {
-  role?: string;
-  department?: string;
-  pendingOnly?: boolean;
-}
-
 // Friendly labels for review-item statuses; humanizes any unmapped enum value
 // so a raw "changes_requested" never reaches the UI.
 const REVIEW_STATUS_LABELS: Record<string, string> = {
@@ -53,16 +47,10 @@ function reviewStatusLabel(status: string): string {
 
 export function LeftRail({
   activeView,
-  onView,
-  records = capabilities,
-  filters = {},
-  onFiltersChange
+  onView
 }: {
   activeView: string;
   onView: (view: string) => void;
-  records?: readonly Capability[];
-  filters?: RecordFilters;
-  onFiltersChange?: (filters: RecordFilters) => void;
 }) {
   const groups = [
     ["Overview", [
@@ -81,12 +69,6 @@ export function LeftRail({
       ["executive", "Light Executive"]
     ]]
   ] as const;
-  const roles = [...new Set(records.map((item) => item.role))];
-  const departments = [...new Set(records.map((item) => item.department))];
-
-  function toggle(change: RecordFilters) {
-    onFiltersChange?.({ ...filters, ...change });
-  }
 
   return (
     <aside className="left-rail" aria-label="Foundry navigation">
@@ -116,41 +98,6 @@ export function LeftRail({
         <small>Production synthetic tenant</small>
         <small>SOC 2 + ISO 27001 controls</small>
       </div>
-      {["floor", "atlas", "pipeline", "review"].includes(activeView) ? (
-      <div className="filter-stack">
-        <span>Filters</span>
-        {roles.map((role) => (
-          <button
-            key={role}
-            type="button"
-            className={filters.role === role ? "active" : ""}
-            aria-pressed={filters.role === role}
-            onClick={() => toggle({ role: filters.role === role ? undefined : role })}
-          >
-            Role: {role}
-          </button>
-        ))}
-        {departments.map((department) => (
-          <button
-            key={department}
-            type="button"
-            className={filters.department === department ? "active" : ""}
-            aria-pressed={filters.department === department}
-            onClick={() => toggle({ department: filters.department === department ? undefined : department })}
-          >
-            Department: {department}
-          </button>
-        ))}
-        <button
-          type="button"
-          className={filters.pendingOnly ? "active" : ""}
-          aria-pressed={Boolean(filters.pendingOnly)}
-          onClick={() => toggle({ pendingOnly: filters.pendingOnly ? undefined : true })}
-        >
-          Stage: Pending Review
-        </button>
-      </div>
-      ) : null}
     </aside>
   );
 }
