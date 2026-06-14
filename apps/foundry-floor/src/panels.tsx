@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -9,6 +9,7 @@ import {
   HelpCircle,
   Lock,
   PackageCheck,
+  Search,
   ShieldCheck,
   ShieldX,
   Sparkles,
@@ -106,12 +107,16 @@ export function TopBar({
   user,
   searchQuery = "",
   onSearchChange,
-  onStartTour
+  onStartTour,
+  records = [],
+  onJumpToRecord
 }: {
   user?: StaticWebAppUser;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onStartTour?: () => void;
+  records?: readonly Capability[];
+  onJumpToRecord?: (id: string) => void;
 }) {
   const displayName = user?.userDetails || "Avery M.";
   const initials = displayName
@@ -121,21 +126,111 @@ export function TopBar({
     .map((part) => part[0]?.toUpperCase())
     .join("") || "AM";
 
+  // Global search: from any screen, find a workflow and jump to it. Matching is
+  // over title / role / department / status so a judge can land on a record fast.
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const trimmed = searchQuery.trim().toLowerCase();
+  const matches = trimmed
+    ? records.filter((record) =>
+        record.title.toLowerCase().includes(trimmed) ||
+        record.role.toLowerCase().includes(trimmed) ||
+        record.department.toLowerCase().includes(trimmed) ||
+        statusLabels[record.status].toLowerCase().includes(trimmed)
+      ).slice(0, 7)
+    : [];
+  const showResults = searchOpen && trimmed.length > 0 && Boolean(onJumpToRecord);
+
+  useEffect(() => {
+    if (!searchOpen) {
+      return;
+    }
+    function onDocClick(event: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [searchOpen]);
+
+  function jumpTo(id: string) {
+    onJumpToRecord?.(id);
+    setSearchOpen(false);
+  }
+
   return (
     <header className="top-bar">
       <div>
         <p className="eyebrow">Operations Command Center</p>
         <h1>Foundry Floor</h1>
       </div>
-      <label className="search-box">
-        <span>Search</span>
-        <input
-          value={searchQuery}
-          onChange={(event) => onSearchChange?.(event.target.value)}
-          placeholder="renewals, risk gates, releases"
-          aria-label="Search synthetic records"
-        />
-      </label>
+      <div className="search-box-wrap" ref={searchRef}>
+        <label className="search-box">
+          <Search size={15} aria-hidden />
+          <input
+            value={searchQuery}
+            onChange={(event) => {
+              onSearchChange?.(event.target.value);
+              setSearchOpen(true);
+            }}
+            onFocus={() => setSearchOpen(true)}
+            placeholder="renewals, risk gates, releases"
+            aria-label="Search workflows"
+            role="combobox"
+            aria-expanded={showResults}
+            aria-controls="search-results"
+          />
+          {searchQuery ? (
+            <button
+              type="button"
+              className="search-clear"
+              aria-label="Clear search"
+              onClick={() => {
+                onSearchChange?.("");
+                setSearchOpen(false);
+              }}
+            >
+              <X size={14} />
+            </button>
+          ) : null}
+        </label>
+        {showResults ? (
+          <ul className="search-results" id="search-results" role="listbox" aria-label="Search results">
+            {matches.length === 0 ? (
+              <li className="search-empty">No workflows match “{searchQuery}”.</li>
+            ) : (
+              matches.map((record) => (
+                <li key={record.id}>
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={false}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => jumpTo(record.id)}
+                  >
+                    <span className={`dot ${record.riskLevel}`} />
+                    <span className="search-result-text">
+                      <strong>{record.title}</strong>
+                      <small>{statusLabels[record.status]} · {record.department} · {record.owner}</small>
+                    </span>
+                    <ChevronRight size={14} aria-hidden />
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        ) : null}
+      </div>
       <div className="top-bar-right">
         {onStartTour ? (
           <button type="button" className="tour-help-btn" onClick={onStartTour} aria-label="Open the walkthrough">

@@ -562,6 +562,12 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onStartTour={() => setShowTour(true)}
+          records={records}
+          onJumpToRecord={(id) => {
+            setSelectedId(id);
+            setActiveView("floor");
+            setSearchQuery("");
+          }}
         />
         {["judge", "floor"].includes(activeView) ? (
         <div className="demo-controls">
