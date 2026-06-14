@@ -176,7 +176,11 @@ nav button.active,
   align-content: start;
   display: grid;
   gap: var(--lg, 16px);
+  max-width: 100%;
   min-width: 0;
+  /* Guarantee the main content never spills past the viewport, no matter how a
+     child's min-content sizes — clip rather than create a horizontal scrollbar. */
+  overflow-x: clip;
   padding: var(--lg, 16px);
 }
 
@@ -184,7 +188,8 @@ nav button.active,
   align-items: center;
   display: grid;
   gap: var(--lg, 16px);
-  grid-template-columns: 1fr minmax(280px, 540px) 1fr;
+  /* Shrinkable tracks so the bar never forces the page wider than the window. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 540px) auto;
 }
 
 .top-bar-right {
@@ -382,6 +387,7 @@ nav button.active,
 }
 
 .panel-heading {
+  flex-wrap: wrap;
   gap: var(--lg, 16px);
   justify-content: space-between;
   margin-block-end: var(--lg, 16px);
@@ -499,6 +505,13 @@ nav button.active,
 
 .stage-card small {
   color: var(--steel);
+}
+
+/* In the compact (non-factory) pipeline the columns are narrow, so keep the
+   stage titles on a single line for a consistent, no-wrap card grid. */
+.release-pipeline:not(.factory) .stage-card span {
+  font-size: 0.86rem;
+  white-space: nowrap;
 }
 
 .stage-card.pending {

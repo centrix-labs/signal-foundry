@@ -370,15 +370,21 @@
 
 .segmented {
   display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
   gap: var(--sm, 8px);
+  justify-content: flex-end;
 }
 
 .segmented span {
+  align-items: center;
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--steel);
+  display: inline-flex;
   font-size: 0.76rem;
-  padding: 5px 9px;
+  padding: 4px 11px;
+  white-space: nowrap;
 }
 
 @keyframes pulseFlow {

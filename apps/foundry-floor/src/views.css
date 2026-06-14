@@ -361,7 +361,19 @@ summary em,
 .atlas-view {
   display: grid;
   gap: var(--lg, 16px);
-  grid-template-columns: minmax(420px, 1fr) minmax(360px, 0.78fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+}
+
+/* Atlas graph (col 1) and the MCP audit rail (col 2) sit side by side; the
+   Release Pipeline is a horizontal stage flow, so it spans the full width
+   below them where its cards have room to breathe. */
+.atlas-view {
+  align-items: start;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+}
+
+.atlas-view > .release-pipeline {
+  grid-column: 1 / -1;
 }
 
 .copilot-chat {
@@ -412,7 +424,6 @@ summary em,
   padding: var(--lg, 16px);
 }
 
-.atlas-support,
 .pipeline-view,
 .pipeline-columns,
 .executive-view,
@@ -960,9 +971,10 @@ summary em,
   display: inline-flex;
   font-size: 0.64rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   padding: 2px 7px;
   text-transform: uppercase;
+  white-space: nowrap;
   width: fit-content;
 }
 
