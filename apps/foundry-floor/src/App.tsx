@@ -409,7 +409,7 @@ function AtlasView({
   return (
     <div className="atlas-view">
       <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} />
-      <McpActivityRail compact items={activity} />
+      <McpActivityRail compact items={activity} limit={8} highlightId={selectedId} />
       {/* The pipeline is a horizontal stage flow, so it spans the full width
           below the two column panels rather than cramping into the right rail. */}
       <ReleasePipeline selected={findCapability(selectedId, records)} />

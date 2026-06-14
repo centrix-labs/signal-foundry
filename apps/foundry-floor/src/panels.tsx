@@ -438,8 +438,47 @@ export function ReleasePacketDrawer({
   );
 }
 
-export function McpActivityRail({ compact = false, proofMode = false, items = mcpActivity }: { compact?: boolean; proofMode?: boolean; items?: readonly McpActivity[] }) {
-  const visibleItems = compact ? items.slice(0, 4) : items;
+// Strip a "cap-" lifecycle prefix so a released capability's id still matches the
+// proposal id recorded on its MCP activity.
+function normalizeRecordId(id: string): string {
+  return id.replace(/^cap-/, "");
+}
+
+function relativeTime(timestamp: string): string {
+  const then = new Date(timestamp).getTime();
+  if (Number.isNaN(then)) {
+    return "";
+  }
+  const diffMs = Date.now() - then;
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  return `${days}d ago`;
+}
+
+export function McpActivityRail({
+  compact = false,
+  proofMode = false,
+  items = mcpActivity,
+  limit,
+  highlightId
+}: {
+  compact?: boolean;
+  proofMode?: boolean;
+  items?: readonly McpActivity[];
+  /** Max rows to show (defaults to 4 when compact, else all). */
+  limit?: number;
+  /** When set, MCP calls for this record are accented as "related". */
+  highlightId?: string;
+}) {
+  // Newest governed calls first so the rail reads as a live trace.
+  const sorted = [...items].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  const max = limit ?? (compact ? 4 : sorted.length);
+  const visibleItems = sorted.slice(0, max);
+  const scope = highlightId ? normalizeRecordId(highlightId) : null;
   return (
     <aside className={`panel mcp-rail ${compact ? "compact" : ""} ${proofMode ? "proof-timeline" : ""}`} aria-label={proofMode ? "MCP Evidence Timeline" : "MCP Activity"}>
       <div className="panel-heading">
@@ -449,16 +488,22 @@ export function McpActivityRail({ compact = false, proofMode = false, items = mc
         </div>
         <span className="live-dot">Live</span>
       </div>
-      {visibleItems.map((item) => (
-        <article key={item.id} className={item.status}>
-          <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
-          <div>
-            <strong>{item.action}</strong>
-            <p>{proofMode ? proofSentence(item) : item.summary}</p>
-            <small>{item.actor} / {item.correlationId}</small>
-          </div>
-        </article>
-      ))}
+      {visibleItems.map((item) => {
+        const related = scope !== null && normalizeRecordId(item.recordId) === scope;
+        return (
+          <article key={item.id} className={`${item.status} ${related ? "is-related" : ""}`}>
+            <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
+            <div>
+              <strong>{item.action}</strong>
+              <p>{proofMode ? proofSentence(item) : item.summary}</p>
+              <small>{item.actor} / {item.correlationId}</small>
+            </div>
+            {!proofMode && relativeTime(item.timestamp) ? (
+              <time className="activity-time" dateTime={item.timestamp}>{relativeTime(item.timestamp)}</time>
+            ) : null}
+          </article>
+        );
+      })}
     </aside>
   );
 }

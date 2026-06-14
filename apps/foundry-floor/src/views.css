@@ -231,7 +231,26 @@ summary em,
   grid-template-columns: auto 1fr;
   min-width: 0;
   padding: var(--md, 12px);
+  position: relative;
   width: 100%;
+}
+
+/* MCP calls for the workflow selected in the Atlas read as "related". */
+.mcp-rail article.is-related {
+  border-color: color-mix(in oklch, var(--teal) 55%, var(--line));
+  box-shadow: inset 3px 0 0 var(--teal);
+}
+
+.activity-time {
+  color: var(--steel);
+  font-size: 0.66rem;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.light-mode .activity-time {
+  color: oklch(0.5 0.04 220);
 }
 
 .mcp-rail {
