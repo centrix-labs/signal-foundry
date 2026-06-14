@@ -10,6 +10,7 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 
 ## Live Demo
 
+- **Demo video (3 min):** _add YouTube/Vimeo link here_
 - Foundry Floor: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
   - Demo login (pre-filled): `alex.kim@asteriadynamics.com` / `signal-foundry-2026` → **Launch Console**
 - MCP/API: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io`

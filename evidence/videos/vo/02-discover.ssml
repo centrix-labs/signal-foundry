@@ -1,8 +1,0 @@
-<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
- <voice name="en-US-AndrewMultilingualNeural">
-  <prosody rate="-4%">
-   It starts in Microsoft 365 Copilot Chat.<break time="280ms"/> I ask for governed ideas for my role<break time="220ms"/> — and it's grounded in my real work context through Work I Q:<break time="200ms"/> my team,<break time="140ms"/> my meetings<break time="200ms"/> — summaries only,<break time="160ms"/> never raw content.<break time="320ms"/>
-   On the right, the Foundry Floor shows those same signals flowing through the forge in real time.
-  </prosody>
- </voice>
-</speak>
