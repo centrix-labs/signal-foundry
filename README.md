@@ -23,6 +23,12 @@ Architecture: [docs/submission/architecture.md](docs/submission/architecture.md)
 Install and sideload guide: [docs/submission/INSTALL.md](docs/submission/INSTALL.md).
 Live Copilot checkpoint spec: [docs/submission/live-copilot-checkpoints-spec.md](docs/submission/live-copilot-checkpoints-spec.md).
 
+The interactive architecture view inside Foundry Floor — tiers and trust
+boundary on top, the most-connected node (MCP Server) and its labeled data
+flows below:
+
+![Signal Foundry in-app architecture: five tiers with the summary-only trust boundary, and the MCP Server node showing its seven labeled connections](docs/submission/architecture-inapp.png)
+
 ```mermaid
 flowchart LR
     USER["Employee / Reviewer"] --> DA["M365 Copilot Chat\nSignal Foundry declarative agent\nPeople + Meetings grounding\nAdaptive Card responses"]
