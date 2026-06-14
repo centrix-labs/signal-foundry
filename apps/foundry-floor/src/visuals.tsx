@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Capability } from "@signal-foundry/shared";
 import {
   atlasEdges,
@@ -254,8 +254,26 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
   // other surface (free-explore "atlas", workbench) `storyState` is undefined so
   // the live workflow lane and drag-to-pan stay exactly as before.
   const storyState = judgeMode ? story : undefined;
+
+  // The header chips become live filters on the standard Atlas (not the cinematic
+  // Guided Story, not the compact mirror). Domain + risk narrow the workflow lane.
+  const interactive = !judgeMode && !compact;
+  const [domainFilter, setDomainFilter] = useState<string>("all");
+  const [riskFilter, setRiskFilter] = useState<string>("all");
+  const domains = useMemo(
+    () => [...new Set(records.map((record) => record.department).filter(Boolean))].sort(),
+    [records]
+  );
+  const filteredRecords = interactive
+    ? records.filter(
+        (record) =>
+          (domainFilter === "all" || record.department === domainFilter) &&
+          (riskFilter === "all" || record.riskLevel === riskFilter)
+      )
+    : records;
+
   const useLiveWorkflows = isLive && records.length > 0;
-  const workflowNodes = useLiveWorkflows ? liveWorkflowNodes(records) : SEEDED_WORKFLOW_NODES;
+  const workflowNodes = useLiveWorkflows ? liveWorkflowNodes(filteredRecords) : SEEDED_WORKFLOW_NODES;
   const displayNodes: PositionedNode[] = [...STRUCTURAL_NODES, ...workflowNodes];
   const displayEdges = [
     ...STRUCTURAL_EDGES,
@@ -322,11 +340,36 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
           <p className="eyebrow">Signal Atlas</p>
           <h2>Summary work signals forged into approved workflows</h2>
         </div>
-        <div className="segmented">
-          <span>Live</span>
-          <span>All domains</span>
-          <span>All risk levels</span>
-        </div>
+        {interactive ? (
+          <div className="atlas-filters">
+            <span className={`atlas-live ${isLive ? "is-live" : "is-snapshot"}`}>{isLive ? "Live" : "Snapshot"}</span>
+            <label className="atlas-filter">
+              <span className="visually-hidden">Filter by domain</span>
+              <select value={domainFilter} onChange={(event) => setDomainFilter(event.target.value)}>
+                <option value="all">All domains</option>
+                {domains.map((domain) => (
+                  <option key={domain} value={domain}>{domain}</option>
+                ))}
+              </select>
+            </label>
+            <label className="atlas-filter">
+              <span className="visually-hidden">Filter by risk level</span>
+              <select value={riskFilter} onChange={(event) => setRiskFilter(event.target.value)}>
+                <option value="all">All risk levels</option>
+                <option value="low">Low risk</option>
+                <option value="medium">Medium risk</option>
+                <option value="high">High risk</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </label>
+          </div>
+        ) : (
+          <div className="segmented">
+            <span>Live</span>
+            <span>All domains</span>
+            <span>All risk levels</span>
+          </div>
+        )}
       </div>
       <div className="atlas-canvas">
         {judgeMode ? (
