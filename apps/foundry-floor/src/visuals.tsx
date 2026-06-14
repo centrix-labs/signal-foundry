@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
 import type { Capability } from "@signal-foundry/shared";
 import {
   atlasEdges,
@@ -249,6 +250,80 @@ function computeViewBox(
   return `${(minX - pad).toFixed(1)} ${(minY - pad).toFixed(1)} ${(maxX - minX + pad * 2).toFixed(1)} ${(maxY - minY + pad + padBottom).toFixed(1)}`;
 }
 
+type SelectOption = { value: string; label: string };
+
+// On-brand dropdown — replaces the native <select> so the open menu matches the
+// app's light theme instead of the OS popup. Closes on outside-click / Escape.
+function AtlasSelect({ value, options, onChange, label }: {
+  value: string;
+  options: SelectOption[];
+  onChange: (value: string) => void;
+  label: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const current = options.find((option) => option.value === value) ?? options[0];
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    function onDocClick(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className="atlas-select" ref={ref}>
+      <button
+        type="button"
+        className="atlas-select-trigger"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={label}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <span>{current?.label}</span>
+        <ChevronDown size={13} aria-hidden />
+      </button>
+      {open ? (
+        <ul className="atlas-select-menu" role="listbox" aria-label={label}>
+          {options.map((option) => (
+            <li key={option.value}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={option.value === value}
+                className={option.value === value ? "is-selected" : ""}
+                onClick={() => {
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+              >
+                <span>{option.label}</span>
+                {option.value === value ? <Check size={13} aria-hidden /> : null}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 export function SignalAtlas({ records = [], selectedId, onSelect, compact = false, judgeMode = false, stageKey, isLive = false, story, heroLabel }: AtlasProps) {
   // The Guided Story choreography only ever runs inside Judge Mode. In every
   // other surface (free-explore "atlas", workbench) `storyState` is undefined so
@@ -343,25 +418,24 @@ export function SignalAtlas({ records = [], selectedId, onSelect, compact = fals
         {interactive ? (
           <div className="atlas-filters">
             <span className={`atlas-live ${isLive ? "is-live" : "is-snapshot"}`}>{isLive ? "Live" : "Snapshot"}</span>
-            <label className="atlas-filter">
-              <span className="visually-hidden">Filter by domain</span>
-              <select value={domainFilter} onChange={(event) => setDomainFilter(event.target.value)}>
-                <option value="all">All domains</option>
-                {domains.map((domain) => (
-                  <option key={domain} value={domain}>{domain}</option>
-                ))}
-              </select>
-            </label>
-            <label className="atlas-filter">
-              <span className="visually-hidden">Filter by risk level</span>
-              <select value={riskFilter} onChange={(event) => setRiskFilter(event.target.value)}>
-                <option value="all">All risk levels</option>
-                <option value="low">Low risk</option>
-                <option value="medium">Medium risk</option>
-                <option value="high">High risk</option>
-                <option value="blocked">Blocked</option>
-              </select>
-            </label>
+            <AtlasSelect
+              label="Filter by domain"
+              value={domainFilter}
+              onChange={setDomainFilter}
+              options={[{ value: "all", label: "All domains" }, ...domains.map((domain) => ({ value: domain, label: domain }))]}
+            />
+            <AtlasSelect
+              label="Filter by risk level"
+              value={riskFilter}
+              onChange={setRiskFilter}
+              options={[
+                { value: "all", label: "All risk levels" },
+                { value: "low", label: "Low risk" },
+                { value: "medium", label: "Medium risk" },
+                { value: "high", label: "High risk" },
+                { value: "blocked", label: "Blocked" }
+              ]}
+            />
           </div>
         ) : (
           <div className="segmented">

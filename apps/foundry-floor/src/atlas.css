@@ -422,40 +422,110 @@
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--green) 22%, transparent);
 }
 
-.atlas-filter select {
-  appearance: none;
-  background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%237c8896' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-position: right 10px center;
-  background-repeat: no-repeat;
+/* Custom dropdown so the open menu matches the app instead of the OS popup. */
+.atlas-select {
+  position: relative;
+}
+
+.atlas-select-trigger {
+  align-items: center;
+  background: transparent;
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--steel);
   cursor: pointer;
+  display: inline-flex;
   font-size: 0.76rem;
-  padding: 4px 28px 4px 12px;
+  gap: 6px;
+  padding: 4px 10px 4px 12px;
   transition: border-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
 }
 
-.atlas-filter select:hover {
-  border-color: color-mix(in oklch, var(--teal) 50%, var(--line));
+.atlas-select-trigger:hover,
+.atlas-select-trigger[aria-expanded="true"] {
+  border-color: color-mix(in oklch, var(--teal) 55%, var(--line));
   color: color-mix(in oklch, var(--teal) 60%, var(--steel));
 }
 
-.atlas-filter select:focus-visible {
-  border-color: var(--teal);
-  outline: 2px solid color-mix(in oklch, var(--teal) 55%, transparent);
-  outline-offset: 1px;
+.atlas-select-trigger svg {
+  flex: 0 0 auto;
+  transition: transform 150ms ease;
+}
+
+.atlas-select-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.atlas-select-menu {
+  background: color-mix(in oklch, var(--graphite-2) 92%, black);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+  list-style: none;
+  margin: 6px 0 0;
+  min-width: 100%;
+  padding: 4px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+}
+
+.atlas-select-menu li button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  color: var(--steel);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.78rem;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 7px 10px;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.atlas-select-menu li button:hover {
+  background: color-mix(in oklch, var(--teal) 16%, transparent);
+  color: oklch(0.96 0.012 205);
+}
+
+.atlas-select-menu li button.is-selected {
+  color: var(--teal);
+}
+
+.atlas-select-menu li button svg {
+  color: var(--teal);
+  flex: 0 0 auto;
 }
 
 .light-mode .atlas-live,
-.light-mode .atlas-filter select {
+.light-mode .atlas-select-trigger {
   border-color: oklch(0.84 0.026 210);
   color: oklch(0.4 0.04 220);
 }
 
-.light-mode .atlas-filter select option {
-  color: oklch(0.22 0.03 225);
+.light-mode .atlas-select-menu {
+  background: oklch(0.995 0.003 205);
+  border-color: oklch(0.84 0.026 210);
+  box-shadow: 0 12px 28px rgba(28, 42, 54, 0.16);
+}
+
+.light-mode .atlas-select-menu li button {
+  color: oklch(0.32 0.03 222);
+}
+
+.light-mode .atlas-select-menu li button:hover {
+  background: color-mix(in oklch, var(--teal) 14%, white);
+  color: oklch(0.18 0.04 222);
+}
+
+.light-mode .atlas-select-menu li button.is-selected {
+  color: oklch(0.34 0.1 190);
 }
 
 @keyframes pulseFlow {
