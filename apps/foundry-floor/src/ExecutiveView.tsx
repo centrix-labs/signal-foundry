@@ -60,9 +60,12 @@ export function ExecutiveView({
   onOpenReview?: () => void;
 }) {
   const governedWrites = activity.filter((item) => !EXECUTIVE_READ_ACTIONS.has(item.action) && item.status === "success").length;
-  // Pending reviews tied to a real record (matches the Review Queue's count).
+  // Count capabilities still awaiting a human decision, using the exact same rule
+  // as the Review Queue header (records in a pending-ish status) so the two
+  // surfaces always reconcile. Falls back to raw pending review items only when
+  // no records are supplied (sample-only render).
   const pendingReviews = records.length > 0
-    ? reviews.filter((item) => item.status === "pending" && records.some((record) => record.id === item.proposalId)).length
+    ? records.filter((item) => ["proposed", "risk_scored", "in_review"].includes(item.status)).length
     : reviews.filter((item) => item.status === "pending").length;
 
   // Audit View: search across all columns + paginate (10/25/50).
