@@ -407,6 +407,53 @@ describe("Signal Foundry MCP tools", () => {
     }
   });
 
+  it("gates write actions behind the optional shared write secret", async () => {
+    const store = testStore();
+    process.env["SIGNAL_FOUNDRY_WRITE_SECRET"] = "forge-write-secret";
+    const server = createServer(store).listen(0);
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected local test port.");
+    }
+    const baseUrl = `http://127.0.0.1:${address.port}`;
+    const proposalsBefore = store.read().proposals.length;
+    try {
+      // Write without the secret header is rejected before any mutation.
+      const blocked = await fetch(`${baseUrl}/tools/create_capability_proposal`, {
+        method: "POST",
+        headers: { "x-sf-actor-id": "actor-priya", "content-type": "application/json" },
+        body: JSON.stringify({ ...proposalBody("idem-secret-blocked"), correlationId: "corr-secret-blocked" })
+      });
+      expect(blocked.status).toBe(401);
+      expect(store.read().proposals).toHaveLength(proposalsBefore);
+
+      // Same write with the correct secret succeeds.
+      const allowed = await fetch(`${baseUrl}/tools/create_capability_proposal`, {
+        method: "POST",
+        headers: {
+          "x-sf-actor-id": "actor-priya",
+          "x-sf-write-secret": "forge-write-secret",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ ...proposalBody("idem-secret-allowed"), correlationId: "corr-secret-allowed" })
+      });
+      expect(allowed.status).toBe(200);
+      expect((await allowed.json()).ok).toBe(true);
+      expect(store.read().proposals).toHaveLength(proposalsBefore + 1);
+
+      // Reads are never gated by the write secret.
+      const read = await fetch(`${baseUrl}/tools/search_capabilities`, {
+        method: "POST",
+        headers: { "x-sf-actor-id": "actor-priya", "content-type": "application/json" },
+        body: JSON.stringify({ tenantId: demoScope.tenantId, projectId: demoScope.projectId })
+      });
+      expect(read.status).toBe(200);
+    } finally {
+      server.close();
+      delete process.env["SIGNAL_FOUNDRY_WRITE_SECRET"];
+    }
+  });
+
   it("serves MCP JSON-RPC tool list and tool calls", async () => {
     const store = testStore();
     const server = createServer(store).listen(0);

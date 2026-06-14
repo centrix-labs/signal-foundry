@@ -136,6 +136,48 @@ Expected behavior:
 - The Foundry Floor portal shows live registry and MCP activity updates after
   the agent calls the deployed MCP tools.
 
+## Deploy Your Own Instance
+
+The live demo points at our hosted MCP. To run Signal Foundry against your own
+Azure deployment instead — which is the recommended path for anything beyond
+trying the demo, because you control auth, data, and cost:
+
+1. **Provision infrastructure.** Copy the parameters template, set your
+   subscription, and deploy the Bicep stack. You get your own Container App
+   FQDN (the MCP base URL) plus storage, Key Vault, and the advisory model:
+
+   ```bash
+   cp infra/main.parameters.example.json infra/main.parameters.json   # edit resource names
+   export SIGNAL_FOUNDRY_AZURE_SUBSCRIPTION_ID=<your-subscription-id>
+   bash scripts/deploy.sh --apply --build-image --deploy-static
+   ```
+
+2. **Point the agent package at your MCP.** The Copilot package embeds the MCP
+   base URL. Replace our hosted FQDN with yours in these files before
+   repackaging, then sideload as above:
+
+   - `apps/copilot-agent/package/manifest.azure.json`
+   - `apps/copilot-agent/package/actions/signal-foundry-mcp.azure.json`
+   - `apps/copilot-agent/package/actions/signal-foundry-api.azure.json`
+   - `apps/copilot-agent/package/openapi/signal-foundry.azure.json`
+
+3. **Point the portal at your MCP.** Set `VITE_SIGNAL_FOUNDRY_API_BASE` to your
+   MCP base URL (see `apps/foundry-floor/.env.example`) and rebuild.
+
+### Securing a public deployment
+
+The hosted demo runs an open synthetic-auth boundary on purpose: actor identity
+is taken from an `x-sf-actor-id` header (or any bearer) so judges get repeatable,
+sign-in-free runs. A publicly reachable deployment of your own should harden two
+layers:
+
+- **Real OAuth.** Replace the synthetic boundary with tenant-owned Microsoft
+  Entra/OAuth — see `apps/copilot-agent/docs/entra-registration.md`.
+- **Write-secret gate.** Set `SIGNAL_FOUNDRY_WRITE_SECRET` on the MCP server
+  (store it in Key Vault). Every mutating tool call must then present a matching
+  `x-sf-write-secret` header; read tools stay open. Leave it empty to keep the
+  open demo posture.
+
 ## Validation Commands
 
 Use these commands to verify the submission artifacts:

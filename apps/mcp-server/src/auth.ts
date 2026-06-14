@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import type { Actor, McpAction, Role, SignalFoundryRegistry } from "@signal-foundry/shared";
 
 const readActions: McpAction[] = [
@@ -29,6 +30,27 @@ const reviewerActions: McpAction[] = [
 
 export function isWriteAction(action: McpAction) {
   return writeActions.includes(action);
+}
+
+/**
+ * Optional shared-secret gate for mutating tool calls. Opt-in via
+ * SIGNAL_FOUNDRY_WRITE_SECRET: when unset (the default and the demo posture)
+ * behavior is unchanged and writes stay open for repeatable judging. When set,
+ * every write action must present a matching `x-sf-write-secret` header, so a
+ * self-hosted deployment can publish its URL without exposing open writes.
+ * Read actions are never gated by this secret.
+ */
+export function writeSecretSatisfied(action: McpAction, provided: string | undefined) {
+  const required = process.env["SIGNAL_FOUNDRY_WRITE_SECRET"];
+  if (!required || !isWriteAction(action)) {
+    return true;
+  }
+  if (!provided) {
+    return false;
+  }
+  const presented = Buffer.from(provided);
+  const expected = Buffer.from(required);
+  return presented.length === expected.length && timingSafeEqual(presented, expected);
 }
 
 export function resolveActor(registry: SignalFoundryRegistry, actorId?: string): Actor | undefined {

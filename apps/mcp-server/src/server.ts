@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { mcpToolMetadata, type ToolName } from "@signal-foundry/shared";
-import { actorIdFromBearer, resolveActor } from "./auth";
+import { actorIdFromBearer, resolveActor, writeSecretSatisfied } from "./auth";
 import { RegistryStore } from "./store";
 import { executeTool, toolNames } from "./tools";
 
@@ -177,6 +177,10 @@ export function createServer(store = new RegistryStore()) {
         response.status(404).json(mcpError(id, "Unknown tool."));
         return;
       }
+      if (!writeSecretSatisfied(toolName, request.header("x-sf-write-secret"))) {
+        response.status(401).json(mcpError(id, "Write secret required."));
+        return;
+      }
       const result = await executeTool(store, toolName, params?.arguments ?? {}, actor);
       response.status(result.status >= 500 ? 500 : 200).json({
         jsonrpc: "2.0",
@@ -196,6 +200,10 @@ export function createServer(store = new RegistryStore()) {
     const toolName = request.params["toolName"] as ToolName;
     if (!toolNames.includes(toolName)) {
       response.status(404).json({ ok: false, error: { message: "Unknown tool." } });
+      return;
+    }
+    if (!writeSecretSatisfied(toolName, request.header("x-sf-write-secret"))) {
+      response.status(401).json({ ok: false, error: { message: "Write secret required." } });
       return;
     }
     const actorId = request.header("x-sf-actor-id") ?? actorIdFromBearer(request.header("authorization"));
