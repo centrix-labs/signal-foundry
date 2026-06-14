@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "_comment": "Template for a fresh deployment. Copy to main.parameters.json and replace the names below with your own. Names are project identity, not secrets; the subscription ID is supplied separately via SIGNAL_FOUNDRY_AZURE_SUBSCRIPTION_ID in scripts/deploy.sh and is never committed. Azure naming rules apply: containerRegistryName and storageAccountName must be globally unique, alphanumeric, lowercase, no hyphens.",
+  "parameters": {
+    "resourceGroupName": {
+      "value": "rg-<yourapp>-<env>"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "containerAppEnvironmentName": {
+      "value": "cae-<yourapp>"
+    },
+    "containerAppName": {
+      "value": "ca-<yourapp>-mcp"
+    },
+    "containerRegistryName": {
+      "value": "acr<yourapp>"
+    },
+    "staticWebAppName": {
+      "value": "swa-<yourapp>"
+    },
+    "storageAccountName": {
+      "value": "st<yourapp>"
+    },
+    "keyVaultName": {
+      "value": "kv-<yourapp>"
+    },
+    "logAnalyticsName": {
+      "value": "law-<yourapp>"
+    },
+    "applicationInsightsName": {
+      "value": "appi-<yourapp>"
+    },
+    "enableFoundryAdvisory": {
+      "value": true
+    },
+    "foundryAccountName": {
+      "value": "aif-<yourapp>"
+    },
+    "foundryDeploymentName": {
+      "value": "sf-advisory-gpt41-mini"
+    },
+    "foundryModelName": {
+      "value": "gpt-4.1-mini"
+    },
+    "foundryModelVersion": {
+      "value": "2025-04-14"
+    },
+    "foundryDeploymentSkuName": {
+      "value": "Standard"
+    },
+    "foundryDeploymentCapacity": {
+      "value": 1
+    },
+    "foundryApiVersion": {
+      "value": "2024-10-21"
+    },
+    "containerImage": {
+      "value": "acr<yourapp>.azurecr.io/signal-foundry-mcp:latest"
+    },
+    "containerPort": {
+      "value": 7071
+    },
+    "containerMaxReplicas": {
+      "value": 1
+    },
+    "logRetentionDays": {
+      "value": 30
+    },
+    "staticWebAppSkuName": {
+      "value": "Free"
+    },
+    "staticWebAppSkuTier": {
+      "value": "Free"
+    }
+  }
+}

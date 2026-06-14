@@ -57,13 +57,17 @@ npm --prefix . run smoke:local
 
 ## Azure Deployment
 
+To deploy your own instance, copy the parameters template and set your subscription:
+
 ```bash
+cp infra/main.parameters.example.json infra/main.parameters.json   # then edit the resource names
+export SIGNAL_FOUNDRY_AZURE_SUBSCRIPTION_ID=<your-subscription-id>  # never committed
 bash ./scripts/deploy.sh --plan
 bash ./scripts/deploy.sh --what-if
 bash ./scripts/deploy.sh --apply --build-image --deploy-static
 ```
 
-Before `--apply`, declare the blast radius and rollback path. The target resource group is `rg-signal-foundry-hackathon` in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.
+All resource names are Bicep parameters with defaults; override them in `infra/main.parameters.json` or via `SIGNAL_FOUNDRY_AZURE_*` env vars in `scripts/deploy.sh`. Before `--apply`, declare the blast radius and rollback path. The committed defaults target resource group `rg-signal-foundry-hackathon`; the subscription ID is supplied only through the env var above.
 
 ## Advisory Reasoning + Work IQ Grounding
 
