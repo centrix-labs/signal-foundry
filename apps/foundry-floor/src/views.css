@@ -332,8 +332,10 @@ summary em,
 }
 
 .mcp-rail-list {
+  align-content: start;
   display: grid;
   gap: var(--sm, 8px);
+  grid-auto-rows: max-content;
   min-width: 0;
 }
 
