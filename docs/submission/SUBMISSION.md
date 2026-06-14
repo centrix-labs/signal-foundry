@@ -6,7 +6,7 @@ Copy-paste source for the Innovation Studios project fields.
 
 - **Live demo (Foundry Floor):** https://red-coast-0b0c14e0f.7.azurestaticapps.net — login pre-filled (`alex.kim@asteriadynamics.com` / `signal-foundry-2026`), click **Launch Console**.
 - **Code repository:** https://github.com/centrix-labs/signal-foundry
-- **Demo video:** _add YouTube/Vimeo link after upload_
+- **Demo video:** https://youtu.be/HMQTQHJM9vQ
 
 ## Project name
 

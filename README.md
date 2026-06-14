@@ -10,7 +10,7 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 
 ## Live Demo
 
-- **Demo video (3 min):** _add YouTube/Vimeo link here_
+- **Demo video (3 min):** https://youtu.be/HMQTQHJM9vQ
 - Foundry Floor: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
   - Demo login (pre-filled): `alex.kim@asteriadynamics.com` / `signal-foundry-2026` → **Launch Console**
 - Evidence summary: `evidence/azure/deployed-smoke-results.md`

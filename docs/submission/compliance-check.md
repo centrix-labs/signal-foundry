@@ -9,7 +9,7 @@ Track: **Enterprise Agents** (Microsoft 365 Copilot).
 |---|-------------|--------|----------|
 | 1 | **Microsoft IQ integration (≥1 of Foundry IQ / Work IQ / Fabric IQ)** | ✅ Met | Permission-aware **Work IQ-style** grounding through M365 Copilot People + Meetings context, plus **Azure AI Foundry** advisory multi-step risk reasoning. Wired and demonstrable: declarative agent enables People/Meetings grounding (`apps/copilot-agent`), advisory reasoning renders in the Risk Gate panel (verified live — "Multi-step reasoning · Azure AI Foundry · advisory"), README §"Advisory Reasoning + Work IQ Grounding", `docs/submission/work-iq-foundry-readiness.md`. **No overclaim** — framed as sanitized/summary-only; the MCP server never receives raw M365 content. |
 | 2 | **Public GitHub repo + README** | ✅ Met | `origin = github.com/centrix-labs/signal-foundry`; `README.md` present with architecture, setup, IQ usage. Names the M365 Copilot declarative-agent track. Confirm repo visibility is **public** before final submission. |
-| 3 | **Demo video** | ✅ Produced — hosting pending | A finished 3:11 cut (1080p, narrated, captioned) is built. OFFICIAL RULES: ≤ 5:00 and must be **uploaded to YouTube or Vimeo** — submission needs the hosted link in README + SUBMISSION. Demo is **solely our own work**; Microsoft trademarks licensed for the entry, no other third-party marks. |
+| 3 | **Demo video** | ✅ Met | A finished 3:11 cut (1080p, narrated, captioned), hosted on YouTube: https://youtu.be/HMQTQHJM9vQ (≤ 5:00 per OFFICIAL RULES), linked in README + SUBMISSION. Demo is **solely our own work**; Microsoft trademarks licensed for the entry, no other third-party marks. |
 | 4 | **Disclaimer — no confidential/sensitive info** | ✅ Met | Secret scan clean: only `.env.example` templates tracked (no real `.env`); no keys/tokens/connection strings in code. `evidence/azure/key-vault-secret-metadata.json` contains only `{attributes, id, name}` — **no secret values**. Synthetic tenant only ("Asteria Dynamics", synthetic data by default). |
 | 5 | **Code of Conduct compliance** | ✅ Met | Governance-focused, anti-surveillance product; no disallowed content. |
 | 6 | **Registration at `aka.ms/agentsleague/aisf`** | ✅ Done (user-confirmed) | The team confirmed they are registered. |
@@ -29,7 +29,7 @@ Track: **Enterprise Agents** (Microsoft 365 Copilot).
 
 - ✅ Registration at `aka.ms/agentsleague/aisf` — confirmed complete.
 - ✅ Demo video produced (3:11, 1080p, narrated + captioned).
-- ⬜ **Upload the finished demo to YouTube or Vimeo** (unlisted OK) and put the link in the README + Projects-tab submission.
+- ✅ Demo uploaded to YouTube (https://youtu.be/HMQTQHJM9vQ) and linked in README + SUBMISSION. Add the same link to the Projects-tab submission.
 - ⬜ Cast/encourage the **Discord community vote** (10%).
 - ⬜ Confirm the GitHub repo is **public** at submission time.
 
