@@ -31,9 +31,9 @@ const infraMain = read("infra/main.bicep");
 const infraParameters = readJson("infra/main.parameters.json");
 const infraResources = read("infra/resources.bicep");
 const serverTests = read("apps/mcp-server/src/server.test.ts");
-const portalPanels = read("apps/foundry-floor/src/panels.tsx");
+const riskGatePanel = read("apps/foundry-floor/src/RiskGate.tsx");
 const submission = read("docs/submission/SUBMISSION.md");
-const morningWalkthrough = read("docs/submission/MORNING-WALKTHROUGH.md");
+const foundryReadiness = read("docs/submission/work-iq-foundry-readiness.md");
 const deployedSmoke = read("evidence/azure/deployed-smoke-results.md");
 const foundrySmoke = read("evidence/azure/foundry-advisory-smoke.md");
 const acceptanceAudit = read("evidence/acceptance-rubric-audit.md");
@@ -137,15 +137,15 @@ const gates = [
   ),
   gate(
     "Foundry Floor visibility",
-    includesAll(portalPanels, [
+    includesAll(riskGatePanel, [
       "AI advisory",
       "Unavailable. Deterministic verdict stands.",
       "Suggested:",
       "Deterministic gate",
-      "Gate wins.",
-      "Advisory only — the deterministic risk gate is the source of truth."
+      "Source of truth for release.",
+      "the gate guarantees."
     ]),
-    "apps/foundry-floor/src/panels.tsx",
+    "apps/foundry-floor/src/RiskGate.tsx",
     "The portal shows the advisory state beside the deterministic gate instead of hiding model availability."
   ),
   gate(
@@ -153,16 +153,16 @@ const gates = [
     includesAll(submission, [
       "Work IQ-grounded discovery",
       "Azure AI Foundry / Azure OpenAI advisory path"
-    ]) && includesAll(morningWalkthrough, [
-      "deployed Azure AI Foundry / Azure OpenAI account",
+    ]) && includesAll(foundryReadiness, [
+      "Azure AI Foundry advisory reasoning",
       "infra/main.bicep",
-      "when the model is down, the deterministic gate stands"
+      "the gate still decides"
     ]) && includesAll(acceptanceAudit, [
       "Azure AI Foundry / Azure OpenAI advisory rationale is deployed and live-smoked through the MCP server.",
       "Deterministic risk scoring is the source of truth."
     ]),
-    "docs/submission/SUBMISSION.md; docs/submission/MORNING-WALKTHROUGH.md; evidence/acceptance-rubric-audit.md",
-    "Submission language includes the technologies while the runbook/audit disclose the current live-Foundry boundary."
+    "docs/submission/SUBMISSION.md; docs/submission/work-iq-foundry-readiness.md; evidence/acceptance-rubric-audit.md",
+    "Submission language includes the technologies while the readiness doc/audit disclose the current live-Foundry boundary."
   ),
   gate(
     "Deployed Work IQ smoke",

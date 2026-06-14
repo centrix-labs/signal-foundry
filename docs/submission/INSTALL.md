@@ -147,7 +147,7 @@ npm --prefix /tmp/signal-foundry run validate:cards
 npm --prefix /tmp/signal-foundry run test:e2e
 ```
 
-`npm run validate` runs the full strict path: OpenSpec, typecheck, unit tests,
+`npm run validate` runs the full strict path: typecheck, unit tests,
 evidence validation, Copilot package validation, Work IQ + Foundry readiness,
 and Adaptive Card validation.
 
