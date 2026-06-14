@@ -3,11 +3,13 @@ import {
   Activity,
   AlertTriangle,
   Check,
+  ChevronDown,
   ChevronRight,
   ClipboardCheck,
   FileText,
   HelpCircle,
   Lock,
+  LogOut,
   PackageCheck,
   Search,
   ShieldCheck,
@@ -244,12 +246,33 @@ export function TopBar({
     setSearchOpen(false);
   }
 
+  // Account menu collapses How-to-use + Sign out behind the avatar.
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!accountOpen) {
+      return;
+    }
+    function onDoc(event: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [accountOpen]);
+
   return (
     <header className="top-bar">
-      <div>
-        <p className="eyebrow">Operations Command Center</p>
-        <h1>Foundry Floor</h1>
-      </div>
       <div className="search-box-wrap" ref={searchRef}>
         <label className="search-box">
           <Search size={15} aria-hidden />
@@ -308,19 +331,41 @@ export function TopBar({
         ) : null}
       </div>
       <div className="top-bar-right">
-        {onStartTour ? (
-          <button type="button" className="tour-help-btn" onClick={onStartTour} aria-label="Open the walkthrough">
-            <HelpCircle size={15} /> How to use
+        <div className="account-menu" ref={accountRef}>
+          <button
+            type="button"
+            className="account-trigger"
+            aria-haspopup="menu"
+            aria-expanded={accountOpen}
+            onClick={() => setAccountOpen((open) => !open)}
+          >
+            <span className="account-avatar">{initials}</span>
+            <span className="account-id">
+              <strong>{displayName}</strong>
+              <small>{user ? "Microsoft authenticated" : "Release Manager"}</small>
+            </span>
+            <ChevronDown size={14} aria-hidden />
           </button>
-        ) : null}
-        <div className="operator-badge">
-          <span>{initials}</span>
-          <div>
-            <strong>{displayName}</strong>
-            <small>{user ? "Microsoft authenticated" : "Release Manager"}</small>
-          </div>
+          {accountOpen ? (
+            <div className="account-dropdown" role="menu">
+              {onStartTour ? (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    onStartTour();
+                    setAccountOpen(false);
+                  }}
+                >
+                  <HelpCircle size={15} aria-hidden /> How to use
+                </button>
+              ) : null}
+              <a role="menuitem" href={signOutUrl()}>
+                <LogOut size={15} aria-hidden /> Sign out
+              </a>
+            </div>
+          ) : null}
         </div>
-        <a className="sign-out-link" href={signOutUrl()}>Sign out</a>
       </div>
     </header>
   );

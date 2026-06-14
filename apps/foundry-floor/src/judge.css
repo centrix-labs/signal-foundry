@@ -356,6 +356,12 @@
   font-size: 0.82rem;
 }
 
+/* On the light reasoning card the bright teal step names are low-contrast;
+   deepen them for readability. */
+.light-mode .advisory-steps li strong {
+  color: oklch(0.46 0.12 190);
+}
+
 .advisory-steps li span {
   font-size: 0.84rem;
 }
