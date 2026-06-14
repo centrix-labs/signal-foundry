@@ -577,13 +577,26 @@
 
 /* Risk-gate and approval paths are amber; the pre-gate signal flow stays teal. */
 .story-edge.forge-gate,
-.story-edge.gate-workflow,
+.story-edge.gate-workflow {
+  stroke: var(--amber);
+}
+
+/* The gate->seal link spans a long vertical distance where the pathLength
+   dash-draw renders broken under non-scaling-stroke; draw it solid and fade in. */
 .story-edge.gate-seal {
   stroke: var(--amber);
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  animation: storyFade 420ms ease both;
 }
 
 @keyframes storyDraw {
   to { stroke-dashoffset: 0; }
+}
+
+@keyframes storyFade {
+  from { opacity: 0; }
+  to { opacity: 0.95; }
 }
 
 /* The hero node group transforms (translates) between lanes — this is the
