@@ -112,5 +112,21 @@ describe("LLM client typing tolerance", () => {
     const proposal = { ...base, confirmed: true, inputsRequired: '["Account summary"]', proposedOutputs: '["Renewal brief"]' };
     expect(toolSchemas.create_capability_proposal.safeParse(proposal).success).toBe(true);
   });
+
+  it("normalizes loose release versions to a 3-part semver", () => {
+    const releaseBase = { ...scope, ...validWriteInputs["release_capability"], confirmed: true };
+    for (const version of ["v1.0", "1.0", "1", "v1", "1.0.0", "v1.0.0", "2.3"]) {
+      const parsed = toolSchemas.release_capability.safeParse({ ...releaseBase, version });
+      expect(parsed.success, `version "${version}" should parse`).toBe(true);
+      if (parsed.success) {
+        expect((parsed.data as { version: string }).version).toMatch(/^v\d+\.\d+\.\d+$/);
+      }
+    }
+    // Missing version defaults; genuinely malformed values still fail.
+    const omitted = { ...releaseBase } as Record<string, unknown>;
+    delete omitted["version"];
+    expect(toolSchemas.release_capability.safeParse(omitted).success).toBe(true);
+    expect(toolSchemas.release_capability.safeParse({ ...releaseBase, version: "latest" }).success).toBe(false);
+  });
 });
 

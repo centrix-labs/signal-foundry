@@ -139,12 +139,19 @@ export const releaseCapabilityInputSchema = idempotentRequestSchema.extend({
   capabilityId: z.string().min(6),
   releasedBy: z.string().min(2),
   audience: audienceScopeSchema,
-  // LLM clients omit the v-prefix or the field entirely; coerce shape,
-  // default the demo release version, keep the format contract.
+  // LLM clients are loose with version shape — they omit the v-prefix, drop
+  // segments ("v1.0", "1"), or omit the field entirely. Normalize any 1–3
+  // numeric-segment value to a strict 3-part semver and keep the format
+  // contract; anything genuinely malformed still fails validation.
   version: z.preprocess(
     (value) => {
       if (value == null || value === "") return "v1.0.0";
-      if (typeof value === "string" && /^\d+\.\d+\.\d+$/.test(value.trim())) return `v${value.trim()}`;
+      if (typeof value !== "string") return value;
+      const parts = value.trim().replace(/^v/i, "").split(".");
+      if (parts.length >= 1 && parts.length <= 3 && parts.every((part) => /^\d+$/.test(part))) {
+        while (parts.length < 3) parts.push("0");
+        return `v${parts.join(".")}`;
+      }
       return value;
     },
     z.string().regex(/^v\d+\.\d+\.\d+$/)
