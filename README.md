@@ -13,12 +13,11 @@ Demo default: fictional company `Asteria Dynamics`, tenant `tenant-asteria-dynam
 - **Demo video (3 min):** _add YouTube/Vimeo link here_
 - Foundry Floor: `https://red-coast-0b0c14e0f.7.azurestaticapps.net`
   - Demo login (pre-filled): `alex.kim@asteriadynamics.com` / `signal-foundry-2026` → **Launch Console**
-- MCP/API: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io`
 - Evidence summary: `evidence/azure/deployed-smoke-results.md`
 
 ## For Judges
 
-Start with [docs/submission/JUDGE-GUIDE.md](docs/submission/JUDGE-GUIDE.md) —
+Start with [docs/submission/DEMO-GUIDE.md](docs/submission/DEMO-GUIDE.md) —
 60-second orientation, live URLs, local quickstart, and what to look for.
 Architecture: [docs/submission/architecture.md](docs/submission/architecture.md).
 Install and sideload guide: [docs/submission/INSTALL.md](docs/submission/INSTALL.md).

@@ -9,8 +9,8 @@ sideload path.
 No local setup is required to inspect the deployed portal.
 
 - Foundry Floor: https://red-coast-0b0c14e0f.7.azurestaticapps.net
-- MCP health: https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health
-- MCP tools: https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/tools
+- MCP health: (internal Azure Container Apps endpoint)/health
+- MCP tools: (internal Azure Container Apps endpoint)/tools
 
 The portal uses Microsoft authentication in production and polls the live MCP
 registry snapshot. If the live registry is available, the top control strip says
@@ -88,7 +88,7 @@ Validated package:
 - Package: `evidence/copilot/signal-foundry-copilot-v103-card-polish-20260613.zip`
 - Version: `1.0.3`
 - SHA-256: `430efd1a34297a67aac9f6e1b42d50759f0d74ad39b75fa575d5ad3ec120db05`
-- MCP endpoint: `https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/mcp`
+- MCP endpoint: `(internal Azure Container Apps endpoint)/mcp`
 
 Upload steps (CLI path):
 
@@ -163,7 +163,7 @@ and Adaptive Card validation.
 
 ## Evidence Map
 
-- Judge guide: `docs/submission/JUDGE-GUIDE.md`
+- Judge guide: `docs/submission/DEMO-GUIDE.md`
 - Submission copy: `docs/submission/SUBMISSION.md`
 - Architecture: `docs/submission/architecture.md`
 - Live Copilot checkpoints spec:

@@ -19,8 +19,9 @@ import {
   riskReview as sampleRiskReview
 } from "./data";
 
-const defaultApiBase = "https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io";
-export const apiBase = ((import.meta.env["VITE_SIGNAL_FOUNDRY_API_BASE"] as string | undefined) ?? defaultApiBase).replace(/\/$/, "");
+// The MCP/API base is environment-specific. Set VITE_SIGNAL_FOUNDRY_API_BASE at
+// build time (see .env.example); without it the console uses bundled sample data.
+export const apiBase = ((import.meta.env["VITE_SIGNAL_FOUNDRY_API_BASE"] as string | undefined) ?? "").replace(/\/$/, "");
 const demoActorId = (import.meta.env["VITE_SIGNAL_FOUNDRY_DEMO_ACTOR"] as string | undefined) ?? "actor-alex";
 
 type RegistrySnapshot = Pick<

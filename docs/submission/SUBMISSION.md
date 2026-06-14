@@ -2,6 +2,12 @@
 
 Copy-paste source for the Innovation Studios project fields.
 
+## Links (required submission fields)
+
+- **Live demo (Foundry Floor):** https://red-coast-0b0c14e0f.7.azurestaticapps.net — login pre-filled (`alex.kim@asteriadynamics.com` / `signal-foundry-2026`), click **Launch Console**.
+- **Code repository:** https://github.com/centrix-labs/signal-foundry
+- **Demo video:** _add YouTube/Vimeo link after upload_
+
 ## Project name
 
 Signal Foundry
@@ -95,7 +101,7 @@ Release Packets, and a sanitized MCP activity trail end to end.
    replayable.
 5. **Prove the pattern end to end on the Microsoft stack** — declarative
    agent in Copilot Chat, MCP tool contracts, Azure AI Foundry reasoning, and
-   Azure infrastructure, verified by 83 automated tests, a Playwright
+   Azure infrastructure, verified by 92 automated tests, a Playwright
    golden-flow E2E, and a package that passes all 57 Microsoft 365 Agents
    Toolkit validation rules.
 
