@@ -38,11 +38,14 @@ export async function getStaticWebAppUser() {
 }
 
 // Local demo credentials. These run entirely client-side and do not replace the
-// Microsoft OAuth path — they exist so the portal can be opened in environments
-// where the Static Web Apps auth backend (/.auth/*) is not wired up. Override the
-// expected hashes with VITE_LOCAL_EMAIL_HASH / VITE_LOCAL_PASSWORD_HASH.
-const defaultLocalEmailHash = "b1b69df47ac427a5a69f213ee9ab71e8428280e1a47f6de008507cd5a411b73d";
-const defaultLocalPasswordHash = "c6a8dc6fc183cbf6877c05f26fdd4f3117e4bd7ea6b77560922063b9053bd1f0";
+// Microsoft OAuth path — they exist so the portal can be opened (e.g. by judges)
+// without the tenant, in environments where the Static Web Apps auth backend
+// (/.auth/*) is not wired up. The documented demo login is:
+//   judge@asteria-dynamics.example / signal-foundry-2026
+// (synthetic demo tenant; the credential is intentionally public for judging).
+// Override the expected hashes with VITE_LOCAL_EMAIL_HASH / VITE_LOCAL_PASSWORD_HASH.
+const defaultLocalEmailHash = "5583e3e98376f71a6bf5463f14b759def77b0f2ded4b4a5b07b890cbd10f2fdc";
+const defaultLocalPasswordHash = "f6f2e1574897c605ffc911863760323f7198e6335b0343e7f08e75383b2dc77b";
 
 const localEmailHash = ((import.meta.env["VITE_LOCAL_EMAIL_HASH"] as string | undefined) ?? defaultLocalEmailHash).trim();
 const localPasswordHash = ((import.meta.env["VITE_LOCAL_PASSWORD_HASH"] as string | undefined) ?? defaultLocalPasswordHash).trim();

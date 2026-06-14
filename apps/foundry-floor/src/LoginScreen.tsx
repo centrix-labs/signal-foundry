@@ -7,6 +7,12 @@ type LoginScreenProps = {
   onLocalLogin?: (user: StaticWebAppUser) => void;
 };
 
+// Public demo credential for judges — the portal runs on a synthetic tenant, so
+// this is intentionally documented and pre-filled for one-click access. Matches
+// the default hashes in auth.ts.
+const DEMO_EMAIL = "judge@asteria-dynamics.example";
+const DEMO_PASSWORD = "signal-foundry-2026";
+
 function MicrosoftMark() {
   return (
     <span className="microsoft-mark" aria-hidden="true">
@@ -41,8 +47,8 @@ function SignalMark() {
 export function LoginScreen({ isCheckingAuth = false, onLocalLogin }: LoginScreenProps) {
   const signInUrl = microsoftSignInUrl();
   const includeMicrosoftMark = showMicrosoftMark();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(onLocalLogin ? DEMO_EMAIL : "");
+  const [password, setPassword] = useState(onLocalLogin ? DEMO_PASSWORD : "");
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -140,6 +146,13 @@ export function LoginScreen({ isCheckingAuth = false, onLocalLogin }: LoginScree
             Sign in with SSO
           </a>
         </div>
+
+        {onLocalLogin ? (
+          <p className="login-demo-hint">
+            <ShieldCheck size={13} aria-hidden />
+            Judge demo access (pre-filled): <strong>{DEMO_EMAIL}</strong> / <strong>{DEMO_PASSWORD}</strong> — click Launch Console.
+          </p>
+        ) : null}
 
         <p className="login-legal">
           By continuing, you agree to the Signal Foundry demo terms and privacy boundary.
