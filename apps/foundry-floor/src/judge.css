@@ -612,8 +612,26 @@
   border-radius: 999px;
   background: transparent;
   color: var(--teal);
+  cursor: pointer;
   font-size: 0.8rem;
   padding: 6px 12px;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.deck-meta .deck-link:hover {
+  background: color-mix(in oklch, var(--teal) 14%, transparent);
+  border-color: var(--teal);
+}
+
+.deck-meta .deck-link:focus-visible {
+  border-color: var(--teal);
+  outline: 2px solid color-mix(in oklch, var(--teal) 50%, transparent);
+  outline-offset: 1px;
+}
+
+.light-mode .deck-meta .deck-link:hover {
+  background: color-mix(in oklch, var(--teal) 12%, white);
+  border-color: color-mix(in oklch, var(--teal) 70%, var(--graphite));
 }
 
 .deck-grid {
@@ -666,27 +684,59 @@
 }
 
 .deck-status {
+  align-items: center;
+  border: 1px solid transparent;
   border-radius: 999px;
+  display: inline-flex;
   font-size: 0.7rem;
   font-weight: 700;
+  gap: 6px;
   letter-spacing: 0.04em;
-  padding: 3px 9px;
+  padding: 3px 9px 3px 8px;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Status dot — matches the Live pills on the Atlas / MCP / Active context. */
+.deck-status::before {
+  background: currentColor;
+  border-radius: 50%;
+  content: "";
+  flex: 0 0 auto;
+  height: 6px;
+  width: 6px;
 }
 
 .deck-status.live {
   background: color-mix(in oklch, var(--green) 16%, transparent);
+  border-color: color-mix(in oklch, var(--green) 32%, transparent);
   color: var(--green);
 }
 
 .deck-status.demo {
   background: color-mix(in oklch, var(--steel) 18%, transparent);
+  border-color: color-mix(in oklch, var(--steel) 30%, transparent);
   color: var(--steel);
 }
 
 .deck-status.action {
   background: color-mix(in oklch, var(--amber) 16%, transparent);
+  border-color: color-mix(in oklch, var(--amber) 38%, transparent);
   color: var(--amber);
+}
+
+/* Light mode previously only fixed .demo, leaving live/action low-contrast
+   (green-on-green). Darken the text on a light tint for readability. */
+.light-mode .deck-status.live {
+  background: oklch(0.94 0.05 158);
+  border-color: oklch(0.76 0.1 158);
+  color: oklch(0.4 0.11 156);
+}
+
+.light-mode .deck-status.action {
+  background: oklch(0.95 0.05 84);
+  border-color: oklch(0.76 0.12 78);
+  color: oklch(0.44 0.12 72);
 }
 
 @media (max-width: 1280px) {

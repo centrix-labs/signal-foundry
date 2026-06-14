@@ -597,6 +597,16 @@ export function CopilotMirror({
   const [activeSessionId, setActiveSessionId] = useState<string>(sessions[0]?.id ?? "");
   const activeSession = sessions.find((s) => s.id === activeSessionId) ?? sessions[0];
 
+  // Right column shows one context panel at a time (tabbed) so a presenter can
+  // jump to a panel without scrolling a tall stack.
+  const [rightTab, setRightTab] = useState<"atlas" | "risk" | "mcp" | "packet">("atlas");
+  const RIGHT_TABS = [
+    ["atlas", "Signal Atlas"],
+    ["risk", "Risk Gate"],
+    ["mcp", "MCP Activity"],
+    ["packet", "Release Packet"]
+  ] as const;
+
   function selectSession(session: MirrorSession) {
     setActiveSessionId(session.id);
     if (session.recordId && records.some((r) => r.id === session.recordId)) {
@@ -696,12 +706,30 @@ export function CopilotMirror({
         <ReadOnlyBar chips={chips} onJump={jumpTo} />
       </div>
 
-      {/* Right pane: Foundry context panels */}
+      {/* Right pane: one Foundry context panel at a time */}
       <div className="foundry-mirror">
-        <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} compact />
-        <RiskGate selected={selected} />
-        <McpActivityRail compact />
-        <ReleasePacketDrawer selected={selected} />
+        <div className="mirror-tabs" role="tablist" aria-label="Context panel">
+          {RIGHT_TABS.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={rightTab === key}
+              className={rightTab === key ? "is-active" : ""}
+              onClick={() => setRightTab(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="mirror-panel">
+          {rightTab === "atlas" ? (
+            <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} compact />
+          ) : null}
+          {rightTab === "risk" ? <RiskGate selected={selected} /> : null}
+          {rightTab === "mcp" ? <McpActivityRail compact /> : null}
+          {rightTab === "packet" ? <ReleasePacketDrawer selected={selected} /> : null}
+        </div>
       </div>
     </section>
   );

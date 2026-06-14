@@ -656,7 +656,11 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
         {activeView === "deck" ? (
           <JudgeDeck
             data={dashboardData}
-            onOpenStory={() => setActiveView("judge")}
+            onOpenStory={() => {
+              setActiveView("judge");
+              // Land on the Guided Story already playing from Discover.
+              replayAutoPlay();
+            }}
             onOpenMirror={() => setActiveView("mirror")}
           />
         ) : null}
