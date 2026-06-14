@@ -37,9 +37,18 @@ function showMicrosoftMark() {
 function SignalMark() {
   return (
     <span className="login-mark" aria-hidden="true">
-      <span />
-      <span />
-      <span />
+      <svg viewBox="0 0 40 40" width="34" height="34" role="img" aria-label="Signal Foundry">
+        <path
+          d="M6 20 H12 l2.6 -7 4.2 13 3.1 -8.4 2.1 2.4 H30"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="29" cy="20" r="3.6" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="29" cy="20" r="1.3" fill="currentColor" />
+      </svg>
     </span>
   );
 }

@@ -109,50 +109,19 @@
 }
 
 .login-mark {
-  display: grid;
-  height: 48px;
-  place-items: center;
-  position: relative;
-  width: 48px;
+  align-items: center;
+  background: linear-gradient(150deg, oklch(0.32 0.05 210), oklch(0.16 0.03 222));
+  border-radius: 15px;
+  box-shadow: 0 8px 20px oklch(0.16 0.03 222 / 0.30), inset 0 1px 0 oklch(0.92 0.05 200 / 0.20);
+  color: var(--teal);
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  width: 56px;
 }
 
-.login-mark::before,
-.login-mark::after,
-.login-mark span {
-  border: 3px solid var(--teal);
-  border-radius: 6px;
-  clip-path: polygon(50% 0, 92% 25%, 92% 75%, 50% 100%, 8% 75%, 8% 25%);
-  content: "";
-  grid-area: 1 / 1;
-  height: 35px;
-  position: absolute;
-  width: 35px;
-}
-
-.login-mark::before {
-  border-color: var(--amber);
-  transform: rotate(30deg) scale(0.88);
-}
-
-.login-mark::after {
-  border-color: color-mix(in oklch, var(--steel) 68%, white);
-  transform: rotate(-30deg) scale(0.7);
-}
-
-.login-mark span:nth-child(1) {
-  border-color: var(--teal);
-}
-
-.login-mark span:nth-child(2) {
-  border-color: oklch(0.66 0.14 250);
-  transform: rotate(60deg) scale(0.56);
-}
-
-.login-mark span:nth-child(3) {
-  background: var(--graphite);
-  border-color: var(--teal);
-  height: 8px;
-  width: 8px;
+.login-mark svg {
+  display: block;
 }
 
 .login-tagline {
