@@ -694,6 +694,78 @@ summary em,
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+/* Record-driven release funnel — each stage filters the cards below. */
+.pipeline-funnel {
+  display: grid;
+  gap: var(--md, 12px);
+}
+
+.pipeline-funnel-track {
+  display: grid;
+  gap: var(--sm, 8px);
+  grid-template-columns: repeat(auto-fit, minmax(122px, 1fr));
+}
+
+.funnel-stage {
+  background: color-mix(in oklch, var(--graphite-3) 84%, black);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  display: grid;
+  gap: 2px;
+  padding: var(--md, 12px);
+  text-align: left;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.funnel-stage > span {
+  color: var(--steel);
+  font-size: 0.78rem;
+}
+
+.funnel-stage strong {
+  color: oklch(0.9 0.03 210);
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.funnel-stage small {
+  color: var(--steel);
+  font-size: 0.72rem;
+}
+
+.funnel-stage:hover {
+  border-color: color-mix(in oklch, var(--teal) 45%, var(--line));
+}
+
+.funnel-stage.is-active {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--teal) 40%, transparent);
+  transform: translateY(-1px);
+}
+
+.funnel-stage.pending strong { color: var(--amber); }
+.funnel-stage.approved strong { color: var(--teal); }
+.funnel-stage.blocked strong { color: var(--red); }
+
+.light-mode .funnel-stage {
+  background: oklch(0.99 0.004 205);
+  border-color: oklch(0.85 0.024 210);
+}
+
+.light-mode .funnel-stage > span,
+.light-mode .funnel-stage small {
+  color: oklch(0.46 0.04 220);
+}
+
+.light-mode .funnel-stage strong {
+  color: oklch(0.24 0.03 225);
+}
+
+.light-mode .funnel-stage.pending strong { color: oklch(0.5 0.13 70); }
+.light-mode .funnel-stage.approved strong { color: oklch(0.42 0.1 190); }
+.light-mode .funnel-stage.blocked strong { color: oklch(0.5 0.16 28); }
+
 .release-card {
   min-height: 190px;
 }

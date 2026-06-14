@@ -458,19 +458,74 @@ function AtlasView({
   );
 }
 
-function PipelineView({ records, selected }: { records: readonly Capability[]; selected: Capability }) {
+// Record-driven release funnel: every stage count is derived from the same
+// records the cards render from, and each stage filters the cards below.
+const PIPELINE_STAGES = [
+  { key: "proposed", label: "Proposed", statuses: ["proposed", "candidate"], tone: "live" },
+  { key: "risk_scored", label: "Risk Scored", statuses: ["risk_scored"], tone: "pending" },
+  { key: "in_review", label: "In Review", statuses: ["in_review"], tone: "pending" },
+  { key: "approved", label: "Approved", statuses: ["approved_for_release", "approved"], tone: "approved" },
+  { key: "released", label: "Released", statuses: ["released"], tone: "approved" },
+  { key: "blocked", label: "Blocked", statuses: ["blocked", "rejected"], tone: "blocked" }
+] as const;
+
+function stageKeyForStatus(status: string): string {
+  return PIPELINE_STAGES.find((stage) => (stage.statuses as readonly string[]).includes(status))?.key ?? "proposed";
+}
+
+function PipelineView({ records }: { records: readonly Capability[] }) {
+  const [stageFilter, setStageFilter] = useState<string>("all");
+  const counts = Object.fromEntries(
+    PIPELINE_STAGES.map((stage) => [stage.key, records.filter((r) => (stage.statuses as readonly string[]).includes(r.status)).length])
+  );
+  const filtered = stageFilter === "all" ? records : records.filter((r) => stageKeyForStatus(r.status) === stageFilter);
+  // Only show stages that actually have records, plus an "All" chip.
+  const liveStages = PIPELINE_STAGES.filter((stage) => counts[stage.key]! > 0);
+
   return (
     <div className="pipeline-view">
-      <ReleasePipeline selected={selected} detailed />
+      <section className="panel pipeline-funnel" aria-label="Release pipeline funnel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Release Pipeline</p>
+            <h2>Live funnel — {records.length} workflows in the registry</h2>
+            <p className="pipeline-tagline">Counts are live from the registry. Pick a stage to filter the cards below.</p>
+          </div>
+        </div>
+        <div className="pipeline-funnel-track" role="group" aria-label="Filter by stage">
+          <button type="button" className={`funnel-stage all ${stageFilter === "all" ? "is-active" : ""}`} aria-pressed={stageFilter === "all"} onClick={() => setStageFilter("all")}>
+            <span>All stages</span>
+            <strong>{records.length}</strong>
+            <small>workflows</small>
+          </button>
+          {liveStages.map((stage) => (
+            <button
+              key={stage.key}
+              type="button"
+              className={`funnel-stage ${stage.tone} ${stageFilter === stage.key ? "is-active" : ""}`}
+              aria-pressed={stageFilter === stage.key}
+              onClick={() => setStageFilter(stageFilter === stage.key ? "all" : stage.key)}
+            >
+              <span>{stage.label}</span>
+              <strong>{counts[stage.key]}</strong>
+              <small>{counts[stage.key] === 1 ? "workflow" : "workflows"}</small>
+            </button>
+          ))}
+        </div>
+      </section>
       <div className="pipeline-columns">
-        {records.map((item) => (
-          <article key={item.id} className={`panel release-card ${item.riskLevel}`}>
-            <p className="eyebrow">{statusLabels[item.status]}</p>
-            <h2>{item.title}</h2>
-            <p>{item.description}</p>
-            <span>{item.version} / {item.owner}</span>
-          </article>
-        ))}
+        {filtered.length === 0 ? (
+          <p className="empty-state">No workflows in this stage.</p>
+        ) : (
+          filtered.map((item) => (
+            <article key={item.id} className={`panel release-card ${item.riskLevel}`}>
+              <p className="eyebrow">{statusLabels[item.status]}</p>
+              <h2>{item.title}</h2>
+              <p>{item.description}</p>
+              <span>{item.version} / {item.owner}</span>
+            </article>
+          ))
+        )}
       </div>
     </div>
   );
@@ -680,7 +735,7 @@ function AuthenticatedWorkspace({ authUser }: { authUser: StaticWebAppUser }) {
         ) : null}
         {activeView === "atlas" ? <AtlasView records={visibleRecords} selectedId={selectedId} onSelect={setSelectedId} activity={dashboardData.mcpActivity} isLive={dashboardData.isLive} /> : null}
         {activeView === "architecture" ? <ArchitectureView onOpenView={setActiveView} /> : null}
-        {activeView === "pipeline" ? <PipelineView records={visibleRecords} selected={selected} /> : null}
+        {activeView === "pipeline" ? <PipelineView records={visibleRecords} /> : null}
         {activeView === "review" ? (
           <ReviewQueue
             records={records}
