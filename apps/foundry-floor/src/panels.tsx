@@ -438,12 +438,6 @@ export function ReleasePacketDrawer({
   );
 }
 
-// Strip a "cap-" lifecycle prefix so a released capability's id still matches the
-// proposal id recorded on its MCP activity.
-function normalizeRecordId(id: string): string {
-  return id.replace(/^cap-/, "");
-}
-
 function relativeTime(timestamp: string): string {
   const then = new Date(timestamp).getTime();
   if (Number.isNaN(then)) {
@@ -466,31 +460,37 @@ export function McpActivityRail({
   proofMode = false,
   items = mcpActivity,
   limit,
-  highlightId,
   paginate = false,
   maxHeight,
-  onSelectRecord
+  onSelectRecord,
+  filterLabel,
+  onClearFilter
 }: {
   compact?: boolean;
   proofMode?: boolean;
   items?: readonly McpActivity[];
   /** Max rows to show (defaults to 4 when compact, else all). Ignored when paginate. */
   limit?: number;
-  /** When set, MCP calls for this record are accented as "related". */
-  highlightId?: string;
   /** Show a 5/10/20 page-size pager and step through pages. */
   paginate?: boolean;
   /** Cap the rail height (e.g. to match the Atlas) — the list scrolls within. */
   maxHeight?: number;
   /** When set, a row click selects the workflow that produced the call. */
   onSelectRecord?: (recordId: string) => void;
+  /** When the list is scoped to one workflow, its title (drives the filter bar). */
+  filterLabel?: string;
+  /** Clear the workflow scope and show every audit line again. */
+  onClearFilter?: () => void;
 }) {
   // Newest governed calls first so the rail reads as a live trace.
   const sorted = [...items].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-  const scope = highlightId ? normalizeRecordId(highlightId) : null;
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [page, setPage] = useState(0);
+  // Snap back to the first page whenever the scope (filter) changes.
+  useEffect(() => {
+    setPage(0);
+  }, [filterLabel]);
   const total = sorted.length;
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(page, pageCount - 1);
@@ -518,43 +518,52 @@ export function McpActivityRail({
           <p className="eyebrow">MCP Activity</p>
           <h2>Audit-safe trace</h2>
         </div>
-        <span className="live-dot">Live</span>
+        {proofMode ? <span className="live-dot">Live</span> : <span className="atlas-live is-live">Live</span>}
       </div>
+      {filterLabel ? (
+        <div className="mcp-filter">
+          <span>Scoped to <strong>{filterLabel}</strong></span>
+          <button type="button" onClick={onClearFilter}>Show all</button>
+        </div>
+      ) : null}
       <div className="mcp-rail-list">
-        {visibleItems.map((item) => {
-          const related = scope !== null && normalizeRecordId(item.recordId) === scope;
-          const clickable = Boolean(onSelectRecord);
-          return (
-            <article
-              key={item.id}
-              className={`${item.status} ${related ? "is-related" : ""} ${clickable ? "is-clickable" : ""}`}
-              {...(clickable
-                ? {
-                    role: "button",
-                    tabIndex: 0,
-                    "aria-label": `${item.action} — show its workflow on the Atlas`,
-                    onClick: () => onSelectRecord?.(item.recordId),
-                    onKeyDown: (event: ReactKeyboardEvent) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        onSelectRecord?.(item.recordId);
+        {visibleItems.length === 0 ? (
+          <p className="mcp-empty">No MCP calls recorded for this workflow yet.</p>
+        ) : (
+          visibleItems.map((item) => {
+            const clickable = Boolean(onSelectRecord);
+            return (
+              <article
+                key={item.id}
+                className={`${item.status} ${clickable ? "is-clickable" : ""}`}
+                {...(clickable
+                  ? {
+                      role: "button",
+                      tabIndex: 0,
+                      "aria-label": `${item.action} — show its workflow on the Atlas`,
+                      onClick: () => onSelectRecord?.(item.recordId),
+                      onKeyDown: (event: ReactKeyboardEvent) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          onSelectRecord?.(item.recordId);
+                        }
                       }
                     }
-                  }
-                : {})}
-            >
-              <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
-              <div>
-                <strong>{item.action}</strong>
-                <p>{proofMode ? proofSentence(item) : item.summary}</p>
-                <small>{item.actor} / {item.correlationId}</small>
-              </div>
-              {!proofMode && relativeTime(item.timestamp) ? (
-                <time className="activity-time" dateTime={item.timestamp}>{relativeTime(item.timestamp)}</time>
-              ) : null}
-            </article>
-          );
-        })}
+                  : {})}
+              >
+                <span className="activity-icon">{item.status === "success" ? <Check size={15} /> : item.status === "warning" ? <AlertTriangle size={15} /> : <Lock size={15} />}</span>
+                <div>
+                  <strong>{item.action}</strong>
+                  <p>{proofMode ? proofSentence(item) : item.summary}</p>
+                  <small>{item.actor} / {item.correlationId}</small>
+                </div>
+                {!proofMode && relativeTime(item.timestamp) ? (
+                  <time className="activity-time" dateTime={item.timestamp}>{relativeTime(item.timestamp)}</time>
+                ) : null}
+              </article>
+            );
+          })
+        )}
       </div>
       {paginate && total > 0 ? (
         <div className="mcp-pager">

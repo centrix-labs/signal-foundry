@@ -70,7 +70,9 @@ function useDemoState(baseRecords: readonly Capability[]) {
   const selected = useMemo(() => findCapability(selectedId, records), [records, selectedId]);
 
   useEffect(() => {
-    if (!records.some((item) => item.id === selectedId)) {
+    // Empty selectedId is a deliberate "nothing selected" state (e.g. the Atlas
+    // de-select); only repair a non-empty id that no longer maps to a record.
+    if (selectedId && !records.some((item) => item.id === selectedId)) {
       setSelectedId(records[0]?.id ?? firstCapability.id);
     }
   }, [records, selectedId]);
@@ -421,20 +423,29 @@ function AtlasView({
     return () => observer.disconnect();
   }, []);
 
+  // Selecting a node scopes the audit trace to that workflow; clicking the same
+  // node again (or "Show all") clears the scope and shows every line.
+  const norm = (id: string) => id.replace(/^cap-/, "");
+  const selectedRecord = records.find((record) => record.id === selectedId);
+  const scopedActivity = selectedRecord
+    ? activity.filter((item) => norm(item.recordId) === norm(selectedRecord.id))
+    : activity;
+  const toggleSelect = (id: string) => onSelect(id === selectedId ? "" : id);
+
   return (
     <div className="atlas-view" ref={viewRef}>
-      <SignalAtlas records={records} selectedId={selectedId} onSelect={onSelect} isLive={isLive} />
+      <SignalAtlas records={records} selectedId={selectedId} onSelect={toggleSelect} isLive={isLive} />
       <McpActivityRail
         compact
-        items={activity}
-        highlightId={selectedId}
+        items={scopedActivity}
         paginate
         maxHeight={atlasHeight}
+        filterLabel={selectedRecord?.title}
+        onClearFilter={() => onSelect("")}
         onSelectRecord={(recordId) => {
           // An activity's recordId may be the proposal id while the node is the
           // released capability (cap-<id>); match on the normalized id.
-          const key = recordId.replace(/^cap-/, "");
-          const match = records.find((record) => record.id.replace(/^cap-/, "") === key);
+          const match = records.find((record) => norm(record.id) === norm(recordId));
           if (match) {
             onSelect(match.id);
           }
