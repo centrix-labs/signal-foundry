@@ -118,6 +118,100 @@ const GOLDEN_CONVERSATION: GoldenTurn[] = [
   }
 ];
 
+// A second governed session: a low-risk brief that made it all the way to a
+// released playbook card.
+const ESCALATION_CONVERSATION: GoldenTurn[] = [
+  {
+    speaker: "operator",
+    time: "8:52 AM",
+    text: "Draft an executive escalation brief for at-risk enterprise renewals — summary only, no raw account notes."
+  },
+  {
+    speaker: "copilot",
+    time: "8:53 AM",
+    text: "Executive Escalation Brief fits. It composes a concise risk view from approved CRM and support summaries.",
+    card: {
+      kind: "recommendation",
+      title: "Executive Escalation Brief",
+      subtitle: "Customer Success / Executive",
+      riskLevel: "low",
+      rationale: "Aggregates renewal-health and support-theme summaries into an executive view. Read-only, no raw content.",
+      correlationId: "corr-rec-0511"
+    },
+    correlationId: "corr-rec-0511"
+  },
+  {
+    speaker: "foundry",
+    time: "8:54 AM",
+    text: "Deterministic gate scored Low. Required controls passed and reviewer approval was recorded.",
+    card: {
+      kind: "risk-verdict",
+      title: "Risk Gate Verdict",
+      riskLevel: "low",
+      controls: ["Use approved summaries only", "Executive audience scope", "Retain sanitized correlation IDs"],
+      rationale: "Summary-only executive brief with a limited audience. Low residual risk after controls.",
+      correlationId: "corr-risk-0514"
+    },
+    correlationId: "corr-risk-0514"
+  },
+  {
+    speaker: "foundry",
+    time: "9:02 AM",
+    text: "Alex Kim approved the release. The packet is generated and the playbook card is live.",
+    card: {
+      kind: "release-packet",
+      title: "Executive Escalation Brief v1.2.0",
+      owner: "Dana Singh",
+      reviewer: "Alex Kim",
+      audience: "executive",
+      releasedAt: "Released 9:02 AM",
+      sources: ["CRM summary", "Support summary"],
+      guidance: ["Share in executive review only", "Cite packet ID in escalations"],
+      correlationId: "corr-approve-0520"
+    },
+    correlationId: "corr-approve-0520"
+  }
+];
+
+// A third session: the refusal moment. The gate blocks a surveillance-framed
+// request and Copilot offers a governed, workflow-level alternative.
+const BLOCKED_CONVERSATION: GoldenTurn[] = [
+  {
+    speaker: "operator",
+    time: "9:35 AM",
+    text: "Rank my team by productivity using their Microsoft 365 activity and flag the bottom performers."
+  },
+  {
+    speaker: "foundry",
+    time: "9:35 AM",
+    text: "Blocked. This asks to rank individuals from personal activity — surveillance framing the gate refuses. No personal behavior data is retained.",
+    card: {
+      kind: "risk-verdict",
+      title: "Risk Gate Verdict",
+      riskLevel: "blocked",
+      controls: ["No personal activity tracking", "No individual ranking", "Workflow-level evidence only"],
+      rationale: "Ranking employees from raw activity is out of policy. The deterministic gate blocks release regardless of advisory.",
+      advisoryNote: "Advisory and gate agree — blocked.",
+      correlationId: "corr-risk-0533"
+    },
+    correlationId: "corr-risk-0533"
+  },
+  {
+    speaker: "copilot",
+    time: "9:36 AM",
+    text: "Here's a governed alternative that stays at the workflow level instead of profiling people.",
+    card: {
+      kind: "recommendation",
+      title: "Team Workflow Health Summary",
+      subtitle: "Business Operations / Team",
+      riskLevel: "low",
+      rationale: "Summarizes workflow adoption and bottlenecks — no individual behavior, no raw activity.",
+      correlationId: "corr-rec-0535"
+    },
+    correlationId: "corr-rec-0535"
+  }
+];
+
 // ---------------------------------------------------------------------------
 // Adaptive-card-style governed payload blocks
 // ---------------------------------------------------------------------------
@@ -428,19 +522,25 @@ function buildSessions(
       return bLast.localeCompare(aLast);
     });
   }
-  // Demo path: one rich scripted session carrying the governance cards.
-  const demoRecord = records.find((r) => /renewal brief/i.test(r.title)) ?? records[0];
-  return [
-    {
-      id: "demo-session",
-      title: demoRecord?.title ?? "Renewal Brief Generator",
-      subtitle: "Demo session · 9:18 AM",
-      recordId: demoRecord?.id,
-      kind: "demo",
-      checkpoints: [],
-      turns: GOLDEN_CONVERSATION
-    }
+  // Demo path: a few rich scripted sessions so the switcher has real choices —
+  // the happy path, a released brief, and the refusal moment.
+  const demoSpecs: { id: string; title: string; time: string; match: RegExp; turns: GoldenTurn[] }[] = [
+    { id: "demo-renewal", title: "Renewal Brief Generator", time: "9:18 AM", match: /renewal brief/i, turns: GOLDEN_CONVERSATION },
+    { id: "demo-escalation", title: "Executive Escalation Brief", time: "8:52 AM", match: /escalation/i, turns: ESCALATION_CONVERSATION },
+    { id: "demo-blocked", title: "Employee Monitoring Request", time: "9:35 AM", match: /monitoring|employee/i, turns: BLOCKED_CONVERSATION }
   ];
+  return demoSpecs.map((spec) => {
+    const record = records.find((r) => spec.match.test(r.title));
+    return {
+      id: spec.id,
+      title: record?.title ?? spec.title,
+      subtitle: `Demo session · ${spec.time}`,
+      recordId: record?.id,
+      kind: "demo" as const,
+      checkpoints: [],
+      turns: spec.turns
+    };
+  });
 }
 
 function chipsForSession(session: MirrorSession): JumpChip[] {

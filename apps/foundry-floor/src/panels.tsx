@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -229,10 +229,10 @@ export function CapabilityList({
         <p className="empty-state">No records match the current search and filters.</p>
       )}
       {records.map((item) => (
-        <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} onClick={() => onSelect(item.id)}>
+        <button key={item.id} type="button" className={selectedId === item.id ? "selected" : ""} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}>
           <span className={`dot ${item.riskLevel}`} />
           <strong>{item.title}</strong>
-          <small>{statusLabels[item.status]} / {riskLabels[item.riskLevel]} risk</small>
+          <small>{statusLabels[item.status]} / {riskLabels[item.riskLevel]} risk · {item.owner}</small>
         </button>
       ))}
     </section>
@@ -446,8 +446,30 @@ export function ReviewQueue({
   onSaveForLater: () => void;
   onApproveRelease: () => void;
 }) {
-  const selected = records.find((item) => item.id === selectedId) ?? records[0] ?? capabilities[0];
+  // Pair each review with its proposal record. Reviews whose proposal is missing
+  // (e.g. its record was filtered as demo noise) are orphans — skip them rather
+  // than collapsing to a shared fallback, which used to render several identical
+  // rows that all highlighted together.
+  const renderableReviews = reviews
+    .map((item) => ({ item, capability: records.find((record) => record.id === item.proposalId) }))
+    .filter((entry): entry is { item: ReviewItem; capability: Capability } => Boolean(entry.capability));
+
+  // Highlight by the review row's own identity, not the capability id, so two
+  // reviews of the same proposal never light up together. Falls back to the
+  // row matching the incoming selection, then the first row.
+  const [activeReviewId, setActiveReviewId] = useState<string>("");
+  const activeReview =
+    renderableReviews.find((entry) => entry.item.id === activeReviewId) ??
+    renderableReviews.find((entry) => entry.capability.id === selectedId) ??
+    renderableReviews[0];
+  const selected = activeReview?.capability ?? records.find((item) => item.id === selectedId) ?? records[0] ?? capabilities[0];
   const pendingCount = records.filter((item) => ["proposed", "risk_scored", "in_review"].includes(item.status)).length;
+
+  function selectReview(reviewId: string, capabilityId: string) {
+    setActiveReviewId(reviewId);
+    onSelect(capabilityId);
+  }
+
   return (
     <section className="review-queue-layout">
       <div className="review-list panel">
@@ -458,26 +480,26 @@ export function ReviewQueue({
           </div>
           <span className="status-pill pending">{pendingCount} pending</span>
         </div>
-        {reviews.length === 0 ? (
+        {renderableReviews.length === 0 ? (
           <p className="review-empty">No reviews in the queue — every proposal is approved or released.</p>
         ) : null}
-        {reviews.map((item) => {
-          const capability = records.find((record) => record.id === item.proposalId) ?? capabilities[0];
-          if (!capability) {
-            return null;
-          }
-          return (
-            <button key={item.id} type="button" className={selectedId === capability.id ? "selected" : ""} onClick={() => onSelect(capability.id)}>
-              <PackageCheck size={22} />
-              <span>
-                <strong>{capability.title}</strong>
-                <small>{capability.version}</small>
-                <small>{capability.department}</small>
-              </span>
-              <em className={`review-status ${item.status}`}>{reviewStatusLabel(item.status)}</em>
-            </button>
-          );
-        })}
+        {renderableReviews.map(({ item, capability }) => (
+          <button
+            key={item.id}
+            type="button"
+            className={activeReview?.item.id === item.id ? "selected" : ""}
+            aria-pressed={activeReview?.item.id === item.id}
+            onClick={() => selectReview(item.id, capability.id)}
+          >
+            <PackageCheck size={22} />
+            <span>
+              <strong>{capability.title}</strong>
+              <small>{capability.version} · {capability.owner}</small>
+              <small>{capability.department}</small>
+            </span>
+            <em className={`review-status ${item.status}`}>{reviewStatusLabel(item.status)}</em>
+          </button>
+        ))}
       </div>
       <div className="decision-pane">
         <div className={`decision-banner ${decisionState}`}>
