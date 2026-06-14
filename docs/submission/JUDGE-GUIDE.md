@@ -10,7 +10,7 @@ workflows. Copilot Chat agent (discovery + proposals) → external MCP server
 ## Live demo (no setup)
 
 - Foundry Floor: https://red-coast-0b0c14e0f.7.azurestaticapps.net
-  - **Demo login (pre-filled on the page): `judge@asteria-dynamics.example` / `signal-foundry-2026`** — click **Launch Console**. (Synthetic tenant; credential is intentionally public for judging.)
+  - **Demo login (pre-filled on the page): `alex.kim@asteriadynamics.com` / `signal-foundry-2026`** — just click **Launch Console**. (Synthetic tenant; credential is intentionally public.)
 - MCP health: https://ca-signal-foundry-mcp.agreeablemushroom-5fb088be.eastus2.azurecontainerapps.io/health
 - Tool list: same host, `/tools`
 

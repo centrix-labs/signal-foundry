@@ -370,26 +370,6 @@
 .microsoft-mark i:nth-child(3) { background: #00a4ef; }
 .microsoft-mark i:nth-child(4) { background: #ffb900; }
 
-.login-demo-hint {
-  align-items: center;
-  background: color-mix(in oklch, var(--teal) 10%, white);
-  border: 1px solid color-mix(in oklch, var(--teal) 35%, white);
-  border-radius: 9px;
-  color: color-mix(in oklch, var(--steel) 60%, black);
-  display: flex;
-  font-size: 0.74rem;
-  gap: 7px;
-  justify-content: center;
-  line-height: 1.4;
-  margin: 16px 0 0;
-  padding: 9px 12px;
-  text-align: center;
-}
-
-.login-demo-hint strong {
-  color: color-mix(in oklch, var(--teal) 60%, black);
-}
-
 .login-legal {
   color: color-mix(in oklch, var(--steel) 78%, black);
   font-size: 0.72rem;

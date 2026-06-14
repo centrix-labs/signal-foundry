@@ -38,13 +38,13 @@ export async function getStaticWebAppUser() {
 }
 
 // Local demo credentials. These run entirely client-side and do not replace the
-// Microsoft OAuth path — they exist so the portal can be opened (e.g. by judges)
-// without the tenant, in environments where the Static Web Apps auth backend
-// (/.auth/*) is not wired up. The documented demo login is:
-//   judge@asteria-dynamics.example / signal-foundry-2026
-// (synthetic demo tenant; the credential is intentionally public for judging).
+// Microsoft OAuth path — they exist so the portal can be opened without the
+// tenant, in environments where the Static Web Apps auth backend (/.auth/*) is
+// not wired up. The credential presents as a real returning operator:
+//   alex.kim@asteriadynamics.com / signal-foundry-2026
+// (synthetic demo tenant; the credential is intentionally public for reviewers).
 // Override the expected hashes with VITE_LOCAL_EMAIL_HASH / VITE_LOCAL_PASSWORD_HASH.
-const defaultLocalEmailHash = "5583e3e98376f71a6bf5463f14b759def77b0f2ded4b4a5b07b890cbd10f2fdc";
+const defaultLocalEmailHash = "033408acfa40c3fbddc8e4555f630f47e4b1590d888ea967b368c54d6587954c";
 const defaultLocalPasswordHash = "f6f2e1574897c605ffc911863760323f7198e6335b0343e7f08e75383b2dc77b";
 
 const localEmailHash = ((import.meta.env["VITE_LOCAL_EMAIL_HASH"] as string | undefined) ?? defaultLocalEmailHash).trim();
