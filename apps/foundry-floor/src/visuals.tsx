@@ -475,6 +475,9 @@ function StageCard({ stage, index, isLast }: { stage: Stage; index: number; isLa
 export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
   const stages = detailed ? factoryStages : releaseStages;
   const activeIndex = stages.findIndex((item) => item.key === "gate" || item.key === "risk");
+  // Drive the card track and the trace line from the same column template so the
+  // trace segments always sit directly under their stage cards.
+  const gridColumns = `repeat(${stages.length}, minmax(0, 1fr))`;
   return (
     <section className={`panel release-pipeline ${detailed ? "factory" : ""}`} aria-label="Release Pipeline">
       <div className="panel-heading">
@@ -485,12 +488,12 @@ export function ReleasePipeline({ selected, detailed = false }: PipelineProps) {
         </div>
         <span className={`status-pill ${selected.riskLevel}`}>{riskLabels[selected.riskLevel]} Risk</span>
       </div>
-      <div className="pipeline-track">
+      <div className="pipeline-track" style={{ gridTemplateColumns: gridColumns }}>
         {stages.map((stage, index) => (
           <StageCard key={stage.key} stage={stage} index={index} isLast={index === stages.length - 1} />
         ))}
       </div>
-      <div className="signal-trace" aria-hidden="true">
+      <div className="signal-trace" aria-hidden="true" style={{ gridTemplateColumns: gridColumns }}>
         {stages.map((stage, index) => {
           const isActive = index === activeIndex;
           const isComplete = activeIndex > -1 && index < activeIndex;

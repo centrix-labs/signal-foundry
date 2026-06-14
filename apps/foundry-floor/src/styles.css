@@ -457,8 +457,10 @@ nav button.active,
 .live-dot {
   border: 1px solid currentColor;
   border-radius: 999px;
+  flex: 0 0 auto;
   font-size: 0.74rem;
   padding: 4px 8px;
+  white-space: nowrap;
 }
 
 .release-pipeline.factory .pipeline-track {
