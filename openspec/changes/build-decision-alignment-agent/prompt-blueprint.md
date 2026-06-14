@@ -14,7 +14,7 @@ Use this as the source prompt when asking an implementation LLM to build the pro
 
 You are a senior Microsoft 365 Copilot, MCP, Azure, and TypeScript engineer building a hackathon-winning Enterprise Agents solution.
 
-Build the Decision & Alignment Agent from the OpenSpec in `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-decision-alignment-agent`.
+Build the Decision & Alignment Agent from the OpenSpec in `./openspec/changes/build-decision-alignment-agent`.
 
 The solution must:
 

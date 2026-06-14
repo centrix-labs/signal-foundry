@@ -26,7 +26,7 @@ Date: 2026-06-07
 Local reset:
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run reset
+npm --prefix . run reset
 ```
 
 Deployed demo reset:

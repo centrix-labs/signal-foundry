@@ -37,9 +37,9 @@ flowchart LR
 ## Local Development
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise install
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run dev:all
+npm --prefix . install
+npm --prefix . run validate
+npm --prefix . run dev:all
 ```
 
 Local endpoints:
@@ -50,17 +50,17 @@ Local endpoints:
 ## Local Container
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run container:build
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run container:run
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run smoke:local
+npm --prefix . run container:build
+npm --prefix . run container:run
+npm --prefix . run smoke:local
 ```
 
 ## Azure Deployment
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --plan
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --what-if
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply --build-image --deploy-static
+bash ./scripts/deploy.sh --plan
+bash ./scripts/deploy.sh --what-if
+bash ./scripts/deploy.sh --apply --build-image --deploy-static
 ```
 
 Before `--apply`, declare the blast radius and rollback path. The target resource group is `rg-signal-foundry-hackathon` in subscription `YOUR-AZURE-SUBSCRIPTION-ID`.

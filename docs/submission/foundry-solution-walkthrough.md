@@ -200,7 +200,7 @@ Use this path when explaining the built solution:
 The screenshot set was generated with:
 
 ```bash
-SIGNAL_FOUNDRY_EVIDENCE_DIR=/Users/mattgraves/Development/hackathon-enterprise/docs/submission/foundry-solution-walkthrough/screenshots npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e -- /Users/mattgraves/Development/hackathon-enterprise/tests/e2e/portal-qa-sweep.spec.ts
+SIGNAL_FOUNDRY_EVIDENCE_DIR=./docs/submission/foundry-solution-walkthrough/screenshots npm --prefix . run test:e2e -- ./tests/e2e/portal-qa-sweep.spec.ts
 ```
 
 The run passed:

@@ -35,7 +35,7 @@ Track: **Enterprise Agents** (Microsoft 365 Copilot).
 
 ## Minor polish (non-blocking)
 
-- `README.md` quick-start commands use absolute local paths (`/Users/mattgraves/…`). Cosmetic only — no secret/credential exposure — but could be relativized for a cleaner public read. Left as-is to avoid last-minute churn.
+- `README.md` quick-start commands use absolute local paths (`~/…`). Cosmetic only — no secret/credential exposure — but could be relativized for a cleaner public read. Left as-is to avoid last-minute churn.
 
 ## Verdict
 

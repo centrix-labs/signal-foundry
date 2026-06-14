@@ -31,7 +31,7 @@ Before saving, verify each image contains no raw Microsoft 365 content, secrets,
 Optional local diagnostic:
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run copilot:diagnose
+npm --prefix . run copilot:diagnose
 ```
 
 This records only safe browser-state signals in `evidence/copilot/copilot-session-diagnostic.md`. It does not replace the three screenshot files required by the final readiness gate.

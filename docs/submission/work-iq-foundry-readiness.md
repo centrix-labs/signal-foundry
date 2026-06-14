@@ -95,7 +95,7 @@ showing advisory output. Without those variables, the honest demo line is:
 Run:
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:workiq-foundry
+npm --prefix . run validate:workiq-foundry
 ```
 
 This checks:

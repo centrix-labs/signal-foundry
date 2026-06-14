@@ -34,39 +34,39 @@ resource group after judging.
 Local validation only:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --plan
+bash ./scripts/deploy.sh --plan
 ```
 
 Azure what-if, no resource mutation:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --what-if
+bash ./scripts/deploy.sh --what-if
 ```
 
 Authorized apply:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply
+bash ./scripts/deploy.sh --apply
 ```
 
 Build and push the MCP image through Azure Container Registry cloud build after
 deployment is explicitly authorized:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply --build-image
+bash ./scripts/deploy.sh --apply --build-image
 ```
 
 Deploy Foundry Floor to Static Web Apps using the deployment token returned by
 Azure CLI and consumed by the Static Web Apps CLI:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply --deploy-static
+bash ./scripts/deploy.sh --apply --deploy-static
 ```
 
 Deploy both runtime surfaces:
 
 ```bash
-bash /Users/mattgraves/Development/hackathon-enterprise/scripts/deploy.sh --apply --build-image --deploy-static
+bash ./scripts/deploy.sh --apply --build-image --deploy-static
 ```
 
 ## Azure AI Foundry Advisory

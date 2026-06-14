@@ -9,7 +9,7 @@ Static LAN-viewable prototype for three hackathon demo directions:
 Run locally:
 
 ```bash
-python3 -m http.server 4173 --bind 0.0.0.0 --directory /Users/mattgraves/Documents/hackathon-enterprise/prototype
+python3 -m http.server 4173 --bind 0.0.0.0 --directory ./prototype
 ```
 
 Current LAN base URL:

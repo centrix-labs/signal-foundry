@@ -4,10 +4,10 @@ Date: 2026-06-08
 
 ## Local Commands
 
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate`
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run build`
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise audit --omit=optional`
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run smoke:local`
+- `npm --prefix . run validate`
+- `npm --prefix . run build`
+- `npm --prefix . audit --omit=optional`
+- `npm --prefix . run smoke:local`
 
 ## Azure URLs
 
@@ -69,7 +69,7 @@ Date: 2026-06-08
 - Copilot package: `evidence/copilot/signal-foundry-copilot-v015-light-avatar-20260611.zip`
 - Copilot capture runbook: `evidence/copilot/copilot-evidence-capture-runbook.md`
 - Work IQ + Foundry readiness: `docs/submission/work-iq-foundry-readiness.md`
-- Final readiness audit: `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run audit:final-readiness`
+- Final readiness audit: `npm --prefix . run audit:final-readiness`
 
 ## Remaining Tenant-Dependent Manual Steps
 

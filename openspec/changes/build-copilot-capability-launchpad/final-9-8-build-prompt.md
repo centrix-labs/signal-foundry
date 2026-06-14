@@ -18,22 +18,22 @@ Brand promise:
 
 Read and use these files before building:
 
-- `/Users/mattgraves/.llm/GLOBAL_ENGINEERING.md`
-- `/Users/mattgraves/.llm/REVIEW_PROTOCOL.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/AGENTS.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/proposal.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/design.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/specs/copilot-capability-launchpad/spec.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/execution-plan.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/model-task-matrix.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/mcp-tool-contract.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/frontend-brief.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/visual-reference.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/acceptance-rubric.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/demo-script.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/azure-deployment.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/judge-evidence.md`
-- `/Users/mattgraves/Documents/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/build-overlap-review.md`
+- `~/.llm/GLOBAL_ENGINEERING.md`
+- `~/.llm/REVIEW_PROTOCOL.md`
+- `./AGENTS.md`
+- `./openspec/changes/build-copilot-capability-launchpad/proposal.md`
+- `./openspec/changes/build-copilot-capability-launchpad/design.md`
+- `./openspec/changes/build-copilot-capability-launchpad/specs/copilot-capability-launchpad/spec.md`
+- `./openspec/changes/build-copilot-capability-launchpad/execution-plan.md`
+- `./openspec/changes/build-copilot-capability-launchpad/model-task-matrix.md`
+- `./openspec/changes/build-copilot-capability-launchpad/mcp-tool-contract.md`
+- `./openspec/changes/build-copilot-capability-launchpad/frontend-brief.md`
+- `./openspec/changes/build-copilot-capability-launchpad/visual-reference.md`
+- `./openspec/changes/build-copilot-capability-launchpad/acceptance-rubric.md`
+- `./openspec/changes/build-copilot-capability-launchpad/demo-script.md`
+- `./openspec/changes/build-copilot-capability-launchpad/azure-deployment.md`
+- `./openspec/changes/build-copilot-capability-launchpad/judge-evidence.md`
+- `./openspec/changes/build-copilot-capability-launchpad/build-overlap-review.md`
 
 ## Required Stack
 

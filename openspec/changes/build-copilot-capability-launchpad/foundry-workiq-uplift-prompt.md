@@ -34,8 +34,8 @@ Open items this prompt must close or precisely report as tenant-blocked:
 
 ## Session Bootstrap (turn zero, before any change)
 
-1. Confirm working directory is `/Users/mattgraves/Development/hackathon-enterprise` and current branch is `codex/signal-foundry-build`. Create and switch to a new branch `claude/foundry-workiq-uplift` for this pass. Never push to `main`.
-2. Run the baseline: `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate`. It must be green before any edit. Record the baseline test count — it is the floor for every later checkpoint.
+1. Confirm working directory is `.` and current branch is `codex/signal-foundry-build`. Create and switch to a new branch `claude/foundry-workiq-uplift` for this pass. Never push to `main`.
+2. Run the baseline: `npm --prefix . run validate`. It must be green before any edit. Record the baseline test count — it is the floor for every later checkpoint.
 3. Doc freshness gate: the schema facts in this prompt were verified 2026-06-10. Re-fetch the Microsoft Learn pages listed in Workstream 6 and the DA manifest page in Workstream 2. If any schema version, field name, or capability has changed since, write the corrections to `apps/copilot-agent/docs/schema-verification.md` with URLs and dates, and implement against the corrected facts — the live docs win over this prompt's snapshot. If nothing changed, note "verified current" with today's date in the same file.
 4. Read the Source Material list. Then begin at Workstream 5.1 per the Implementation Order.
 
@@ -76,22 +76,22 @@ Temperature guidance is unchanged from `model-task-matrix.md`: 0.0-0.1 for secur
 
 Read before building:
 
-- `/Users/mattgraves/.llm/GLOBAL_ENGINEERING.md`
-- `/Users/mattgraves/.llm/REVIEW_PROTOCOL.md`
-- `/Users/mattgraves/Development/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/proposal.md`
-- `/Users/mattgraves/Development/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/acceptance-rubric.md`
-- `/Users/mattgraves/Development/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/final-9-8-build-prompt.md`
-- `/Users/mattgraves/Development/hackathon-enterprise/openspec/changes/build-copilot-capability-launchpad/judge-evidence.md`
-- `/Users/mattgraves/Development/hackathon-enterprise/packages/shared/src/types.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/packages/shared/src/schemas.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/packages/shared/src/mcpTools.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/apps/mcp-server/src/risk.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/apps/mcp-server/src/tools.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/apps/mcp-server/src/server.ts`
-- `/Users/mattgraves/Development/hackathon-enterprise/apps/foundry-floor/src/panels.tsx`
-- `/Users/mattgraves/Development/hackathon-enterprise/apps/copilot-agent/package/` (all declarative agent and action JSON)
+- `~/.llm/GLOBAL_ENGINEERING.md`
+- `~/.llm/REVIEW_PROTOCOL.md`
+- `./openspec/changes/build-copilot-capability-launchpad/proposal.md`
+- `./openspec/changes/build-copilot-capability-launchpad/acceptance-rubric.md`
+- `./openspec/changes/build-copilot-capability-launchpad/final-9-8-build-prompt.md`
+- `./openspec/changes/build-copilot-capability-launchpad/judge-evidence.md`
+- `./packages/shared/src/types.ts`
+- `./packages/shared/src/schemas.ts`
+- `./packages/shared/src/mcpTools.ts`
+- `./apps/mcp-server/src/risk.ts`
+- `./apps/mcp-server/src/tools.ts`
+- `./apps/mcp-server/src/server.ts`
+- `./apps/foundry-floor/src/panels.tsx`
+- `./apps/copilot-agent/package/` (all declarative agent and action JSON)
 
-The repo root is `/Users/mattgraves/Development/hackathon-enterprise`. Older docs reference `~/Documents/hackathon-enterprise`; treat `Development` as canonical and fix stale paths you touch (README local-dev commands included).
+The repo root is `.`. Older docs reference `~/Documents/hackathon-enterprise`; treat `Development` as canonical and fix stale paths you touch (README local-dev commands included).
 
 ## Autonomy and Safety Rules
 
@@ -276,11 +276,11 @@ Order: Workstream 5.1 (schema gate) → 1 → 3 → 4 → 5.2-5.4 → 6 (card au
 
 Run from the repository root with absolute paths. Do not claim a checkpoint without the corresponding output:
 
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate` — full chain (openspec, typecheck, unit/integration tests, evidence validator, copilot package validator). Expected: exit 0, all five stages reported, zero skipped tests, test count ≥ the current 19 (14 server + 5 risk) plus every test added by Workstreams 1, 4, and 5.1.
-- `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e` — Playwright golden flow (after Workstream 4). Expected: green twice consecutively from fresh `/admin/reset`, no retries masking flakes.
-- `atk validate --manifest-file /Users/mattgraves/Development/hackathon-enterprise/apps/copilot-agent/package/manifest.json --validate-method validation-rules` — agent package (after Workstream 6). Expected: zero errors; warnings triaged and noted. If `atk` cannot run in this environment (login/network), record that limitation and validate the JSON directly against the published schema URLs (plugin v2.4, DA v1.6/v1.7) with a JSON Schema validator instead — do not skip validation silently.
-- `node /Users/mattgraves/Development/hackathon-enterprise/scripts/audit-final-readiness.mjs` — evidence completeness (Checkpoint L).
-- Local golden demo: `npm --prefix /Users/mattgraves/Development/hackathon-enterprise run dev:all`, reset via `/admin/reset`, drive the flow, confirm Foundry Floor state.
+- `npm --prefix . run validate` — full chain (openspec, typecheck, unit/integration tests, evidence validator, copilot package validator). Expected: exit 0, all five stages reported, zero skipped tests, test count ≥ the current 19 (14 server + 5 risk) plus every test added by Workstreams 1, 4, and 5.1.
+- `npm --prefix . run test:e2e` — Playwright golden flow (after Workstream 4). Expected: green twice consecutively from fresh `/admin/reset`, no retries masking flakes.
+- `atk validate --manifest-file ./apps/copilot-agent/package/manifest.json --validate-method validation-rules` — agent package (after Workstream 6). Expected: zero errors; warnings triaged and noted. If `atk` cannot run in this environment (login/network), record that limitation and validate the JSON directly against the published schema URLs (plugin v2.4, DA v1.6/v1.7) with a JSON Schema validator instead — do not skip validation silently.
+- `node ./scripts/audit-final-readiness.mjs` — evidence completeness (Checkpoint L).
+- Local golden demo: `npm --prefix . run dev:all`, reset via `/admin/reset`, drive the flow, confirm Foundry Floor state.
 - Deployed smoke: existing smoke scripts against the Container App URL, advisory on and off.
 - No-secret / no-raw-content scan over all new code, cards, evidence, and screenshots before every commit.
 

@@ -513,12 +513,12 @@ Copilot package zip/version/hash after the manifest changes.
 Run and pass:
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run typecheck
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:copilot
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:workiq-foundry
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run validate:cards
+npm --prefix . run typecheck
+npm --prefix . run test
+npm --prefix . run test:e2e
+npm --prefix . run validate:copilot
+npm --prefix . run validate:workiq-foundry
+npm --prefix . run validate:cards
 ```
 
 After local validation, deploy MCP/API before deploying the portal. Then upload

@@ -9,7 +9,7 @@ state, MCP activity trail, advisory panel, and sanitized unauthorized rejection
 in the UI.
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise run test:e2e
+npm --prefix . run test:e2e
 ```
 
 Requires Playwright browsers (`npx --prefix <repo> playwright install chromium`).
@@ -23,5 +23,5 @@ stay green.
 `tests/evidence-validation.test.ts` runs the judge evidence validator.
 
 ```bash
-npm --prefix /Users/mattgraves/Development/hackathon-enterprise exec -- vitest run tests/evidence-validation.test.ts
+npm --prefix . exec -- vitest run tests/evidence-validation.test.ts
 ```

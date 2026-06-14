@@ -163,7 +163,7 @@ and Adaptive Card validation.
 
 ## Evidence Map
 
-- Judge guide: `docs/submission/DEMO-GUIDE.md`
+- Demo guide: `docs/submission/DEMO-GUIDE.md`
 - Submission copy: `docs/submission/SUBMISSION.md`
 - Architecture: `docs/submission/architecture.md`
 - Live Copilot checkpoints spec:
